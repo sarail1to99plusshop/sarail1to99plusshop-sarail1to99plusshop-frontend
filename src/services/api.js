@@ -35,8 +35,23 @@ api.interceptors.response.use(
 
 // Data fetching helpers for public JSON endpoints
 export const fetchProducts = async () => {
-  const res = await api.get('/data/products.json');
-  return res.data;
+  try {
+    const res = await api.get('/data/products.json');
+    return res.data;
+  } catch {
+    const res = await api.get('/products.json');
+    return res.data;
+  }
+};
+
+export const fetchProductById = async (id) => {
+  const products = await fetchProducts();
+  const searchId = id?.toString();
+  return (
+    products.find(
+      (p) => p.id?.toString() === searchId || p._id?.$oid === searchId
+    ) || null
+  );
 };
 
 export const fetchCategories = async () => {

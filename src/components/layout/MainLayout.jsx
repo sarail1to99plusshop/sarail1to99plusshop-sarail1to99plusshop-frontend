@@ -2,11 +2,14 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import QuickOrderModal from '../common/QuickOrderModal';
+import AutoScrol from './AutoScrol';
 
 const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col bg-surface text-charcoal font-sans antialiased selection:bg-actionRed selection:text-white">
+      <AutoScrol></AutoScrol>
       {/* Top Navbar Header */}
+
       <Navbar />
 
       {/* Main Page Body */}

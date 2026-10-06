@@ -8,4 +8,4 @@ export const sampleProducts = productsData;
 export const brandsList = brandsData;
 
 // Also export asynchronous axios fetching methods
-export { fetchProducts, fetchCategories, fetchBrands } from '../services/api';
+export { fetchProducts, fetchProductById, fetchCategories, fetchBrands } from '../services/api';
