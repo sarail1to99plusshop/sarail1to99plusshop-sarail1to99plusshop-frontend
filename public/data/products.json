@@ -1,0 +1,447 @@
+[
+  {
+    "id": 1,
+    "_id": {
+      "$oid": "6ac17295d401196628509671"
+    },
+    "name": "Granite Coating Non-Stick Fry Pan with Heat-Resistant Wooden Handle (24cm)",
+    "price": 850,
+    "oldPrice": 1150,
+    "discount": "-26%",
+    "category": "kitchen",
+    "rating": 5,
+    "reviews": 78,
+    "tag": "Best Seller",
+    "stock": 45,
+    "thumbnail": "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80",
+    "description": "PFOA-free granite cookware suitable for gas and induction stove, non-stick scratch resistant surface.",
+    "variants": [
+      {
+        "colorName": "Granite Black",
+        "colorCode": "#1F2421",
+        "images": [
+          "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584990347449-3a36db5657ef?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Slate Gray",
+        "colorCode": "#64748B",
+        "images": [
+          "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600519-112d071b35e6?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1585515320310-259814833e62?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Emerald Green",
+        "colorCode": "#0F5132",
+        "images": [
+          "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "_id": {
+      "$oid": "6ac17295d401196628509672"
+    },
+    "name": "360° Rotating Spin Mop with Double-Drive Stainless Steel Dehydration Bucket",
+    "price": 990,
+    "oldPrice": 1350,
+    "discount": "-27%",
+    "category": "cleaning",
+    "rating": 5,
+    "reviews": 64,
+    "tag": "Popular",
+    "stock": 38,
+    "description": "Easy wringing bucket with 2 absorbent microfiber mop heads for effortless floor cleaning.",
+    "variants": [
+      {
+        "colorName": "Sky Blue",
+        "colorCode": "#0284C7",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Vibrant Red",
+        "colorCode": "#DE111E",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 3,
+    "_id": {
+      "$oid": "6ac17295d401196628509673"
+    },
+    "name": "Premium Melamine Floral Dinner Set (32 Pieces Complete Dining Service)",
+    "price": 2450,
+    "oldPrice": 3200,
+    "discount": "-23%",
+    "category": "melamine-crockery",
+    "rating": 5,
+    "reviews": 92,
+    "tag": "Top Rated",
+    "stock": 25,
+    "description": "Unbreakable 100% pure food-grade melamine dinnerware with scratch-resistant elegant floral prints.",
+    "variants": [
+      {
+        "colorName": "Royal Rose White",
+        "colorCode": "#F8FAFC",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Golden Bloom",
+        "colorCode": "#FDE047",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 4,
+    "_id": {
+      "$oid": "6ac17295d401196628509674"
+    },
+    "name": "Multi-Functional Manual Vegetable Chopper & Onion Slicer with 6 Blades",
+    "price": 490,
+    "oldPrice": 650,
+    "discount": "-25%",
+    "category": "kitchen",
+    "rating": 4,
+    "reviews": 115,
+    "tag": "Hot Deal",
+    "stock": 60,
+    "description": "High-grade stainless steel blades with catch tray for quick dicing, slicing, and julienning.",
+    "variants": [
+      {
+        "colorName": "Apple Green",
+        "colorCode": "#16A34A",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Ash Gray",
+        "colorCode": "#64748B",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 5,
+    "_id": {
+      "$oid": "6ac17295d401196628509675"
+    },
+    "name": "Electric 5-in-1 Facial Cleanser Massager & Exfoliating Face Brush",
+    "price": 380,
+    "oldPrice": 550,
+    "discount": "-30%",
+    "category": "beauty",
+    "rating": 5,
+    "reviews": 84,
+    "tag": "Trending",
+    "stock": 52,
+    "description": "Includes 5 interchangeable heads for deep pore cleansing, gentle massage, and dead skin removal.",
+    "variants": [
+      {
+        "colorName": "Baby Pink",
+        "colorCode": "#F472B6",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Snow White",
+        "colorCode": "#FFFFFF",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 6,
+    "_id": {
+      "$oid": "6ac17295d401196628509676"
+    },
+    "name": "Rechargeable High-Speed 4WD Stunt RC Car with 360° Flips & LED Lights",
+    "price": 1250,
+    "oldPrice": 1650,
+    "discount": "-24%",
+    "category": "toys",
+    "rating": 5,
+    "reviews": 53,
+    "tag": "Kids Favorite",
+    "stock": 30,
+    "description": "All-terrain double-sided tumbling stunt vehicle with USB rechargeable battery and remote controller.",
+    "variants": [
+      {
+        "colorName": "Racing Blue",
+        "colorCode": "#2563EB",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Fiery Red",
+        "colorCode": "#DC2626",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 7,
+    "_id": {
+      "$oid": "6ac17295d401196628509677"
+    },
+    "name": "Foldable Non-Woven Wardrobe Clothes Organizer Box with Steel Frame (66L)",
+    "price": 550,
+    "oldPrice": 750,
+    "discount": "-27%",
+    "category": "home-household",
+    "rating": 4,
+    "reviews": 96,
+    "tag": "Storage",
+    "stock": 80,
+    "description": "Durable moisture-proof Oxford cloth with dual-zipper access and clear viewing window.",
+    "variants": [
+      {
+        "colorName": "Steel Navy",
+        "colorCode": "#003D73",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Charcoal Black",
+        "colorCode": "#0F172A",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 8,
+    "_id": {
+      "$oid": "6ac17295d401196628509678"
+    },
+    "name": "Women Stylish PU Leather Crossbody Sling Bag with Golden Chain Strap",
+    "price": 790,
+    "oldPrice": 1100,
+    "discount": "-28%",
+    "category": "womens-fashion",
+    "rating": 5,
+    "reviews": 67,
+    "tag": "Trending",
+    "stock": 40,
+    "description": "Compact daily essentials party handbag with smooth interior lining and magnetic snap closure.",
+    "variants": [
+      {
+        "colorName": "Classic Black",
+        "colorCode": "#000000",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Warm Tan",
+        "colorCode": "#D97706",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 9,
+    "_id": {
+      "$oid": "6ac17295d401196628509679"
+    },
+    "name": "BPA-Free Anti-Colic Baby Feeding Bottle with Soft Silicone Nipple (240ml)",
+    "price": 320,
+    "oldPrice": 450,
+    "discount": "-29%",
+    "category": "baby-kids",
+    "rating": 5,
+    "reviews": 48,
+    "tag": "Safe & Pure",
+    "stock": 70,
+    "description": "Ergonomic wide-neck bottle with heat-resistant borosilicate glass and air ventilation valve.",
+    "variants": [
+      {
+        "colorName": "Mint Green",
+        "colorCode": "#10B981",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80"
+        ]
+      },
+      {
+        "colorName": "Powder Blue",
+        "colorCode": "#38BDF8",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 10,
+    "_id": {
+      "$oid": "6ac17295d401196628509680"
+    },
+    "name": "Super Absorbent Thick Coral Velvet Microfiber Kitchen Towels (Pack of 5)",
+    "price": 190,
+    "oldPrice": 280,
+    "discount": "-32%",
+    "category": "cleaning",
+    "rating": 5,
+    "reviews": 142,
+    "tag": "Everyday Deal",
+    "stock": 150,
+    "description": "Lint-free, fast drying multipurpose cleaning wipes for dishes, countertops, and glass windows.",
+    "variants": [
+      {
+        "colorName": "Assorted Pastel",
+        "colorCode": "#A78BFA",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 11,
+    "_id": {
+      "$oid": "6ac17295d401196628509681"
+    },
+    "name": "Heavy Duty 4-Tier Metal Shoe Rack Organizer Stand with Rust-Proof Coating",
+    "price": 680,
+    "oldPrice": 950,
+    "discount": "-28%",
+    "category": "home-household",
+    "rating": 4,
+    "reviews": 73,
+    "tag": "Household",
+    "stock": 35,
+    "description": "Space-saving entryway shoe shelf holding up to 16 pairs with tool-free quick assembly.",
+    "variants": [
+      {
+        "colorName": "Matte Black",
+        "colorCode": "#1E293B",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80"
+  },
+  {
+    "id": 12,
+    "_id": {
+      "$oid": "6ac17295d401196628509682"
+    },
+    "name": "12-Piece Royal Melamine Deep Soup Bowls & Serving Spoons Set",
+    "price": 890,
+    "oldPrice": 1200,
+    "discount": "-26%",
+    "category": "melamine-crockery",
+    "rating": 5,
+    "reviews": 58,
+    "tag": "New Design",
+    "stock": 42,
+    "description": "Stain-resistant smooth finish bowls with matching spoons for hot soup and dessert serving.",
+    "variants": [
+      {
+        "colorName": "Porcelain White",
+        "colorCode": "#F1F5F9",
+        "inStock": true,
+        "images": [
+          "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80",
+          "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80"
+        ]
+      }
+    ],
+    "thumbnail": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80"
+  }
+]
