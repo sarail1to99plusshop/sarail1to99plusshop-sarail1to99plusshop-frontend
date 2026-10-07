@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FiSearch, FiUser, FiMenu } from 'react-icons/fi';
 import { BsCart3, BsBoxSeam } from 'react-icons/bs';
 import { useShop } from '../../context/ShopContext';
+import { useAuth } from '../../context/AuthContext';
 import logoImg from '../../assets/Without BG logo.png';
 
 const MainHeader = () => {
   const { cartCount, searchQuery, setSearchQuery, setIsMobileMenuOpen } = useShop();
+  const { currentUser } = useAuth();
   const [localSearch, setLocalSearch] = useState(searchQuery);
   const navigate = useNavigate();
 
@@ -116,10 +118,12 @@ const MainHeader = () => {
           >
             <FiUser className="text-2xl text-actionRed group-hover:scale-105 transition-transform" />
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold text-white group-hover:text-actionRed transition-colors">
-                Account
+              <span className="text-xs font-bold text-white group-hover:text-actionRed transition-colors max-w-[110px] truncate">
+                {currentUser?.displayName || (currentUser ? 'My Account' : 'Account')}
               </span>
-              <span className="text-[10px] text-gray-400">Register or Login</span>
+              <span className="text-[10px] text-gray-400">
+                {currentUser ? (currentUser.emailVerified ? 'Verified' : 'My Profile') : 'Register or Login'}
+              </span>
             </div>
           </Link>
 

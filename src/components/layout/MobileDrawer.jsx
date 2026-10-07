@@ -5,11 +5,13 @@ import { BsBoxSeam } from 'react-icons/bs';
 import { FaFire, FaWhatsapp } from 'react-icons/fa';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { useShop } from '../../context/ShopContext';
+import { useAuth } from '../../context/AuthContext';
 import { categoriesList } from '../../data/mockData';
 import logoImg from '../../assets/Without BG logo.png';
 
 const MobileDrawer = () => {
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useShop();
+  const { currentUser } = useAuth();
   const [categoriesOpen, setCategoriesOpen] = useState(true);
 
   if (!isMobileMenuOpen) return null;
@@ -209,7 +211,7 @@ const MobileDrawer = () => {
             >
               <div className="flex items-center gap-2">
                 <FiUser className="text-base text-actionRed" />
-                <span>My Account / Login</span>
+                <span>{currentUser ? (currentUser.displayName || 'My Account') : 'My Account / Login'}</span>
               </div>
               <FiChevronRight className="text-gray-400 text-xs" />
             </NavLink>
