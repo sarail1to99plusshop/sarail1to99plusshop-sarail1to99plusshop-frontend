@@ -170,6 +170,7 @@ export const ShopProvider = ({ children }) => {
       invoiceNumber,
       customerDetails: {
         name: customerDetails.name,
+        email: customerDetails.email || '',
         phone: customerDetails.phone,
         address: customerDetails.address,
         note: customerDetails.note || '',
