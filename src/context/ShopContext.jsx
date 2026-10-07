@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { deliveryChargesList } from '../data/mockData';
 
 const ShopContext = createContext();
 
@@ -172,6 +173,9 @@ export const ShopProvider = ({ children }) => {
         phone: customerDetails.phone,
         address: customerDetails.address,
         note: customerDetails.note || '',
+        deliveryLocation:
+          customerDetails.deliveryLocation ||
+          (deliveryFee === 120 ? 'Outside Dhaka' : 'Inside Dhaka'),
       },
       items: formattedItems,
       deliveryFee,
@@ -219,6 +223,9 @@ export const ShopProvider = ({ children }) => {
         buyNow,
         createOrder,
         orders,
+        deliveryCharges: deliveryChargesList,
+        defaultDeliveryCharge:
+          deliveryChargesList.find((d) => d.isDefault) || deliveryChargesList[0],
         isMobileMenuOpen,
         setIsMobileMenuOpen,
         searchQuery,

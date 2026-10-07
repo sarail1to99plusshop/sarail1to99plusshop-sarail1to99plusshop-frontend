@@ -64,4 +64,15 @@ export const fetchBrands = async () => {
   return res.data;
 };
 
+export const fetchDeliveryCharges = async () => {
+  try {
+    const res = await api.get('/data/deliveryCharges.json');
+    return res.data;
+  } catch {
+    const res = await api.get('/deliveryCharges.json');
+    return res.data;
+  }
+};
+
 export default api;
+

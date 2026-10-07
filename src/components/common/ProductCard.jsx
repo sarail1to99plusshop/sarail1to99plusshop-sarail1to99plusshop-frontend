@@ -1,7 +1,12 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Star, Eye } from 'lucide-react';
+import { Star, ShoppingCart, Zap, Check } from 'lucide-react';
+import { useShop } from '../../context/ShopContext';
 
 const ProductCard = ({ product }) => {
+  const { addToCart, buyNow } = useShop();
+  const [isAdded, setIsAdded] = useState(false);
+
   if (!product) return null;
 
   // Use ONLY 'product.thumbnail' as the display image
@@ -11,6 +16,21 @@ const ProductCard = ({ product }) => {
     'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80';
 
   const productLink = `/product/${product.id}`;
+  const defaultVariant = product.variants?.[0] || null;
+
+  const handleAddToCart = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, defaultVariant, 1);
+    setIsAdded(true);
+    setTimeout(() => setIsAdded(false), 1500);
+  };
+
+  const handleBuyNow = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    buyNow(product, defaultVariant, 1);
+  };
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
@@ -39,8 +59,8 @@ const ProductCard = ({ product }) => {
         )}
       </Link>
 
-      {/* Product Details (Clean - NO color swatches or variant badges) */}
-      <div className="p-4 flex flex-col flex-1 justify-between gap-3">
+      {/* Product Details */}
+      <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between gap-3">
         <div>
           {/* Title */}
           <Link to={productLink} className="block">
@@ -72,7 +92,7 @@ const ProductCard = ({ product }) => {
           </div>
 
           {/* Pricing */}
-          <div className="flex items-baseline gap-2 mt-2.5">
+          <div className="flex items-baseline gap-2 mt-2">
             <span className="text-base md:text-lg font-black text-actionRed">
               ৳{product.price?.toLocaleString()}
             </span>
@@ -84,15 +104,42 @@ const ProductCard = ({ product }) => {
           </div>
         </div>
 
-        {/* View Details Action Button */}
-        <div className="pt-1">
-          <Link
-            to={productLink}
-            className="w-full bg-slate-50 hover:bg-primary text-charcoal hover:text-white border border-slate-200 hover:border-primary text-xs md:text-sm font-bold py-2 px-3 rounded-lg transition-all duration-200 flex items-center justify-center gap-2 group/btn shadow-2xs hover:shadow-sm"
+        {/* Dual Actions: Add to Cart & Buy Now */}
+        <div className="grid grid-cols-2 gap-2 pt-1">
+          {/* Add to Cart Button */}
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            className={`w-full text-xs font-bold py-2 px-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs active:scale-95 border ${
+              isAdded
+                ? 'bg-emerald-600 text-white border-emerald-600'
+                : 'bg-primary/10 hover:bg-primary text-primary hover:text-white border-primary/25'
+            }`}
+            title="Add to Cart"
           >
-            <Eye className="w-4 h-4 text-slate-500 group-hover/btn:text-white transition-colors" />
-            <span>View Details</span>
-          </Link>
+            {isAdded ? (
+              <>
+                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                <span className="truncate">Added!</span>
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="w-3.5 h-3.5" />
+                <span className="truncate">Add to Cart</span>
+              </>
+            )}
+          </button>
+
+          {/* Buy Now Button */}
+          <button
+            type="button"
+            onClick={handleBuyNow}
+            className="w-full bg-actionRed hover:bg-actionRed-hover text-white text-xs font-bold py-2 px-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs hover:shadow-sm active:scale-95"
+            title="Buy Now (Cash on Delivery)"
+          >
+            <Zap className="w-3.5 h-3.5 fill-white" />
+            <span className="truncate">Buy Now</span>
+          </button>
         </div>
       </div>
     </div>

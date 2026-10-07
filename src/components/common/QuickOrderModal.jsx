@@ -4,7 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
 
 const QuickOrderModal = () => {
-  const { isQuickOrderOpen, setIsQuickOrderOpen, quickOrderProduct, createOrder } = useShop();
+  const {
+    isQuickOrderOpen,
+    setIsQuickOrderOpen,
+    quickOrderProduct,
+    createOrder,
+    deliveryCharges,
+  } = useShop();
   const navigate = useNavigate();
 
   const [customerName, setCustomerName] = useState('');
@@ -12,6 +18,7 @@ const QuickOrderModal = () => {
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
   const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
   const [placedOrder, setPlacedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +29,17 @@ const QuickOrderModal = () => {
   const activeImage = currentVariant?.images?.[0] || product.variants?.[0]?.images?.[0] || product.image;
 
   const orderQuantity = quickOrderProduct.quantity || 1;
+
+  const activeDelivery =
+    deliveryCharges?.find((d) => d.id === selectedDeliveryId) ||
+    deliveryCharges?.[0] || {
+      id: 'inside-dhaka',
+      location: 'Inside Dhaka',
+      charge: 60,
+      estimatedDays: '1-2 Business Days',
+    };
+  const deliveryFee = activeDelivery.charge;
+  const totalAmount = product.price * orderQuantity + deliveryFee;
 
   const handleOrderSubmit = (e) => {
     e.preventDefault();
@@ -48,9 +66,10 @@ const QuickOrderModal = () => {
         phone,
         address,
         note,
+        deliveryLocation: activeDelivery.location,
       },
       itemsList: singleItem,
-      deliveryFee: address.toLowerCase().includes('dhaka') ? 60 : 60,
+      deliveryFee,
       paymentMethod: 'COD',
     });
 
@@ -65,6 +84,7 @@ const QuickOrderModal = () => {
     setPhone('');
     setAddress('');
     setNote('');
+    setSelectedDeliveryId('inside-dhaka');
   };
 
   return (
@@ -121,6 +141,12 @@ const QuickOrderModal = () => {
               <div className="flex justify-between">
                 <span className="text-gray-500">Courier Tracking:</span>
                 <span className="font-semibold text-actionRed">{placedOrder.courierData.trackingCode} ({placedOrder.courierData.provider})</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Delivery Zone:</span>
+                <span className="font-semibold text-slate-700">
+                  {placedOrder.customerDetails.deliveryLocation || activeDelivery.location} (৳{placedOrder.deliveryFee})
+                </span>
               </div>
               <div className="flex justify-between border-t border-gray-200 pt-1.5 font-black text-sm">
                 <span>Total Payable:</span>
@@ -252,6 +278,51 @@ const QuickOrderModal = () => {
                 />
               </div>
 
+              {/* Delivery Area Selection */}
+              <div>
+                <label className="block text-xs font-bold text-charcoal mb-1.5 flex items-center justify-between">
+                  <span>Delivery Destination *</span>
+                  <span className="text-[11px] text-primary font-medium">Select your area</span>
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  {(deliveryCharges || []).map((option) => {
+                    const isSelected = selectedDeliveryId === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => setSelectedDeliveryId(option.id)}
+                        className={`p-2.5 rounded-lg border text-left transition-all relative ${
+                          isSelected
+                            ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-2xs'
+                            : 'border-gray-200 bg-white hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span
+                            className={`text-xs font-bold ${
+                              isSelected ? 'text-primary' : 'text-charcoal'
+                            }`}
+                          >
+                            {option.location}
+                          </span>
+                          <span
+                            className={`text-xs font-black ${
+                              isSelected ? 'text-actionRed' : 'text-slate-700'
+                            }`}
+                          >
+                            ৳{option.charge}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-gray-500 block mt-0.5">
+                          {option.estimatedDays}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-charcoal mb-1">
                   Order Note (Optional)
@@ -273,12 +344,12 @@ const QuickOrderModal = () => {
                 <span className="font-bold text-charcoal">৳{(product.price * orderQuantity).toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>Home Delivery Fee</span>
-                <span className="font-bold text-charcoal">৳60</span>
+                <span>Home Delivery ({activeDelivery.location})</span>
+                <span className="font-bold text-charcoal">৳{deliveryFee}</span>
               </div>
               <div className="border-t border-gray-200 pt-2 flex justify-between font-black text-sm text-charcoal">
                 <span>Total Amount (Cash on Delivery)</span>
-                <span className="text-actionRed">৳{(product.price * orderQuantity + 60).toLocaleString()}</span>
+                <span className="text-actionRed">৳{totalAmount.toLocaleString()}</span>
               </div>
             </div>
 

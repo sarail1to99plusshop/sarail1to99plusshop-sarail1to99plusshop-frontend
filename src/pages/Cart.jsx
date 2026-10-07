@@ -5,7 +5,14 @@ import { FiArrowRight, FiPlus, FiMinus, FiTruck } from 'react-icons/fi';
 import { useShop } from '../context/ShopContext';
 
 const Cart = () => {
-  const { cartItems, removeFromCart, updateQuantity, clearCart, createOrder } = useShop();
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    createOrder,
+    deliveryCharges,
+  } = useShop();
   const navigate = useNavigate();
 
   const [customerName, setCustomerName] = useState('');
@@ -13,14 +20,24 @@ const Cart = () => {
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
   const [placedOrder, setPlacedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const activeDelivery =
+    deliveryCharges?.find((d) => d.id === selectedDeliveryId) ||
+    deliveryCharges?.[0] || {
+      id: 'inside-dhaka',
+      location: 'Inside Dhaka',
+      charge: 60,
+      estimatedDays: '1-2 Business Days',
+    };
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
-  const deliveryFee = cartItems.length > 0 ? 60 : 0;
+  const deliveryFee = cartItems.length > 0 ? activeDelivery.charge : 0;
   const total = subtotal + deliveryFee;
 
   const handleCheckoutSubmit = (e) => {
@@ -34,6 +51,7 @@ const Cart = () => {
         phone,
         address,
         note,
+        deliveryLocation: activeDelivery.location,
       },
       deliveryFee,
       paymentMethod,
@@ -94,6 +112,10 @@ const Cart = () => {
             <div className="flex justify-between">
               <span className="text-gray-500">Courier Partner:</span>
               <span className="font-bold text-actionRed">{placedOrder.courierData.provider} ({placedOrder.courierData.trackingCode})</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-gray-500">Delivery Zone:</span>
+              <span className="font-semibold text-charcoal">{placedOrder.customerDetails.deliveryLocation || activeDelivery.location} (৳{placedOrder.deliveryFee})</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Payment Mode:</span>
@@ -273,6 +295,51 @@ const Cart = () => {
                   />
                 </div>
 
+                {/* Delivery Area Selection */}
+                <div>
+                  <label className="block text-xs font-bold text-charcoal mb-1.5 flex items-center justify-between">
+                    <span>Delivery Destination *</span>
+                    <span className="text-[11px] text-primary font-medium">Choose delivery zone</span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {(deliveryCharges || []).map((option) => {
+                      const isSelected = selectedDeliveryId === option.id;
+                      return (
+                        <button
+                          key={option.id}
+                          type="button"
+                          onClick={() => setSelectedDeliveryId(option.id)}
+                          className={`p-2.5 rounded-lg border text-left transition-all ${
+                            isSelected
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-2xs'
+                              : 'border-gray-200 bg-white hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span
+                              className={`text-xs font-bold ${
+                                isSelected ? 'text-primary' : 'text-charcoal'
+                              }`}
+                            >
+                              {option.location}
+                            </span>
+                            <span
+                              className={`text-xs font-black ${
+                                isSelected ? 'text-actionRed' : 'text-slate-700'
+                              }`}
+                            >
+                              ৳{option.charge}
+                            </span>
+                          </div>
+                          <span className="text-[10px] text-gray-500 block mt-0.5">
+                            {option.estimatedDays}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 <div>
                   <label htmlFor="customer-note-field" className="block text-xs font-bold text-charcoal mb-1">
                     Order Note (Optional)
@@ -294,7 +361,7 @@ const Cart = () => {
                     <span className="font-bold text-charcoal">৳{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span>Home Delivery Fee (Steadfast)</span>
+                    <span>Home Delivery ({activeDelivery.location})</span>
                     <span className="font-bold text-charcoal">৳{deliveryFee}</span>
                   </div>
                   <div className="border-t border-gray-100 pt-2 flex justify-between text-sm font-black text-charcoal">

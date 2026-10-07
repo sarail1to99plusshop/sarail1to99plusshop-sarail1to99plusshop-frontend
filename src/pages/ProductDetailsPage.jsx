@@ -496,6 +496,26 @@ const ProductDetailsPage = () => {
               </div>
             </div>
 
+            {/* Delivery Charge Info Box */}
+            <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-lg text-xs space-y-1.5">
+              <div className="flex items-center gap-2 font-bold text-slate-800">
+                <Truck className="w-4 h-4 text-[#003D73]" />
+                <span>Delivery Charges:</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-[11px] pt-0.5">
+                <div className="bg-white p-2 rounded border border-slate-200/70 flex flex-col">
+                  <span className="font-bold text-[#0F172A]">Inside Dhaka</span>
+                  <span className="text-[#DE111E] font-extrabold text-xs">৳60</span>
+                  <span className="text-[10px] text-slate-400">1-2 Business Days</span>
+                </div>
+                <div className="bg-white p-2 rounded border border-slate-200/70 flex flex-col">
+                  <span className="font-bold text-[#0F172A]">Outside Dhaka</span>
+                  <span className="text-[#DE111E] font-extrabold text-xs">৳120</span>
+                  <span className="text-[10px] text-slate-400">2-4 Business Days</span>
+                </div>
+              </div>
+            </div>
+
             {/* Bottom Metadata: SKU, Category & Social Sharing */}
             <div className="pt-4 border-t border-slate-100 space-y-3">
               <div className="text-xs text-slate-500 flex items-center gap-4">
