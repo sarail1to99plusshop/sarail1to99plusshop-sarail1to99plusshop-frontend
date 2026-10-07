@@ -1,0 +1,58 @@
+[
+  {
+    "_id": {
+      "$oid": "6ac179335ff7b1545279002e"
+    },
+    "invoiceNumber": "SAR-261003-3994",
+    "customerDetails": {
+      "name": "Md. Al Saef Ratul",
+      "phone": "01867781018",
+      "address": "Dhaka,narsingdi",
+      "note": ""
+    },
+    "items": [
+      {
+        "product": {
+          "$oid": "6ac17295d401196628509671"
+        },
+        "title": "Granite Coating Non-Stick Fry Pan with Heat-Resistant Handle",
+        "price": 850,
+        "quantity": 1,
+        "_id": {
+          "$oid": "6ac179335ff7b1545279002f"
+        }
+      },
+      {
+        "product": {
+          "$oid": "6ac17295d401196628509672"
+        },
+        "title": "360° Rotating Spin Mop with Double-Drive Bucket",
+        "price": 990,
+        "quantity": 1,
+        "_id": {
+          "$oid": "6ac179335ff7b15452790030"
+        }
+      }
+    ],
+    "deliveryFee": 60,
+    "totalAmount": 1900,
+    "paymentMethod": "COD",
+    "orderStatus": "Shipped",
+    "courierData": {
+      "provider": "Steadfast",
+      "consignmentId": 521307,
+      "trackingCode": "SF19970475",
+      "trackingUrl": "https://steadfast.com.bd/t/SF19970475",
+      "shippedAt": {
+        "$date": "2026-10-03T23:14:20.892Z"
+      }
+    },
+    "createdAt": {
+      "$date": "2026-10-03T21:52:51.798Z"
+    },
+    "updatedAt": {
+      "$date": "2026-10-03T23:14:20.896Z"
+    }
+  }
+]
+

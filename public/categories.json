@@ -1,0 +1,42 @@
+[
+  {
+    "id": "kitchen",
+    "name": "Kitchen & Dining",
+    "count": 120
+  },
+  {
+    "id": "cleaning",
+    "name": "Cleaning & Hygiene",
+    "count": 85
+  },
+  {
+    "id": "baby-kids",
+    "name": "Baby & Kids",
+    "count": 94
+  },
+  {
+    "id": "beauty",
+    "name": "Beauty & Personal Care",
+    "count": 110
+  },
+  {
+    "id": "melamine-crockery",
+    "name": "Melamine & Crockery",
+    "count": 140
+  },
+  {
+    "id": "toys",
+    "name": "Toys & Games",
+    "count": 75
+  },
+  {
+    "id": "home-household",
+    "name": "Home & Household",
+    "count": 130
+  },
+  {
+    "id": "womens-fashion",
+    "name": "Women's Fashion & Accessories",
+    "count": 95
+  }
+]
