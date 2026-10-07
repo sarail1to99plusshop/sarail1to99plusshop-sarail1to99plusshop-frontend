@@ -30,19 +30,19 @@ const MobileDrawer = () => {
       <div className="relative w-4/5 max-w-sm bg-white h-full shadow-2xl flex flex-col overflow-y-auto animate-slideIn">
         
         {/* Drawer Header */}
-        <div className="p-4 bg-[#050914] text-white flex items-center justify-between border-b border-gray-800">
+        <div className="p-4 bg-primary text-white flex items-center justify-between border-b border-primary-dark">
           <div className="flex items-center gap-2">
             <img src={logoImg} alt="Logo" className="h-8 object-contain" />
             <div className="flex flex-col">
               <span className="font-bold text-base tracking-tight leading-tight">
                 SARAIL 1 TO 99+
               </span>
-              <span className="text-[9px] text-gray-400">Variety & Household Shop</span>
+              <span className="text-[9px] text-white/70">Variety & Household Shop</span>
             </div>
           </div>
           <button
             onClick={closeDrawer}
-            className="p-2 text-gray-300 hover:text-white rounded-full hover:bg-white/10"
+            className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10"
             aria-label="Close menu"
           >
             <FiX className="text-2xl" />
@@ -50,11 +50,11 @@ const MobileDrawer = () => {
         </div>
 
         {/* Action Highlights */}
-        <div className="p-4 bg-gray-50 border-b border-gray-200">
+        <div className="p-4 bg-slate-50 border-b border-slate-200">
           <Link
             to="/pre-order"
             onClick={closeDrawer}
-            className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-dark text-white text-xs font-bold py-2.5 px-4 rounded-md shadow-xs transition-colors"
+            className="w-full flex items-center justify-center gap-2 bg-actionRed hover:bg-actionRed-hover text-white text-xs font-bold py-2.5 px-4 rounded-lg shadow-xs transition-colors"
           >
             <BsBoxSeam />
             <span>Pre-Order & Special Requests</span>

@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { FiX, FiCheck, FiShoppingBag } from 'react-icons/fi';
+import { FiX, FiCheck, FiShoppingBag, FiUser, FiLock, FiMail, FiRefreshCw } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
+import { useAuth } from '../../context/AuthContext';
 
 const QuickOrderModal = () => {
   const {
@@ -11,8 +12,11 @@ const QuickOrderModal = () => {
     createOrder,
     deliveryCharges,
   } = useShop();
+  const { currentUser, sendVerificationEmail, reloadUser } = useAuth();
   const navigate = useNavigate();
 
+  const isVerified = Boolean(currentUser?.emailVerified);
+  const customerEmail = currentUser?.email || 'Please sign in to order';
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');
@@ -21,6 +25,53 @@ const QuickOrderModal = () => {
   const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
   const [placedOrder, setPlacedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [verificationStatus, setVerificationStatus] = useState('');
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  const activeName = customerName !== '' ? customerName : (currentUser?.displayName || '');
+
+  const handleResendVerification = async () => {
+    if (resendCooldown > 0) return;
+    setIsResending(true);
+    setVerificationStatus('');
+    try {
+      await sendVerificationEmail();
+      setVerificationStatus('Verification link sent! Please check your inbox or spam folder.');
+      setResendCooldown(60);
+      const timer = setInterval(() => {
+        setResendCooldown((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } catch (err) {
+      setVerificationStatus(err?.message || 'Failed to send verification email. Please try again.');
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  const handleCheckVerification = async () => {
+    setIsRefreshing(true);
+    setVerificationStatus('');
+    try {
+      const user = await reloadUser();
+      if (user?.emailVerified) {
+        setVerificationStatus('Email verified successfully! You can now place your order.');
+      } else {
+        setVerificationStatus('Not verified yet. Please click the verification link sent to your email.');
+      }
+    } catch {
+      setVerificationStatus('Unable to refresh verification status. Please check again.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   if (!isQuickOrderOpen || !quickOrderProduct) return null;
 
@@ -43,7 +94,16 @@ const QuickOrderModal = () => {
 
   const handleOrderSubmit = (e) => {
     e.preventDefault();
-    if (!customerName || !phone || !address) return;
+    if (!currentUser) {
+      handleClose();
+      navigate('/account');
+      return;
+    }
+    if (!isVerified) {
+      setVerificationStatus('Your account email must be verified before placing an order.');
+      return;
+    }
+    if (!activeName || !phone || !address) return;
 
     setLoading(true);
 
@@ -62,7 +122,8 @@ const QuickOrderModal = () => {
 
     const order = createOrder({
       customerDetails: {
-        name: customerName,
+        name: activeName,
+        email: customerEmail,
         phone,
         address,
         note,
@@ -137,6 +198,10 @@ const QuickOrderModal = () => {
               <div className="flex justify-between">
                 <span className="text-gray-500">Recipient:</span>
                 <span className="font-semibold">{placedOrder.customerDetails.name} ({placedOrder.customerDetails.phone})</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-500">Email:</span>
+                <span className="font-semibold text-slate-700">{placedOrder.customerDetails.email || customerEmail}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Courier Tracking:</span>
@@ -234,6 +299,97 @@ const QuickOrderModal = () => {
               </div>
             )}
 
+            {/* Login Required Notice if user is not authenticated */}
+            {!currentUser && (
+              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-lg text-left space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                    <FiUser className="text-base" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs sm:text-sm text-amber-900">
+                      Sign In Required to Place Order
+                    </h4>
+                    <p className="text-[11px] text-amber-800 leading-snug mt-0.5">
+                      You must be logged in to your account to place an order. Please sign in or create an account to proceed.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleClose();
+                    navigate('/account');
+                  }}
+                  className="w-full bg-primary hover:bg-primary-dark text-white text-xs font-bold py-2.5 px-3 rounded-md transition-colors shadow-2xs flex items-center justify-center gap-1.5"
+                >
+                  <FiLock className="text-xs" />
+                  <span>Login / Register to Continue</span>
+                </button>
+              </div>
+            )}
+
+            {/* Email Verification Required Alert if logged in but unverified */}
+            {currentUser && !isVerified && (
+              <div className="p-3.5 bg-amber-50 border border-amber-200 rounded-lg text-left space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-amber-100 text-amber-800 flex items-center justify-center shrink-0">
+                    <FiMail className="text-base" />
+                  </div>
+                  <div className="space-y-0.5">
+                    <h4 className="font-bold text-xs sm:text-sm text-amber-900">
+                      Email Verification Required
+                    </h4>
+                    <p className="text-[11px] text-amber-800 leading-snug">
+                      Your email address (<strong>{currentUser.email}</strong>) is not verified. Please verify your email before placing an order.
+                    </p>
+                  </div>
+                </div>
+
+                {verificationStatus && (
+                  <div
+                    className={`p-2.5 rounded-md text-[11px] font-semibold leading-relaxed ${
+                      verificationStatus.includes('successfully')
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        : 'bg-amber-100/90 text-amber-900 border border-amber-300'
+                    }`}
+                  >
+                    {verificationStatus}
+                  </div>
+                )}
+
+                <div className="flex flex-wrap items-center gap-2 pt-0.5">
+                  <button
+                    type="button"
+                    onClick={handleResendVerification}
+                    disabled={isResending || resendCooldown > 0}
+                    className="px-3 py-1.5 bg-[#003D73] hover:bg-[#002b52] text-white text-[11px] font-bold rounded-md transition-colors disabled:opacity-50 flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  >
+                    <FiMail className="text-xs" />
+                    <span>
+                      {isResending
+                        ? 'Sending...'
+                        : resendCooldown > 0
+                        ? `Wait (${resendCooldown}s)`
+                        : 'Resend Verification Email'}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleCheckVerification}
+                    disabled={isRefreshing}
+                    className="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-800 border border-slate-300 text-[11px] font-bold rounded-md transition-colors flex items-center gap-1.5 shadow-2xs cursor-pointer"
+                  >
+                    <FiRefreshCw
+                      className={`text-xs ${isRefreshing ? 'animate-spin text-[#003D73]' : ''}`}
+                    />
+                    <span>I Have Verified (Refresh)</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Customer Details Fields */}
             <div className="space-y-3 pt-1">
               <div>
@@ -243,10 +399,45 @@ const QuickOrderModal = () => {
                 <input
                   type="text"
                   required
-                  value={customerName}
+                  value={activeName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="e.g. Md. Al Saef Ratul"
                   className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2.5 rounded-md outline-none focus:border-primary"
+                />
+              </div>
+
+              {/* Customer Email Field (Readonly) */}
+              <div>
+                <label className="block text-xs font-bold text-charcoal mb-1 flex items-center justify-between">
+                  <span>Customer Email</span>
+                  {currentUser ? (
+                    isVerified ? (
+                      <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                        ✓ Verified
+                      </span>
+                    ) : (
+                      <span className="text-[10px] text-amber-800 font-bold bg-amber-100 border border-amber-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                        ⚠️ Unverified
+                      </span>
+                    )
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-normal">
+                      Account required
+                    </span>
+                  )}
+                </label>
+                <input
+                  type="email"
+                  readOnly
+                  value={customerEmail}
+                  className={`w-full border text-xs px-3.5 py-2.5 rounded-md outline-none cursor-not-allowed select-none font-medium ${
+                    currentUser
+                      ? isVerified
+                        ? 'bg-slate-100 border-slate-200 text-slate-700'
+                        : 'bg-amber-50/70 border-amber-200 text-amber-900'
+                      : 'bg-amber-50/70 border-amber-200 text-amber-800'
+                  }`}
+                  placeholder="customer@example.com"
                 />
               </div>
 
@@ -354,13 +545,42 @@ const QuickOrderModal = () => {
             </div>
 
             {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full bg-actionRed hover:bg-actionRed-hover text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-md disabled:opacity-50"
-            >
-              {loading ? 'Processing Order...' : 'Confirm Cash On Delivery Order'}
-            </button>
+            {!currentUser ? (
+              <button
+                type="button"
+                onClick={() => {
+                  handleClose();
+                  navigate('/account');
+                }}
+                className="w-full bg-primary hover:bg-primary-dark text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <FiLock className="text-sm" />
+                <span>Sign In to Place Order</span>
+              </button>
+            ) : !isVerified ? (
+              <button
+                type="button"
+                onClick={handleCheckVerification}
+                disabled={isRefreshing}
+                className="w-full bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                title="Please verify your email before placing an order"
+              >
+                <FiRefreshCw className={`text-sm ${isRefreshing ? 'animate-spin' : ''}`} />
+                <span>
+                  {isRefreshing
+                    ? 'Checking Verification Status...'
+                    : 'Verify Email to Place Order (Click to Refresh)'}
+                </span>
+              </button>
+            ) : (
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-actionRed hover:bg-actionRed-hover text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-md disabled:opacity-50 cursor-pointer"
+              >
+                {loading ? 'Processing Order...' : 'Confirm Cash On Delivery Order'}
+              </button>
+            )}
 
           </form>
         )}

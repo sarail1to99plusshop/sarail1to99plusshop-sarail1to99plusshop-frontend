@@ -5,7 +5,7 @@ import { TbTruckDelivery } from 'react-icons/tb';
 
 const TopBar = () => {
   return (
-    <div className="bg-white border-b border-gray-200 text-xs text-gray-700 py-1.5 px-4">
+    <div className="bg-slate-50 border-b border-slate-200/90 text-xs text-slate-600 py-1.5 px-4 transition-colors">
       <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
         {/* Left: Social Media Circles */}
         <div className="flex items-center space-x-2">
@@ -14,7 +14,7 @@ const TopBar = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Facebook"
-            className="w-6 h-6 rounded-full bg-[#3B5998] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-xs"
+            className="w-6 h-6 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaFacebookF className="text-[11px]" />
           </a>
@@ -23,7 +23,7 @@ const TopBar = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Instagram"
-            className="w-6 h-6 rounded-full bg-[#6B1D2F] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-xs"
+            className="w-6 h-6 rounded-full bg-[#E1306C] text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaInstagram className="text-[12px]" />
           </a>
@@ -32,7 +32,7 @@ const TopBar = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="YouTube"
-            className="w-6 h-6 rounded-full bg-[#CD201F] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-xs"
+            className="w-6 h-6 rounded-full bg-[#FF0000] text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaYoutube className="text-[11px]" />
           </a>
@@ -41,39 +41,39 @@ const TopBar = () => {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="WhatsApp"
-            className="w-6 h-6 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-opacity shadow-xs"
+            className="w-6 h-6 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaWhatsapp className="text-[13px]" />
           </a>
         </div>
 
         {/* Right: Contact & Track Order */}
-        <div className="flex items-center space-x-3 text-gray-700 text-[11px] sm:text-xs">
+        <div className="flex items-center space-x-3 text-slate-600 text-[11px] sm:text-xs">
           <a
             href="tel:01970605584"
-            className="flex items-center gap-1.5 hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 hover:text-primary transition-colors font-medium"
           >
-            <FaPhoneAlt className="text-gray-600 text-[10px]" />
-            <span className="font-medium tracking-tight">01970-605584</span>
+            <FaPhoneAlt className="text-primary text-[10px]" />
+            <span className="tracking-tight">01970-605584</span>
           </a>
 
-          <span className="text-gray-300">|</span>
+          <span className="text-slate-300">|</span>
 
           <a
             href="mailto:support@sarail1to99plus.com"
-            className="flex items-center gap-1.5 hover:text-primary transition-colors"
+            className="flex items-center gap-1.5 hover:text-primary transition-colors font-medium"
           >
-            <HiOutlineMail className="text-gray-600 text-sm" />
+            <HiOutlineMail className="text-primary text-sm" />
             <span>support@sarail1to99plus.com</span>
           </a>
 
-          <span className="text-gray-300">|</span>
+          <span className="text-slate-300">|</span>
 
           <Link
             to="/track-order"
-            className="flex items-center gap-1.5 font-semibold text-gray-800 hover:text-actionRed transition-colors tracking-wider"
+            className="flex items-center gap-1.5 font-bold text-charcoal hover:text-actionRed transition-colors tracking-wider"
           >
-            <TbTruckDelivery className="text-base text-gray-700" />
+            <TbTruckDelivery className="text-base text-actionRed" />
             <span>TRACK ORDER</span>
           </Link>
         </div>
@@ -83,4 +83,5 @@ const TopBar = () => {
 };
 
 export default TopBar;
+
 
