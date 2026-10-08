@@ -115,6 +115,45 @@ const ProductDetailsPage = () => {
     };
   }, [id]);
 
+  // Update document title and Open Graph meta tags dynamically
+  useEffect(() => {
+    if (!product?.name) return;
+
+    const pageTitle = `${product.name} - ৳${product.price} | Sarail 1 to 99 Plus Shop`;
+    document.title = pageTitle;
+
+    const setMetaTag = (selector, attribute, value) => {
+      let element = document.querySelector(selector);
+      if (!element) {
+        element = document.createElement('meta');
+        const [attrName, attrVal] = selector.replace(/[meta[\]"]/g, '').split('=');
+        element.setAttribute(attrName, attrVal);
+        document.head.appendChild(element);
+      }
+      element.setAttribute(attribute, value);
+    };
+
+    const imageUrl =
+      product.thumbnail ||
+      product.variants?.[0]?.images?.[0] ||
+      'https://i.ibb.co.com/q3kcHV8G/Gemini-Generated-Image-yw9arcyw9arcyw9a.png';
+    const description =
+      product.description ||
+      `Buy ${product.name} for ৳${product.price} at Sarail 1 to 99 Plus Shop. Fast Cash on Delivery across Bangladesh.`;
+
+    setMetaTag('meta[property="og:title"]', 'content', pageTitle);
+    setMetaTag('meta[property="og:description"]', 'content', description);
+    setMetaTag('meta[property="og:image"]', 'content', imageUrl);
+    setMetaTag('meta[property="og:url"]', 'content', window.location.href);
+    setMetaTag('meta[name="twitter:title"]', 'content', pageTitle);
+    setMetaTag('meta[name="twitter:description"]', 'content', description);
+    setMetaTag('meta[name="twitter:image"]', 'content', imageUrl);
+
+    return () => {
+      document.title = 'Sarail 1 to 99 Plus Shop - Best Household, Kitchen & Daily Deals';
+    };
+  }, [product]);
+
   // Active variant
   const activeVariant = selectedVariant || product?.variants?.[0] || null;
 
