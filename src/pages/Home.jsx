@@ -4,6 +4,7 @@ import { BsBoxSeam } from 'react-icons/bs';
 import { sampleProducts, categoriesList } from '../data/mockData';
 import ProductCard from '../components/common/ProductCard';
 import HeroCarousel from '../components/common/HeroCarousel';
+import MessengerChatButton from '../components/common/MessengerChatButton';
 
 const Home = () => {
   const hotOffers = sampleProducts
@@ -225,6 +226,9 @@ const Home = () => {
           ))}
         </div>
       </section>
+
+      {/* Floating Facebook Messenger Chat Widget (Home page only) */}
+      <MessengerChatButton />
 
     </div>
   );
