@@ -80,12 +80,9 @@ const MobileDrawer = () => {
                   key={cat.id}
                   to={`/shop?category=${cat.id}`}
                   onClick={closeDrawer}
-                  className="flex items-center justify-between px-6 py-2.5 text-xs font-medium text-gray-700 hover:text-actionRed hover:bg-gray-50 border-b border-gray-50 transition-colors"
+                  className="block px-6 py-2.5 text-xs font-medium text-charcoal hover:text-actionRed hover:bg-gray-50 border-b border-gray-50 transition-colors"
                 >
-                  <span className="font-medium text-charcoal hover:text-actionRed">
-                    {cat.name}
-                  </span>
-                  <span className="text-[10px] text-gray-400">{cat.count} items</span>
+                  {cat.name}
                 </Link>
               ))}
             </div>
@@ -151,7 +148,7 @@ const MobileDrawer = () => {
             </NavLink>
 
             <NavLink
-              to="/brands"
+              to="/about"
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
@@ -159,7 +156,7 @@ const MobileDrawer = () => {
                 }`
               }
             >
-              <span>BRANDS</span>
+              <span>ABOUT US</span>
               <FiChevronRight className="text-gray-400 text-xs" />
             </NavLink>
 
@@ -180,7 +177,7 @@ const MobileDrawer = () => {
             </NavLink>
 
             <NavLink
-              to="/blog"
+              to="/contact"
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
@@ -188,7 +185,7 @@ const MobileDrawer = () => {
                 }`
               }
             >
-              <span>BLOG</span>
+              <span>CONTACT</span>
               <FiChevronRight className="text-gray-400 text-xs" />
             </NavLink>
 

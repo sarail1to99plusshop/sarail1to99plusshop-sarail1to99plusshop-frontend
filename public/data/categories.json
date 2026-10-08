@@ -1,42 +1,34 @@
 [
   {
     "id": "kitchen",
-    "name": "Kitchen & Dining",
-    "count": 120
+    "name": "Kitchen & Dining"
   },
   {
     "id": "cleaning",
-    "name": "Cleaning & Hygiene",
-    "count": 85
+    "name": "Cleaning & Hygiene"
   },
   {
     "id": "baby-kids",
-    "name": "Baby & Kids",
-    "count": 94
+    "name": "Baby & Kids"
   },
   {
     "id": "beauty",
-    "name": "Beauty & Personal Care",
-    "count": 110
+    "name": "Beauty & Personal Care"
   },
   {
     "id": "melamine-crockery",
-    "name": "Melamine & Crockery",
-    "count": 140
+    "name": "Melamine & Crockery"
   },
   {
     "id": "toys",
-    "name": "Toys & Games",
-    "count": 75
+    "name": "Toys & Games"
   },
   {
     "id": "home-household",
-    "name": "Home & Household",
-    "count": 130
+    "name": "Home & Household"
   },
   {
     "id": "womens-fashion",
-    "name": "Women's Fashion & Accessories",
-    "count": 95
+    "name": "Women's Fashion & Accessories"
   }
 ]

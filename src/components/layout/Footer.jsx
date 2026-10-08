@@ -210,8 +210,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/brands" className="hover:text-actionRed transition-colors">
-                  Popular Brands
+                <Link to="/about" className="hover:text-actionRed transition-colors">
+                  About Us
                 </Link>
               </li>
               <li>
@@ -220,8 +220,8 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/blog" className="hover:text-actionRed transition-colors">
-                  Latest Blog Posts
+                <Link to="/contact" className="hover:text-actionRed transition-colors">
+                  Contact Us
                 </Link>
               </li>
             </ul>

@@ -293,6 +293,16 @@ const ProductDetailsPage = () => {
           
           {/* LEFT CARD: Vertical Thumbnails + Main Image Preview + Watch Video */}
           <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200/80 p-6 relative flex flex-col justify-between shadow-2xs">
+            {/* Tag Badge on Top-Left */}
+            {product.tag && (
+              <Link
+                to={`/shop?tag=${encodeURIComponent(product.tag)}`}
+                className="absolute top-4 left-4 bg-[#003D73] hover:bg-[#002b52] text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-2xs uppercase tracking-wider transition-colors"
+              >
+                ★ {product.tag}
+              </Link>
+            )}
+
             {/* Discount Badge on Top-Right */}
             {product.discount && (
               <span className="absolute top-4 right-4 bg-[#DE111E] text-white text-xs font-bold px-2.5 py-0.5 rounded-full z-10 shadow-2xs">
@@ -355,11 +365,25 @@ const ProductDetailsPage = () => {
           {/* RIGHT CARD: Product Details, Color Swatches, Quantity & Dual CTAs */}
           <div className="lg:col-span-6 bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 flex flex-col justify-between shadow-2xs space-y-4">
             <div className="space-y-4">
-              {/* Brand Logo Badge */}
-              <div className="inline-block">
-                <span className="inline-flex items-center justify-center px-3 py-1 rounded-lg bg-amber-400 font-black text-xs text-[#0F172A] tracking-wider shadow-2xs">
-                  {product.category || 'SARAIL'}
-                </span>
+              {/* Product Badges (Tag & Category) */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {product.tag && (
+                  <Link
+                    to={`/shop?tag=${encodeURIComponent(product.tag)}`}
+                    className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-amber-400 hover:bg-amber-500 text-[#0F172A] font-black text-xs uppercase tracking-wider shadow-2xs transition-colors"
+                  >
+                    <span>★</span>
+                    <span>{product.tag}</span>
+                  </Link>
+                )}
+                {product.category && (
+                  <Link
+                    to={`/shop?category=${encodeURIComponent(product.category.toLowerCase().replace(/[\s&]+/g, '-'))}`}
+                    className="inline-flex items-center px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs capitalize tracking-wide transition-colors"
+                  >
+                    {product.category.replace(/-/g, ' ')}
+                  </Link>
+                )}
               </div>
 
               {/* Product Title */}

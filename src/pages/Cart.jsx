@@ -152,6 +152,50 @@ const Cart = () => {
             Your invoice has been created and will be handed over to Steadfast courier.
           </p>
 
+          {/* Ordered Products Breakdown */}
+          <div className="bg-gray-50 rounded-lg p-4 text-left text-xs space-y-2 border border-gray-200">
+            <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider block border-b border-gray-200 pb-1.5">
+              Ordered Package Items ({placedOrder.items?.length || 0})
+            </span>
+            <div className="space-y-2">
+              {placedOrder.items?.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-3 bg-white p-2.5 rounded-md border border-gray-100">
+                  {item.image && (
+                    <img
+                      src={item.image}
+                      alt={item.title}
+                      className="w-12 h-12 object-cover rounded-md border border-gray-200 bg-white shrink-0"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="font-bold text-xs text-charcoal line-clamp-1">
+                      {item.title}
+                    </h4>
+                    <div className="flex flex-wrap items-center gap-2 mt-0.5">
+                      {item.color && (
+                        <span className="inline-flex items-center gap-1 text-[10px] text-gray-600 bg-gray-100 px-2 py-0.5 rounded font-medium">
+                          {item.colorCode && (
+                            <span
+                              className="w-2 h-2 rounded-full border border-gray-300"
+                              style={{ backgroundColor: item.colorCode }}
+                            />
+                          )}
+                          <span>Color: <strong>{item.color}</strong></span>
+                        </span>
+                      )}
+                      <span className="text-[10px] text-gray-500">
+                        Qty: <strong>{item.quantity}</strong>
+                      </span>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black text-actionRed shrink-0">
+                    ৳{(item.price * item.quantity).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div className="bg-gray-50 rounded-lg p-5 text-left text-xs space-y-2.5 border border-gray-200">
             <div className="flex justify-between border-b border-gray-200 pb-2">
               <span className="font-bold text-gray-500">Invoice Number:</span>

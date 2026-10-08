@@ -6,9 +6,32 @@ import ProductCard from '../components/common/ProductCard';
 import HeroCarousel from '../components/common/HeroCarousel';
 
 const Home = () => {
-  const hotOffers = sampleProducts.filter((p) => p.discount).slice(0, 4);
-  const bestSellers = sampleProducts.slice(0, 4);
-  const newArrivals = sampleProducts.slice(4, 8);
+  const hotOffers = sampleProducts
+    .filter(
+      (p) =>
+        p.discount ||
+        p.tag?.toLowerCase().includes('hot') ||
+        p.tag?.toLowerCase().includes('deal')
+    )
+    .slice(0, 4);
+
+  const bestSellers = sampleProducts
+    .filter(
+      (p) =>
+        p.tag?.toLowerCase().includes('best') ||
+        p.tag?.toLowerCase().includes('popular') ||
+        p.tag?.toLowerCase().includes('top')
+    )
+    .slice(0, 4);
+
+  const newArrivals = sampleProducts
+    .filter(
+      (p) =>
+        p.tag?.toLowerCase().includes('trending') ||
+        p.tag?.toLowerCase().includes('essential') ||
+        p.tag?.toLowerCase().includes('special')
+    )
+    .slice(0, 4);
 
   return (
     <div className="w-full pb-16 space-y-10">
@@ -86,14 +109,11 @@ const Home = () => {
             <Link
               key={cat.id}
               to={`/shop?category=${cat.id}`}
-              className="bg-white border border-gray-200 hover:border-primary rounded-lg p-3.5 text-center shadow-2xs hover:shadow-md transition-all duration-200 group flex flex-col items-center justify-center min-h-[90px]"
+              className="bg-white border border-gray-200 hover:border-primary rounded-lg p-3 text-center shadow-2xs hover:shadow-md transition-all duration-200 group flex flex-col items-center justify-center min-h-[72px]"
             >
               <h3 className="font-bold text-xs text-charcoal group-hover:text-primary transition-colors text-center line-clamp-2 leading-snug">
                 {cat.name}
               </h3>
-              <span className="text-[10px] font-semibold text-gray-400 group-hover:text-actionRed mt-2 transition-colors">
-                {cat.count}+ items
-              </span>
             </Link>
           ))}
         </div>
@@ -124,7 +144,7 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {hotOffers.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -149,7 +169,7 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {bestSellers.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
@@ -199,7 +219,7 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {newArrivals.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}

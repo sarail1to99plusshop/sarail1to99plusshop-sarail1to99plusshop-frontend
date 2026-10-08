@@ -4,9 +4,9 @@ import Home from '../pages/Home';
 import Shop from '../pages/Shop';
 import BestSelling from '../pages/BestSelling';
 import NewArrivals from '../pages/NewArrivals';
-import Brands from '../pages/Brands';
+import About from '../pages/About';
 import HotOffers from '../pages/HotOffers';
-import Blog from '../pages/Blog';
+import Contact from '../pages/Contact';
 import TrackOrder from '../pages/TrackOrder';
 import Cart from '../pages/Cart';
 import PreOrder from '../pages/PreOrder';
@@ -24,9 +24,11 @@ const AppRoutes = () => {
         <Route path="product-details/:id" element={<ProductDetailsPage />} />
         <Route path="best-selling" element={<BestSelling />} />
         <Route path="new-arrivals" element={<NewArrivals />} />
-        <Route path="brands" element={<Brands />} />
+        <Route path="about" element={<About />} />
+        <Route path="brands" element={<Navigate to="/about" replace />} />
         <Route path="hot-offers" element={<HotOffers />} />
-        <Route path="blog" element={<Blog />} />
+        <Route path="contact" element={<Contact />} />
+        <Route path="blog" element={<Navigate to="/contact" replace />} />
         <Route path="track-order" element={<TrackOrder />} />
         <Route path="cart" element={<Cart />} />
         <Route path="pre-order" element={<PreOrder />} />

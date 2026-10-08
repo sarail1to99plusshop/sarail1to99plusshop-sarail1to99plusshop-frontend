@@ -104,11 +104,7 @@ const BottomNav = () => {
             NEW ARRIVALS
           </NavLink>
 
-          <span className="text-slate-200 select-none font-light">|</span>
-
-          <NavLink to="/brands" className={navItemClass}>
-            BRANDS
-          </NavLink>
+       
 
           <span className="text-slate-200 select-none font-light">|</span>
 
@@ -126,10 +122,16 @@ const BottomNav = () => {
             <span>HOT OFFER</span>
           </NavLink>
 
+             <span className="text-slate-200 select-none font-light">|</span>
+
+          <NavLink to="/about" className={navItemClass}>
+            ABOUT US
+          </NavLink>
+
           <span className="text-slate-200 select-none font-light">|</span>
 
-          <NavLink to="/blog" className={navItemClass}>
-            BLOG
+          <NavLink to="/contact" className={navItemClass}>
+            CONTACT
           </NavLink>
         </nav>
 

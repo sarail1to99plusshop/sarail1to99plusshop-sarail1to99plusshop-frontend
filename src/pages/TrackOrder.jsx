@@ -24,11 +24,17 @@ const TrackOrder = () => {
         title: 'Granite Coating Non-Stick Fry Pan (24cm)',
         price: 850,
         quantity: 1,
+        color: 'Granite Black',
+        colorCode: '#2B2B2B',
+        image: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80',
       },
       {
         title: '360° Rotating Spin Mop with Bucket',
         price: 990,
         quantity: 1,
+        color: 'Sky Blue',
+        colorCode: '#0284C7',
+        image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&auto=format&fit=crop&q=80',
       },
     ],
     deliveryFee: 60,
@@ -202,9 +208,33 @@ const TrackOrder = () => {
             </h4>
             <div className="divide-y divide-gray-100 border border-gray-100 rounded-lg overflow-hidden">
               {trackingResult.items.map((item, idx) => (
-                <div key={idx} className="p-3 flex items-center justify-between text-xs bg-white">
-                  <span className="font-medium text-charcoal">{item.title}</span>
-                  <div className="text-right">
+                <div key={idx} className="p-3 flex items-center justify-between text-xs bg-white gap-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    {item.image && (
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="w-11 h-11 object-cover rounded-md border border-gray-100 bg-gray-50 shrink-0"
+                      />
+                    )}
+                    <div className="min-w-0">
+                      <p className="font-semibold text-charcoal line-clamp-1">{item.title}</p>
+                      {(item.color || item.selectedVariant?.colorName) && (
+                        <div className="flex items-center gap-1.5 mt-0.5">
+                          {(item.colorCode || item.selectedVariant?.colorCode) && (
+                            <span
+                              className="w-2 h-2 rounded-full border border-gray-300 shrink-0"
+                              style={{ backgroundColor: item.colorCode || item.selectedVariant?.colorCode }}
+                            />
+                          )}
+                          <span className="text-[11px] text-gray-500">
+                            Color: <strong className="text-gray-700">{item.color || item.selectedVariant?.colorName}</strong>
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
                     <span className="text-gray-400 mr-2">Qty: {item.quantity}</span>
                     <span className="font-bold text-actionRed">৳{(item.price * item.quantity).toLocaleString()}</span>
                   </div>
