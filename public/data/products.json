@@ -2,45 +2,25 @@
   {
     "id": 1,
     "_id": {
-      "$oid": "6ac17295d401196628509671"
+      "$oid": "6ac17295d401196628509672"
     },
-    "name": "Granite Coating Non-Stick Fry Pan with Heat-Resistant Wooden Handle (24cm)",
-    "price": 850,
-    "oldPrice": 1150,
-    "discount": "-26%",
+    "name": "ট্যাপ ওয়াটার ফিল্টার - 360° রোটেটিং কিচেন কল ফিল্টার",
+    "price": 150,
+    "oldPrice": 200,
+    "discount": "-25%",
     "category": "kitchen",
     "rating": 5,
-    "reviews": 78,
-    "tag": "Best Seller",
-    "stock": 45,
-    "thumbnail": "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80",
-    "description": "PFOA-free granite cookware suitable for gas and induction stove, non-stick scratch resistant surface.",
+    "reviews": 34,
+    "tag": "Daily Essential",
+    "stock": 50,
+    "thumbnail": "https://i.ibb.co.com/q3kcHV8G/Gemini-Generated-Image-yw9arcyw9arcyw9a.png",
+    "description": "সহজেই কিচেনের যেকোনো পানির কলে সেট করা যায়। পানি পরিষ্কার ও ব্যাকটেরিয়ামুক্ত রাখতে কার্যকর এবং পানির অপচয় রোধ করে।",
     "variants": [
       {
-        "colorName": "Granite Black",
-        "colorCode": "#1F2421",
+        "colorName": "Standard",
+        "colorCode": "#3B82F6",
         "images": [
-          "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584990347449-3a36db5657ef?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Slate Gray",
-        "colorCode": "#64748B",
-        "images": [
-          "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600519-112d071b35e6?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1585515320310-259814833e62?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Emerald Green",
-        "colorCode": "#0F5132",
-        "images": [
-          "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/q3kcHV8G/Gemini-Generated-Image-yw9arcyw9arcyw9a.png"
         ]
       }
     ]
@@ -48,400 +28,209 @@
   {
     "id": 2,
     "_id": {
-      "$oid": "6ac17295d401196628509672"
+      "$oid": "6ac17295d401196628509673"
     },
-    "name": "360° Rotating Spin Mop with Double-Drive Stainless Steel Dehydration Bucket",
-    "price": 990,
-    "oldPrice": 1350,
-    "discount": "-27%",
-    "category": "cleaning",
+    "name": "ফ্রিজ ম্যাট ৪ পিস সেট - অ্যান্টি-ব্যাকটেরিয়াল ও ওয়াশেবল",
+    "price": 180,
+    "oldPrice": 250,
+    "discount": "-28%",
+    "category": "kitchen",
     "rating": 5,
-    "reviews": 64,
+    "reviews": 48,
     "tag": "Popular",
-    "stock": 38,
-    "description": "Easy wringing bucket with 2 absorbent microfiber mop heads for effortless floor cleaning.",
+    "stock": 40,
+    "thumbnail": "https://i.ibb.co.com/xSJwWdwQ/Gemini-Generated-Image-vdrcxhvdrcxhvdrc.png",
+    "description": "উন্নত মানের ওয়াটারপ্রুফ এবং ইজি-টু-ক্লিন ফ্রিজ ম্যাট সেট। ফ্রিজের তাকে দাগ ও ময়লা পড়া থেকে রক্ষা করে এবং পরিষ্কার রাখা সহজ করে।",
     "variants": [
       {
-        "colorName": "Sky Blue",
-        "colorCode": "#0284C7",
-        "inStock": true,
+        "colorName": "White",
+        "colorCode": "#FFFFFF",
         "images": [
-          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Vibrant Red",
-        "colorCode": "#DE111E",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/xSJwWdwQ/Gemini-Generated-Image-vdrcxhvdrcxhvdrc.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 3,
     "_id": {
-      "$oid": "6ac17295d401196628509673"
+      "$oid": "6ac17295d401196628509674"
     },
-    "name": "Premium Melamine Floral Dinner Set (32 Pieces Complete Dining Service)",
-    "price": 2450,
-    "oldPrice": 3200,
-    "discount": "-23%",
-    "category": "melamine-crockery",
+    "name": "হেভি ডিউটি কিচেন ক্লিনার স্প্রে - অয়েল ও গ্রীস রিমুভার",
+    "price": 280,
+    "oldPrice": 350,
+    "discount": "-20%",
+    "category": "cleaning",
     "rating": 5,
-    "reviews": 92,
-    "tag": "Top Rated",
-    "stock": 25,
-    "description": "Unbreakable 100% pure food-grade melamine dinnerware with scratch-resistant elegant floral prints.",
+    "reviews": 62,
+    "tag": "Hot Deal",
+    "stock": 35,
+    "thumbnail": "https://i.ibb.co.com/xr6RV9z/Gemini-Generated-Image-afimo4afimo4afim.png",
+    "description": "রান্নাঘরের তেলচিটে ও জেদি ময়লা নিমিষেই পরিষ্কার করতে অত্যন্ত কার্যকরী পাওয়ারফুল ক্লিনার। চুলা, সিঙ্ক ও কিচেন টাইলসের জন্য উপযুক্ত।",
     "variants": [
       {
-        "colorName": "Royal Rose White",
-        "colorCode": "#F8FAFC",
-        "inStock": true,
+        "colorName": "Standard",
+        "colorCode": "#F59E0B",
         "images": [
-          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Golden Bloom",
-        "colorCode": "#FDE047",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/xr6RV9z/Gemini-Generated-Image-afimo4afimo4afim.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1610701596007-11502861dcfa?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 4,
     "_id": {
-      "$oid": "6ac17295d401196628509674"
+      "$oid": "6ac17295d401196628509675"
     },
-    "name": "Multi-Functional Manual Vegetable Chopper & Onion Slicer with 6 Blades",
-    "price": 490,
-    "oldPrice": 650,
+    "name": "টয়লেট ফ্লাশ ক্লিনার ট্যাবলেট - ডিওডোরাইজার ও ডিসইনফেক্টেন্ট",
+    "price": 180,
+    "oldPrice": 240,
     "discount": "-25%",
-    "category": "kitchen",
-    "rating": 4,
-    "reviews": 115,
-    "tag": "Hot Deal",
+    "category": "cleaning",
+    "rating": 5,
+    "reviews": 55,
+    "tag": "Best Seller",
     "stock": 60,
-    "description": "High-grade stainless steel blades with catch tray for quick dicing, slicing, and julienning.",
+    "thumbnail": "https://i.ibb.co.com/9mHWNsmy/Gemini-Generated-Image-9mjmi59mjmi59mjm.png",
+    "description": "কমোডে সুগন্ধি ও দীর্ঘস্থায়ী পরিচ্ছন্নতা বজায় রাখে। প্রতিটি ফ্লাশে জীবাণু ধ্বংস করে এবং দুর্গন্ধ দূর করতে সাহায্য করে।",
     "variants": [
       {
-        "colorName": "Apple Green",
-        "colorCode": "#16A34A",
-        "inStock": true,
+        "colorName": "Blue",
+        "colorCode": "#2563EB",
         "images": [
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Ash Gray",
-        "colorCode": "#64748B",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/9mHWNsmy/Gemini-Generated-Image-9mjmi59mjmi59mjm.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 5,
     "_id": {
-      "$oid": "6ac17295d401196628509675"
+      "$oid": "6ac17295d401196628509676"
     },
-    "name": "Electric 5-in-1 Facial Cleanser Massager & Exfoliating Face Brush",
-    "price": 380,
-    "oldPrice": 550,
-    "discount": "-30%",
-    "category": "beauty",
+    "name": "প্রিমিয়াম মেলামাইন জগ (২.২ লিটার রাউন্ড শেপ)",
+    "price": 320,
+    "oldPrice": 380,
+    "discount": "-16%",
+    "category": "kitchen",
     "rating": 5,
-    "reviews": 84,
-    "tag": "Trending",
-    "stock": 52,
-    "description": "Includes 5 interchangeable heads for deep pore cleansing, gentle massage, and dead skin removal.",
+    "reviews": 29,
+    "tag": "Discount",
+    "stock": 25,
+    "thumbnail": "https://i.ibb.co.com/Z1L7hS32/Gemini-Generated-Image-3gqhtl3gqhtl3gqh.png",
+    "description": "টেকসই ও আকর্ষণীয় ডিজাইনের ২.২ লিটার ফুড-গ্রেড মেলামাইন পানির জগ। দৈনন্দিন ব্যবহার ও মেহমানদারির জন্য উপযুক্ত।",
     "variants": [
       {
-        "colorName": "Baby Pink",
-        "colorCode": "#F472B6",
-        "inStock": true,
+        "colorName": "Classic White",
+        "colorCode": "#F1F5F9",
         "images": [
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Snow White",
-        "colorCode": "#FFFFFF",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/Z1L7hS32/Gemini-Generated-Image-3gqhtl3gqhtl3gqh.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 6,
     "_id": {
-      "$oid": "6ac17295d401196628509676"
+      "$oid": "6ac17295d401196628509677"
     },
-    "name": "Rechargeable High-Speed 4WD Stunt RC Car with 360° Flips & LED Lights",
-    "price": 1250,
-    "oldPrice": 1650,
-    "discount": "-24%",
-    "category": "toys",
+    "name": "Smart Scalp Massager - ইলেকট্রিক হেড ম্যাসাজার",
+    "price": 580,
+    "oldPrice": 750,
+    "discount": "-23%",
+    "category": "beauty & personal care",
     "rating": 5,
-    "reviews": 53,
-    "tag": "Kids Favorite",
-    "stock": 30,
-    "description": "All-terrain double-sided tumbling stunt vehicle with USB rechargeable battery and remote controller.",
+    "reviews": 41,
+    "tag": "Trending",
+    "stock": 20,
+    "thumbnail": "https://i.ibb.co.com/9mHWNsmy/Gemini-Generated-Image-9mjmi59mjmi59mjm.png",
+    "description": "মাথার রক্ত সঞ্চালন বৃদ্ধি ও মানসিক ক্লান্তি দূর করতে স্মার্ট স্কাল্প ম্যাসাজার। চুল পড়া কমাতে ও আরামদায়ক ঘুমের জন্য সহায়ক।",
     "variants": [
       {
-        "colorName": "Racing Blue",
-        "colorCode": "#2563EB",
-        "inStock": true,
+        "colorName": "White",
+        "colorCode": "#FFFFFF",
         "images": [
-          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Fiery Red",
-        "colorCode": "#DC2626",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/9mHWNsmy/Gemini-Generated-Image-9mjmi59mjmi59mjm.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 7,
     "_id": {
-      "$oid": "6ac17295d401196628509677"
+      "$oid": "6ac17295d401196628509678"
     },
-    "name": "Foldable Non-Woven Wardrobe Clothes Organizer Box with Steel Frame (66L)",
-    "price": 550,
-    "oldPrice": 750,
-    "discount": "-27%",
-    "category": "home-household",
-    "rating": 4,
-    "reviews": 96,
-    "tag": "Storage",
-    "stock": 80,
-    "description": "Durable moisture-proof Oxford cloth with dual-zipper access and clear viewing window.",
+    "name": "আইস ফেইস রোলার - স্কিন গ্লো অ্যান্ড পাফিনেস রিমুভার",
+    "price": 150,
+    "oldPrice": 220,
+    "discount": "-32%",
+    "category": "beauty & personal care",
+    "rating": 5,
+    "reviews": 87,
+    "tag": "Top Rated",
+    "stock": 45,
+    "thumbnail": "https://i.ibb.co.com/KjhszVFt/Gemini-Generated-Image-nm9icunm9icunm9i.png",
+    "description": "মুখের ফোলাভাব দূর করতে এবং ত্বক টানটান ও উজ্জ্বল রাখতে সিলিকন আইস ফেস রোলার। ব্রণ ও ডার্ক সার্কেল কমাতে সহায়ক।",
     "variants": [
       {
-        "colorName": "Steel Navy",
-        "colorCode": "#003D73",
-        "inStock": true,
+        "colorName": "Pink",
+        "colorCode": "#F472B6",
         "images": [
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Charcoal Black",
-        "colorCode": "#0F172A",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/KjhszVFt/Gemini-Generated-Image-nm9icunm9icunm9i.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 8,
     "_id": {
-      "$oid": "6ac17295d401196628509678"
+      "$oid": "6ac17295d401196628509679"
     },
-    "name": "Women Stylish PU Leather Crossbody Sling Bag with Golden Chain Strap",
-    "price": 790,
-    "oldPrice": 1100,
-    "discount": "-28%",
-    "category": "womens-fashion",
+    "name": "মেলামাইন ৯ ইঞ্চি স্যুপ প্লেট - ব্রেক রেজিস্ট্যান্ট",
+    "price": 90,
+    "oldPrice": 110,
+    "discount": "-18%",
+    "category": "kitchen",
     "rating": 5,
-    "reviews": 67,
-    "tag": "Trending",
-    "stock": 40,
-    "description": "Compact daily essentials party handbag with smooth interior lining and magnetic snap closure.",
+    "reviews": 36,
+    "tag": "Special Offer",
+    "stock": 80,
+    "thumbnail": "https://i.ibb.co.com/mVKVQ7wS/Gemini-Generated-Image-tlbwc1tlbwc1tlbw.png",
+    "description": "উচ্চমানের ফুড-গ্রেড মেলামাইন দিয়ে তৈরি ৯ ইঞ্চি ডীপ স্যুপ প্লেট। দীর্ঘস্থায়ী, সহজে ভাঙে না এবং পরিষ্কার করা অত্যন্ত সহজ।",
     "variants": [
       {
-        "colorName": "Classic Black",
-        "colorCode": "#000000",
-        "inStock": true,
+        "colorName": "White",
+        "colorCode": "#F8FAFC",
         "images": [
-          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Warm Tan",
-        "colorCode": "#D97706",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/mVKVQ7wS/Gemini-Generated-Image-tlbwc1tlbwc1tlbw.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&auto=format&fit=crop&q=80"
+    ]
   },
   {
     "id": 9,
     "_id": {
-      "$oid": "6ac17295d401196628509679"
-    },
-    "name": "BPA-Free Anti-Colic Baby Feeding Bottle with Soft Silicone Nipple (240ml)",
-    "price": 320,
-    "oldPrice": 450,
-    "discount": "-29%",
-    "category": "baby-kids",
-    "rating": 5,
-    "reviews": 48,
-    "tag": "Safe & Pure",
-    "stock": 70,
-    "description": "Ergonomic wide-neck bottle with heat-resistant borosilicate glass and air ventilation valve.",
-    "variants": [
-      {
-        "colorName": "Mint Green",
-        "colorCode": "#10B981",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80"
-        ]
-      },
-      {
-        "colorName": "Powder Blue",
-        "colorCode": "#38BDF8",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80"
-        ]
-      }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1519689680058-324335c77eba?w=600&auto=format&fit=crop&q=80"
-  },
-  {
-    "id": 10,
-    "_id": {
       "$oid": "6ac17295d401196628509680"
     },
-    "name": "Super Absorbent Thick Coral Velvet Microfiber Kitchen Towels (Pack of 5)",
-    "price": 190,
-    "oldPrice": 280,
-    "discount": "-32%",
-    "category": "cleaning",
+    "name": "বাচ্চাদের অ্যান্টি-স্লিপ হাঁটুর মোজা (নি-প্যাড প্রোটেক্টর)",
+    "price": 120,
+    "oldPrice": 180,
+    "discount": "-33%",
+    "category": "baby & kids",
     "rating": 5,
-    "reviews": 142,
-    "tag": "Everyday Deal",
-    "stock": 150,
-    "description": "Lint-free, fast drying multipurpose cleaning wipes for dishes, countertops, and glass windows.",
+    "reviews": 53,
+    "tag": "Best Seller",
+    "stock": 65,
+    "thumbnail": "https://i.ibb.co.com/3Y1vdrdt/Gemini-Generated-Image-r9a8emr9a8emr9a8.png",
+    "description": "বাচ্চারা যখন হাঁটু গেড়ে হামাগুড়ি দেয় তখন হাঁটুকে মেঝেতে ঘষা ও আঘাত থেকে বাঁচাতে সফট ও কমফোর্টেবল অ্যান্টি-স্লিপ নি প্যড মোজা।",
     "variants": [
       {
-        "colorName": "Assorted Pastel",
-        "colorCode": "#A78BFA",
-        "inStock": true,
+        "colorName": "Rosy Brown",
+        "colorCode": "#D39F9C",
         "images": [
-          "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80"
+          "https://i.ibb.co.com/3Y1vdrdt/Gemini-Generated-Image-r9a8emr9a8emr9a8.png"
         ]
       }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1616401784845-180882ba9ba8?w=600&auto=format&fit=crop&q=80"
-  },
-  {
-    "id": 11,
-    "_id": {
-      "$oid": "6ac17295d401196628509681"
-    },
-    "name": "Heavy Duty 4-Tier Metal Shoe Rack Organizer Stand with Rust-Proof Coating",
-    "price": 680,
-    "oldPrice": 950,
-    "discount": "-28%",
-    "category": "home-household",
-    "rating": 4,
-    "reviews": 73,
-    "tag": "Household",
-    "stock": 35,
-    "description": "Space-saving entryway shoe shelf holding up to 16 pairs with tool-free quick assembly.",
-    "variants": [
-      {
-        "colorName": "Matte Black",
-        "colorCode": "#1E293B",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80"
-        ]
-      }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1595341888016-a392ef81b7de?w=600&auto=format&fit=crop&q=80"
-  },
-  {
-    "id": 12,
-    "_id": {
-      "$oid": "6ac17295d401196628509682"
-    },
-    "name": "12-Piece Royal Melamine Deep Soup Bowls & Serving Spoons Set",
-    "price": 890,
-    "oldPrice": 1200,
-    "discount": "-26%",
-    "category": "melamine-crockery",
-    "rating": 5,
-    "reviews": 58,
-    "tag": "New Design",
-    "stock": 42,
-    "description": "Stain-resistant smooth finish bowls with matching spoons for hot soup and dessert serving.",
-    "variants": [
-      {
-        "colorName": "Porcelain White",
-        "colorCode": "#F1F5F9",
-        "inStock": true,
-        "images": [
-          "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80",
-          "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80"
-        ]
-      }
-    ],
-    "thumbnail": "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?w=600&auto=format&fit=crop&q=80"
+    ]
   }
 ]
