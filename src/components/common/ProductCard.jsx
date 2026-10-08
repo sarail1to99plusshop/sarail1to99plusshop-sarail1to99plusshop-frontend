@@ -34,48 +34,77 @@ const ProductCard = ({ product }) => {
 
   return (
     <div className="bg-white rounded-xl border border-slate-200/90 overflow-hidden shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col group h-full">
-      {/* Product Image & Discount Badge */}
-      <Link
-        to={productLink}
-        className="relative pt-[90%] bg-slate-50 overflow-hidden block"
-      >
-        <img
-          src={displayImage}
-          alt={product.name}
-          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-          loading="lazy"
-        />
-        {/* Discount Badge */}
+      {/* Product Image & Badges */}
+      <div className="relative aspect-square w-full bg-white flex items-center justify-center p-2.5 sm:p-3 overflow-hidden border-b border-slate-100">
+        <Link to={productLink} className="w-full h-full flex items-center justify-center">
+          <img
+            src={displayImage}
+            alt={product.name}
+            className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 ease-out"
+            loading="lazy"
+          />
+        </Link>
+
+        {/* Top-Left: Discount Badge */}
         {product.discount && (
-          <span className="absolute top-2.5 left-2.5 bg-actionRed text-white text-[11px] font-extrabold px-2 py-0.5 rounded shadow-sm uppercase tracking-wide">
+          <span className="absolute top-2 left-2 bg-actionRed text-white text-[10px] sm:text-[11px] font-black px-1.5 sm:px-2 py-0.5 rounded shadow-xs uppercase tracking-wide pointer-events-none z-10">
             {product.discount}
           </span>
         )}
-        {/* Category tag */}
-        {product.category && (
-          <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-xs text-white text-[10px] font-medium px-2 py-0.5 rounded capitalize">
-            {product.category.replace('-', ' ')}
-          </span>
+
+        {/* Top-Right: Product Tag Badge */}
+        {product.tag && (
+          <Link
+            to={`/shop?tag=${encodeURIComponent(product.tag)}`}
+            onClick={(e) => e.stopPropagation()}
+            className={`absolute top-2 right-2 text-white text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded shadow-xs uppercase tracking-wider z-10 hover:brightness-110 transition-all ${
+              product.tag.toLowerCase().includes('hot') || product.tag.toLowerCase().includes('deal')
+                ? 'bg-amber-600'
+                : product.tag.toLowerCase().includes('best')
+                ? 'bg-[#003D73]'
+                : product.tag.toLowerCase().includes('trending')
+                ? 'bg-purple-600'
+                : product.tag.toLowerCase().includes('top')
+                ? 'bg-rose-600'
+                : product.tag.toLowerCase().includes('special') || product.tag.toLowerCase().includes('discount')
+                ? 'bg-orange-600'
+                : 'bg-emerald-600'
+            }`}
+            title={`View ${product.tag} products`}
+          >
+            {product.tag}
+          </Link>
         )}
-      </Link>
+
+        {/* Bottom-Left: Category Pill */}
+        {product.category && (
+          <Link
+            to={`/shop?category=${encodeURIComponent(product.category.toLowerCase().replace(/[\s&]+/g, '-'))}`}
+            onClick={(e) => e.stopPropagation()}
+            className="absolute bottom-2 left-2 bg-black/60 hover:bg-black/80 backdrop-blur-xs text-white text-[9px] sm:text-[10px] font-medium px-1.5 sm:px-2 py-0.5 rounded capitalize transition-colors z-10"
+          >
+            {product.category.replace(/-/g, ' ')}
+          </Link>
+        )}
+      </div>
 
       {/* Product Details */}
-      <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between gap-3">
+      <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between gap-2.5 sm:gap-3">
         <div>
           {/* Title */}
           <Link to={productLink} className="block">
-            <h3 className="font-bold text-xs md:text-sm text-charcoal line-clamp-2 group-hover:text-actionRed transition-colors leading-snug">
+            <h3 className="font-bold text-xs sm:text-sm text-charcoal line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem] group-hover:text-actionRed transition-colors leading-snug">
               {product.name}
             </h3>
           </Link>
 
           {/* Rating */}
-          <div className="flex items-center gap-1.5 mt-2">
+          <div className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-2">
             <div className="flex items-center text-amber-400">
               {[...Array(5)].map((_, i) => (
                 <Star
                   key={i}
-                  className={`w-3.5 h-3.5 ${
+                  className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${
                     i < (product.rating || 5)
                       ? 'fill-amber-400 text-amber-400'
                       : 'text-slate-200 fill-slate-200'
@@ -83,21 +112,21 @@ const ProductCard = ({ product }) => {
                 />
               ))}
             </div>
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-[11px] sm:text-xs font-semibold text-slate-500">
               {product.rating ? Number(product.rating).toFixed(1) : '5.0'}
             </span>
-            <span className="text-xs text-slate-400">
+            <span className="text-[10px] sm:text-xs text-slate-400">
               ({product.reviews || 0})
             </span>
           </div>
 
           {/* Pricing */}
-          <div className="flex items-baseline gap-2 mt-2">
-            <span className="text-base md:text-lg font-black text-actionRed">
+          <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1 sm:mt-2">
+            <span className="text-sm sm:text-base md:text-lg font-black text-actionRed">
               ৳{product.price?.toLocaleString()}
             </span>
             {product.oldPrice && (
-              <span className="text-xs md:text-sm text-slate-400 line-through">
+              <span className="text-[11px] sm:text-xs md:text-sm text-slate-400 line-through">
                 ৳{product.oldPrice?.toLocaleString()}
               </span>
             )}
@@ -105,12 +134,12 @@ const ProductCard = ({ product }) => {
         </div>
 
         {/* Dual Actions: Add to Cart & Buy Now */}
-        <div className="grid grid-cols-2 gap-2 pt-1">
+        <div className="grid grid-cols-2 gap-1.5 sm:gap-2 pt-1">
           {/* Add to Cart Button */}
           <button
             type="button"
             onClick={handleAddToCart}
-            className={`w-full text-xs font-bold py-2 px-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs active:scale-95 border ${
+            className={`w-full text-[11px] sm:text-xs font-bold py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs active:scale-95 border ${
               isAdded
                 ? 'bg-emerald-600 text-white border-emerald-600'
                 : 'bg-primary/10 hover:bg-primary text-primary hover:text-white border-primary/25'
@@ -119,13 +148,14 @@ const ProductCard = ({ product }) => {
           >
             {isAdded ? (
               <>
-                <Check className="w-3.5 h-3.5 stroke-[3]" />
-                <span className="truncate">Added!</span>
+                <Check className="w-3 h-3 sm:w-3.5 sm:h-3.5 stroke-[3] shrink-0" />
+                <span className="truncate">Added</span>
               </>
             ) : (
               <>
-                <ShoppingCart className="w-3.5 h-3.5" />
-                <span className="truncate">Add to Cart</span>
+                <ShoppingCart className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                <span className="truncate sm:hidden">Cart</span>
+                <span className="hidden sm:inline truncate">Add to Cart</span>
               </>
             )}
           </button>
@@ -134,10 +164,10 @@ const ProductCard = ({ product }) => {
           <button
             type="button"
             onClick={handleBuyNow}
-            className="w-full bg-actionRed hover:bg-actionRed-hover text-white text-xs font-bold py-2 px-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs hover:shadow-sm active:scale-95"
+            className="w-full bg-actionRed hover:bg-actionRed-hover text-white text-[11px] sm:text-xs font-bold py-1.5 sm:py-2 px-1 sm:px-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1 shadow-2xs hover:shadow-sm active:scale-95"
             title="Buy Now (Cash on Delivery)"
           >
-            <Zap className="w-3.5 h-3.5 fill-white" />
+            <Zap className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white shrink-0" />
             <span className="truncate">Buy Now</span>
           </button>
         </div>

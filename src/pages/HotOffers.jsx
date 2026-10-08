@@ -3,7 +3,14 @@ import ProductCard from '../components/common/ProductCard';
 import { FaFire } from 'react-icons/fa';
 
 const HotOffers = () => {
-  const deals = sampleProducts.filter((p) => p.discount);
+  const deals = sampleProducts.filter(
+    (p) =>
+      p.discount ||
+      p.tag?.toLowerCase().includes('hot') ||
+      p.tag?.toLowerCase().includes('deal') ||
+      p.tag?.toLowerCase().includes('special') ||
+      p.tag?.toLowerCase().includes('discount')
+  );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
@@ -27,7 +34,7 @@ const HotOffers = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
         {deals.map((product) => (
           <ProductCard key={product.id} product={product} />
         ))}

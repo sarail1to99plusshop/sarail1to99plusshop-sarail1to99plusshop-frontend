@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { deliveryChargesList } from '../data/mockData';
 
 const ShopContext = createContext();
@@ -13,21 +13,41 @@ const generateMongoId = () => {
 };
 
 export const ShopProvider = ({ children }) => {
-  // Initial cart items aligned with the requested MongoDB item structure
-  const [cartItems, setCartItems] = useState([
-    {
-      _id: { $oid: '6ac179335ff7b1545279002f' },
-      product: { $oid: '6ac17295d401196628509671' },
-      title: 'Granite Coating Non-Stick Fry Pan with Heat-Resistant Wooden Handle (24cm)',
-      price: 850,
-      quantity: 1,
-      image: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80',
-      selectedVariant: {
-        colorName: 'Granite Black',
-        colorCode: '#2B2B2B',
-      },
-    },
-  ]);
+  // Lazy initialize cart items from localStorage (or empty array)
+  const [cartItems, setCartItems] = useState(() => {
+    try {
+      const savedCart = localStorage.getItem('sarail_cart');
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (e) {
+      console.error('Failed to load cart from localStorage:', e);
+      return [];
+    }
+  });
+
+  // Persist cart items to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem('sarail_cart', JSON.stringify(cartItems));
+    } catch (e) {
+      console.error('Failed to save cart to localStorage:', e);
+    }
+  }, [cartItems]);
+
+  // Sync cart across browser tabs if changed in another window/tab
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'sarail_cart') {
+        try {
+          const newCart = e.newValue ? JSON.parse(e.newValue) : [];
+          setCartItems(newCart);
+        } catch (err) {
+          console.error('Error syncing cart from storage event:', err);
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   // Lazy initialize orders from localStorage to avoid calling setState in effect
   const [orders, setOrders] = useState(() => {
@@ -57,11 +77,15 @@ export const ShopProvider = ({ children }) => {
       product.thumbnail ||
       product.image;
 
+    const chosenColorName = chosenVariant?.colorName || 'Standard';
+    const chosenColorCode = chosenVariant?.colorCode || '';
+
     setCartItems((prev) => {
       const existingIndex = prev.findIndex(
         (item) =>
           item.product?.$oid === productId &&
-          item.selectedVariant?.colorName === chosenVariant?.colorName
+          (item.color === chosenColorName ||
+            item.selectedVariant?.colorName === chosenColorName)
       );
 
       if (existingIndex > -1) {
@@ -79,12 +103,15 @@ export const ShopProvider = ({ children }) => {
         price: product.price,
         quantity: qtyToAdd,
         image: itemImage,
+        color: chosenColorName,
+        colorCode: chosenColorCode,
         selectedVariant: chosenVariant
           ? {
-              colorName: chosenVariant.colorName,
-              colorCode: chosenVariant.colorCode,
+              colorName: chosenColorName,
+              colorCode: chosenColorCode,
             }
           : null,
+        category: product.category || 'General',
       };
 
       return [...prev, newItem];
@@ -132,22 +159,61 @@ export const ShopProvider = ({ children }) => {
     setIsQuickOrderOpen(true);
   };
 
-  // Create order matching the exact schema requested by user
+  // Create order matching the exact schema requested by user with product color, image and essential metadata
   const createOrder = ({ customerDetails, itemsList = null, deliveryFee = 60, paymentMethod = 'COD' }) => {
     const rawItems = itemsList || cartItems;
     if (!rawItems || rawItems.length === 0) return null;
 
-    const formattedItems = rawItems.map((item) => ({
-      product: {
-        $oid: item.product?.$oid || item._id?.$oid || generateMongoId(),
-      },
-      title: item.title || item.name,
-      price: item.price,
-      quantity: item.quantity || 1,
-      _id: {
-        $oid: item._id?.$oid || generateMongoId(),
-      },
-    }));
+    const formattedItems = rawItems.map((item) => {
+      const color =
+        item.color ||
+        item.selectedVariant?.colorName ||
+        item.variants?.[0]?.colorName ||
+        'Standard';
+
+      const colorCode =
+        item.colorCode ||
+        item.selectedVariant?.colorCode ||
+        item.variants?.[0]?.colorCode ||
+        '';
+
+      const image =
+        item.image ||
+        item.selectedVariant?.images?.[0] ||
+        item.variants?.[0]?.images?.[0] ||
+        item.thumbnail ||
+        '';
+
+      const category = item.category || 'General';
+      const unitPrice = Number(item.price) || 0;
+      const quantity = Math.max(1, Number(item.quantity) || 1);
+
+      return {
+        _id: {
+          $oid: item._id?.$oid || generateMongoId(),
+        },
+        product: {
+          $oid:
+            item.product?.$oid ||
+            item.productId ||
+            item.product?.toString() ||
+            item._id?.$oid ||
+            generateMongoId(),
+        },
+        title: item.title || item.name,
+        price: unitPrice,
+        quantity,
+        color,
+        colorCode,
+        selectedVariant: {
+          colorName: color,
+          colorCode,
+        },
+        image,
+        category,
+        subtotal: unitPrice * quantity,
+      };
+    });
 
     const itemsSubtotal = formattedItems.reduce(
       (acc, it) => acc + it.price * it.quantity,
@@ -180,7 +246,9 @@ export const ShopProvider = ({ children }) => {
       },
       items: formattedItems,
       deliveryFee,
+      itemsSubtotal,
       totalAmount,
+      totalQuantity: formattedItems.reduce((acc, it) => acc + it.quantity, 0),
       paymentMethod: paymentMethod || 'COD',
       orderStatus: 'Shipped',
       courierData: {
