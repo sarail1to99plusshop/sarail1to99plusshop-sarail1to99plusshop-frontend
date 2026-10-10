@@ -19,10 +19,12 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getAuthErrorMessage } from '../utils/authErrors';
+import { useUserProfile } from '../hooks/useQueries';
 
 const Account = () => {
   const {
     currentUser,
+    dbUser,
     userLoading,
     signUp,
     signIn,
@@ -32,6 +34,9 @@ const Account = () => {
     reloadUser,
     logOut,
   } = useAuth();
+
+  const { data: queriedUser } = useUserProfile(currentUser?.uid);
+  const activeDbUser = dbUser || queriedUser;
 
   // Mode: 'login' | 'signup' | 'forgot-password'
   const [authMode, setAuthMode] = useState('login');
@@ -317,6 +322,29 @@ const Account = () => {
                   <p className="text-[11px] text-slate-400">
                     User ID: <span className="font-mono">{currentUser.uid.slice(0, 14)}...</span>
                   </p>
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1.5">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 text-[11px] font-medium">
+                      <span>Registered:</span>
+                      <strong className="text-[#0F172A]">
+                        {activeDbUser?.registeredAt
+                          ? new Date(activeDbUser.registeredAt).toLocaleString()
+                          : currentUser.metadata?.creationTime
+                          ? new Date(currentUser.metadata.creationTime).toLocaleString()
+                          : 'Just now'}
+                      </strong>
+                    </span>
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50 text-[#003D73] text-[11px] font-medium border border-blue-100">
+                      <Clock className="w-3 h-3" />
+                      <span>Last Login:</span>
+                      <strong className="font-bold">
+                        {activeDbUser?.lastLoginAt
+                          ? new Date(activeDbUser.lastLoginAt).toLocaleString()
+                          : currentUser.metadata?.lastSignInTime
+                          ? new Date(currentUser.metadata.lastSignInTime).toLocaleString()
+                          : 'Just now'}
+                      </strong>
+                    </span>
+                  </div>
                 </div>
               </div>
 

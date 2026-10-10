@@ -8,28 +8,42 @@ const __dirname = path.dirname(__filename);
 
 const DIST_DIR = path.resolve(__dirname, '../dist');
 const TEMPLATE_PATH = path.join(DIST_DIR, 'index.html');
-const PRODUCTS_JSON_PATH = path.resolve(__dirname, '../public/data/products.json');
-const BASE_URL = process.env.VITE_SITE_URL || 'https://sarail1to99plusshop-sarail1to99plus.vercel.app';
+const BASE_URL =
+  process.env.VITE_SITE_URL || 'https://sarail1to99plusshop-sarail1to99plus.vercel.app';
+const API_URL = process.env.VITE_API_URL || 'http://localhost:5000';
 
-function run() {
+async function run() {
   if (!fs.existsSync(TEMPLATE_PATH)) {
-    console.warn('[OG Pre-generator] dist/index.html not found. Skipping static meta generation.');
+    console.warn(
+      '[OG Pre-generator] dist/index.html not found. Skipping static meta generation.'
+    );
     return;
   }
 
-  if (!fs.existsSync(PRODUCTS_JSON_PATH)) {
-    console.warn('[OG Pre-generator] products.json not found. Skipping.');
+  let products = [];
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const res = await fetch(`${API_URL}/api/products?all=true`, {
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = await res.json();
+      products = Array.isArray(data?.products) ? data.products : [];
+    }
+  } catch {
+    console.log(
+      '[OG Pre-generator] Backend API not running during build; skipping static product OG pre-generation.'
+    );
+    return;
+  }
+
+  if (!Array.isArray(products) || products.length === 0) {
     return;
   }
 
   const templateHtml = fs.readFileSync(TEMPLATE_PATH, 'utf-8');
-  const products = JSON.parse(fs.readFileSync(PRODUCTS_JSON_PATH, 'utf-8'));
-
-  if (!Array.isArray(products) || products.length === 0) {
-    console.warn('[OG Pre-generator] No products found in products.json.');
-    return;
-  }
-
   let generatedCount = 0;
 
   for (const product of products) {
@@ -51,7 +65,6 @@ function run() {
 
     const pageUrl = `${BASE_URL}/product/${product.id}`;
 
-    // Meta tags block to inject
     const metaBlock = `
     <!-- Dynamic Product Social Preview -->
     <title>${pageTitle}</title>
@@ -72,29 +85,26 @@ function run() {
     <meta name="twitter:image" content="${imageUrl}" />
     `;
 
-    // Replace default title and existing og tags or inject before </head>
     let customizedHtml = templateHtml;
-
-    // Cleanly remove existing title, description, and og/twitter tags from template
     customizedHtml = customizedHtml.replace(/<title>.*?<\/title>\s*/is, '');
     customizedHtml = customizedHtml.replace(/<meta\s+name="description".*?>\s*/is, '');
     customizedHtml = customizedHtml.replace(/<!--\s*Open Graph.*?-->\s*/is, '');
     customizedHtml = customizedHtml.replace(/<!--\s*Twitter Cards.*?-->\s*/is, '');
     customizedHtml = customizedHtml.replace(/<meta\s+property="og:[^>]*>\s*/gis, '');
     customizedHtml = customizedHtml.replace(/<meta\s+name="twitter:[^>]*>\s*/gis, '');
-
-    // Insert new product meta block right before </head>
     customizedHtml = customizedHtml.replace('</head>', `${metaBlock}\n  </head>`);
 
-    // Targets to write
     const targetDirs = [
       path.join(DIST_DIR, 'product', String(product.id)),
       path.join(DIST_DIR, 'product-details', String(product.id)),
     ];
 
-    if (product._id?.$oid) {
-      targetDirs.push(path.join(DIST_DIR, 'product', String(product._id.$oid)));
-      targetDirs.push(path.join(DIST_DIR, 'product-details', String(product._id.$oid)));
+    if (product._id) {
+      const oid = typeof product._id === 'object' ? product._id.$oid : product._id;
+      if (oid) {
+        targetDirs.push(path.join(DIST_DIR, 'product', String(oid)));
+        targetDirs.push(path.join(DIST_DIR, 'product-details', String(oid)));
+      }
     }
 
     for (const dir of targetDirs) {
@@ -102,24 +112,12 @@ function run() {
       fs.writeFileSync(path.join(dir, 'index.html'), customizedHtml, 'utf-8');
     }
 
-    // Also write cleanUrl files (e.g. /dist/product/1.html)
-    const fileTargets = [
-      path.join(DIST_DIR, 'product', `${product.id}.html`),
-      path.join(DIST_DIR, 'product-details', `${product.id}.html`),
-    ];
-    if (product._id?.$oid) {
-      fileTargets.push(path.join(DIST_DIR, 'product', `${product._id.$oid}.html`));
-      fileTargets.push(path.join(DIST_DIR, 'product-details', `${product._id.$oid}.html`));
-    }
-
-    for (const filePath of fileTargets) {
-      fs.writeFileSync(filePath, customizedHtml, 'utf-8');
-    }
-
     generatedCount++;
   }
 
-  console.log(`[OG Pre-generator] Successfully generated social media preview pages for ${generatedCount} products.`);
+  console.log(
+    `[OG Pre-generator] Successfully generated social media preview pages for ${generatedCount} products from API.`
+  );
 }
 
 run();

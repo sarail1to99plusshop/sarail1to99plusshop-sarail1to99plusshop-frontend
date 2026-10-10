@@ -1,8 +1,9 @@
-import { sampleProducts } from '../data/mockData';
+import { useAllProducts } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
 import { FaCrown } from 'react-icons/fa';
 
 const BestSelling = () => {
+  const { data: sampleProducts = [] } = useAllProducts();
   const bestSellers = sampleProducts.filter(
     (p) =>
       p.tag?.toLowerCase().includes('best') ||

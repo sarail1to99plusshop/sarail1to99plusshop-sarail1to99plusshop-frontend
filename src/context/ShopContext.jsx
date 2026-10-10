@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { deliveryChargesList } from '../data/mockData';
+import { createOrderInDB } from '../services/api';
+import { useDeliveryCharges } from '../hooks/useQueries';
 
 const ShopContext = createContext();
 
@@ -13,6 +14,7 @@ const generateMongoId = () => {
 };
 
 export const ShopProvider = ({ children }) => {
+  const { data: deliveryCharges = [] } = useDeliveryCharges();
   // Lazy initialize cart items from localStorage (or empty array)
   const [cartItems, setCartItems] = useState(() => {
     try {
@@ -277,6 +279,11 @@ export const ShopProvider = ({ children }) => {
       console.error('Error saving order:', e);
     }
 
+    // Asynchronously persist order to MongoDB backend
+    createOrderInDB(newOrder).catch((err) => {
+      console.warn('Could not sync order to backend:', err);
+    });
+
     return newOrder;
   };
 
@@ -292,9 +299,9 @@ export const ShopProvider = ({ children }) => {
         buyNow,
         createOrder,
         orders,
-        deliveryCharges: deliveryChargesList,
+        deliveryCharges,
         defaultDeliveryCharge:
-          deliveryChargesList.find((d) => d.isDefault) || deliveryChargesList[0],
+          deliveryCharges.find((d) => d.isDefault) || deliveryCharges[0] || null,
         isMobileMenuOpen,
         setIsMobileMenuOpen,
         searchQuery,

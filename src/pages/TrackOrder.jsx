@@ -2,65 +2,36 @@ import { useState } from 'react';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { FiCheckCircle, FiExternalLink } from 'react-icons/fi';
 import { useShop } from '../context/ShopContext';
+import { trackOrderInDB } from '../services/api';
 
 const TrackOrder = () => {
   const { orders } = useShop();
   const [orderId, setOrderId] = useState('');
   const [phone, setPhone] = useState('');
   const [trackingResult, setTrackingResult] = useState(null);
+  const [notFoundError, setNotFoundError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const defaultSampleOrder = {
-    _id: { $oid: '6ac179335ff7b1545279002e' },
-    invoiceNumber: 'SAR-261003-3994',
-    customerDetails: {
-      name: 'Md. Al Saef Ratul',
-      phone: '01867781018',
-      address: 'Dhaka, Narsingdi',
-      note: 'Please call before arrival',
-    },
-    items: [
-      {
-        title: 'Granite Coating Non-Stick Fry Pan (24cm)',
-        price: 850,
-        quantity: 1,
-        color: 'Granite Black',
-        colorCode: '#2B2B2B',
-        image: 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80',
-      },
-      {
-        title: '360° Rotating Spin Mop with Bucket',
-        price: 990,
-        quantity: 1,
-        color: 'Sky Blue',
-        colorCode: '#0284C7',
-        image: 'https://images.unsplash.com/photo-1584820927498-cfe5211fd8bf?w=600&auto=format&fit=crop&q=80',
-      },
-    ],
-    deliveryFee: 60,
-    totalAmount: 1900,
-    paymentMethod: 'COD',
-    orderStatus: 'Shipped',
-    courierData: {
-      provider: 'Steadfast',
-      consignmentId: 521307,
-      trackingCode: 'SF19970475',
-      trackingUrl: 'https://steadfast.com.bd/t/SF19970475',
-      shippedAt: { $date: '2026-10-03T23:14:20.892Z' },
-    },
-    createdAt: { $date: '2026-10-03T21:52:51.798Z' },
-    updatedAt: { $date: '2026-10-03T23:14:20.896Z' },
-  };
-
-  const handleTrack = (e) => {
+  const handleTrack = async (e) => {
     e.preventDefault();
     if (!orderId && !phone) return;
 
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    setNotFoundError('');
+    setTrackingResult(null);
+    try {
+      // 1. Check backend MongoDB first
+      const dbOrder = await trackOrderInDB({
+        invoiceNumber: orderId.trim(),
+        phone: phone.trim(),
+      });
 
-      // Search in placed orders or match default sample order
+      if (dbOrder) {
+        setTrackingResult(dbOrder);
+        return;
+      }
+
+      // 2. Search in current session orders if any
       const matched = orders.find(
         (o) =>
           o.invoiceNumber?.toLowerCase() === orderId.trim().toLowerCase() ||
@@ -70,17 +41,26 @@ const TrackOrder = () => {
       if (matched) {
         setTrackingResult(matched);
       } else {
-        // Fallback demo result pre-populated with user order details
-        setTrackingResult({
-          ...defaultSampleOrder,
-          invoiceNumber: orderId.trim().toUpperCase() || defaultSampleOrder.invoiceNumber,
-          customerDetails: {
-            ...defaultSampleOrder.customerDetails,
-            phone: phone.trim() || defaultSampleOrder.customerDetails.phone,
-          },
-        });
+        setNotFoundError(
+          'No shipment found matching this Invoice Number or Phone Number. Please verify your details and try again.'
+        );
       }
-    }, 400);
+    } catch {
+      const matched = orders.find(
+        (o) =>
+          o.invoiceNumber?.toLowerCase() === orderId.trim().toLowerCase() ||
+          (phone && o.customerDetails?.phone?.includes(phone.trim()))
+      );
+      if (matched) {
+        setTrackingResult(matched);
+      } else {
+        setNotFoundError(
+          'No shipment found matching this Invoice Number or Phone Number in our database.'
+        );
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -136,6 +116,12 @@ const TrackOrder = () => {
           >
             {loading ? 'Fetching Steadfast Tracking Data...' : 'Track My Shipment'}
           </button>
+
+          {notFoundError && (
+            <p className="text-xs text-actionRed font-semibold text-center pt-2">
+              {notFoundError}
+            </p>
+          )}
         </form>
       </div>
 

@@ -1,8 +1,9 @@
-import { sampleProducts } from '../data/mockData';
+import { useAllProducts } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
 import { FaFire } from 'react-icons/fa';
 
 const HotOffers = () => {
+  const { data: sampleProducts = [] } = useAllProducts();
   const deals = sampleProducts.filter(
     (p) =>
       p.discount ||
