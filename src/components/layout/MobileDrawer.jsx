@@ -6,12 +6,13 @@ import { FaFire, FaWhatsapp } from 'react-icons/fa';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
-import { categoriesList } from '../../data/mockData';
+import { useCategories } from '../../hooks/useQueries';
 import logoImg from '../../assets/Without BG logo.png';
 
 const MobileDrawer = () => {
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useShop();
   const { currentUser } = useAuth();
+  const { data: categoriesList = [] } = useCategories();
   const [categoriesOpen, setCategoriesOpen] = useState(true);
 
   if (!isMobileMenuOpen) return null;

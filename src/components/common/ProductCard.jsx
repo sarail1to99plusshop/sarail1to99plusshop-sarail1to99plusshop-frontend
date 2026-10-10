@@ -98,27 +98,33 @@ const ProductCard = ({ product }) => {
             </h3>
           </Link>
 
-          {/* Rating */}
-          <div className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-2">
-            <div className="flex items-center text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${
-                    i < (product.rating || 5)
-                      ? 'fill-amber-400 text-amber-400'
-                      : 'text-slate-200 fill-slate-200'
-                  }`}
-                />
-              ))}
-            </div>
-            <span className="text-[11px] sm:text-xs font-semibold text-slate-500">
-              {product.rating ? Number(product.rating).toFixed(1) : '5.0'}
-            </span>
-            <span className="text-[10px] sm:text-xs text-slate-400">
-              ({product.reviews || 0})
-            </span>
-          </div>
+          {/* Dynamic Rating Stars (0.0 when no reviews, logically calculated when reviewed) */}
+          {(() => {
+            const reviewCount = Number(product.reviews || 0);
+            const ratingValue = reviewCount > 0 ? Number(product.rating || 0) : 0;
+            return (
+              <div className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-2">
+                <div className="flex items-center text-amber-400">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`w-3 h-3 sm:w-3.5 sm:h-3.5 transition-colors ${
+                        i < Math.round(ratingValue)
+                          ? 'fill-amber-400 text-amber-400'
+                          : 'text-slate-200 fill-slate-200'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-[11px] sm:text-xs font-semibold text-slate-500">
+                  {ratingValue.toFixed(1)}
+                </span>
+                <span className="text-[10px] sm:text-xs text-slate-400">
+                  ({reviewCount})
+                </span>
+              </div>
+            );
+          })()}
 
           {/* Pricing */}
           <div className="flex items-baseline gap-1.5 sm:gap-2 mt-1 sm:mt-2">

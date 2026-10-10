@@ -1,8 +1,9 @@
-import { sampleProducts } from '../data/mockData';
+import { useAllProducts } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
 import { FiZap } from 'react-icons/fi';
 
 const NewArrivals = () => {
+  const { data: sampleProducts = [] } = useAllProducts();
   const newArrivals = sampleProducts.filter(
     (p) =>
       p.tag?.toLowerCase().includes('trending') ||

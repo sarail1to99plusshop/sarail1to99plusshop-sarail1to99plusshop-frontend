@@ -18,29 +18,44 @@ import {
 } from 'lucide-react';
 import { FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { useShop } from '../context/ShopContext';
-import { sampleProducts, fetchProducts } from '../data/mockData';
+import { useAuth } from '../context/AuthContext';
+import {
+  useProductDetails,
+  useAllProducts,
+  useProductReviews,
+  useAddReviewMutation,
+} from '../hooks/useQueries';
+
+const formatReviewDate = (dateStr) => {
+  if (!dateStr) return 'Recently';
+  const date = new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return dateStr;
+  return date.toLocaleDateString('en-BD', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+};
 
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, buyNow } = useShop();
+  const { currentUser } = useAuth();
 
-  // Initial lookup for zero-lag initial render
-  const currentId = Number(id) || 1;
-  const initialProduct =
-    sampleProducts.find(
-      (p) => p.id === currentId || p._id?.$oid === id
-    ) || sampleProducts[0];
+  // Fetch product, all products, and dynamic reviews via TanStack Query
+  const {
+    data: product,
+    isLoading: loading,
+    error: queryError,
+  } = useProductDetails(id);
+  const { data: allProducts = [] } = useAllProducts();
+  const { data: reviewsData } = useProductReviews(product?.id || id);
+  const addReviewMutation = useAddReviewMutation();
 
-  // States
-  const [product, setProduct] = useState(initialProduct);
-  const [allProducts, setAllProducts] = useState(sampleProducts);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const error = queryError ? 'Failed to fetch dynamic data' : null;
 
-  const [selectedVariant, setSelectedVariant] = useState(
-    () => initialProduct?.variants?.[0] || null
-  );
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState('description');
@@ -49,71 +64,31 @@ const ProductDetailsPage = () => {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewName, setReviewName] = useState('');
   const [reviewComment, setReviewComment] = useState('');
-  const [reviewsList, setReviewsList] = useState([
-    {
-      id: 1,
-      name: 'Tanvir Hossain',
-      rating: 5,
-      date: '2 days ago',
-      comment: 'খুবই প্রিমিয়াম কোয়ালিটি! ক্যাশ অন ডেলিভারিতে দ্রুত পেয়েছি। প্যাকেজিং ও পণ্য দুটোই অসাধারণ।',
-    },
-    {
-      id: 2,
-      name: 'Sabrina Akter',
-      rating: 5,
-      date: '1 week ago',
-      comment: 'Authentic item, looks exactly like the photos. Highly recommended for daily household use!',
-    },
-  ]);
   const [showReviewSuccess, setShowReviewSuccess] = useState(false);
 
-  // Dynamic data fetching whenever route ID changes
-  useEffect(() => {
-    let isSubscribed = true;
+  // Logically calculate dynamic review list, average star rating, and star breakdown from user reviews
+  const reviewsList = reviewsData?.reviews || [];
+  const dynamicReviewCount = reviewsList.length;
+  const totalRatingSum = reviewsList.reduce(
+    (acc, r) => acc + (Number(r.rating) || 0),
+    0
+  );
+  const dynamicRating =
+    dynamicReviewCount > 0
+      ? Number((totalRatingSum / dynamicReviewCount).toFixed(1))
+      : 0;
 
-    const loadDynamicData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await fetchProducts();
-        if (isSubscribed && Array.isArray(data) && data.length > 0) {
-          setAllProducts(data);
-          const found = data.find(
-            (p) => p.id?.toString() === id?.toString() || p._id?.$oid === id?.toString()
-          );
+  const ratingBreakdown = [5, 4, 3, 2, 1].map((star) => {
+    const count = reviewsList.filter(
+      (r) => Math.round(Number(r.rating) || 0) === star
+    ).length;
+    const percentage =
+      dynamicReviewCount > 0 ? Math.round((count / dynamicReviewCount) * 100) : 0;
+    return { star, count, percentage };
+  });
 
-          if (found) {
-            setProduct(found);
-            setSelectedVariant(found.variants?.[0] || null);
-            setSelectedImageIndex(0);
-            setQuantity(1);
-          } else {
-            const fallback =
-              data.find((p) => p.id === Number(id)) || data[0];
-            setProduct(fallback);
-            setSelectedVariant(fallback?.variants?.[0] || null);
-            setSelectedImageIndex(0);
-            setQuantity(1);
-          }
-        }
-      } catch (err) {
-        console.error('Error fetching dynamic product details:', err);
-        if (isSubscribed) {
-          setError('Failed to fetch dynamic data');
-        }
-      } finally {
-        if (isSubscribed) {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadDynamicData();
-
-    return () => {
-      isSubscribed = false;
-    };
-  }, [id]);
+  const activeReviewerName =
+    reviewName !== '' ? reviewName : currentUser?.displayName || '';
 
   // Update document title and Open Graph meta tags dynamically
   useEffect(() => {
@@ -154,8 +129,11 @@ const ProductDetailsPage = () => {
     };
   }, [product]);
 
-  // Active variant
-  const activeVariant = selectedVariant || product?.variants?.[0] || null;
+  // Active variant (automatically falls back to first variant when navigating between products)
+  const activeVariant =
+    product?.variants?.find((v) => v.colorName === selectedVariant?.colorName) ||
+    product?.variants?.[0] ||
+    null;
 
   // 3 Photos for active variant
   const variantImages =
@@ -223,22 +201,30 @@ const ProductDetailsPage = () => {
     setTimeout(() => setCopiedLink(false), 2000);
   };
 
-  // Submit review
-  const handleReviewSubmit = (e) => {
+  // Submit review via TanStack Query mutation & dynamically update rating stars
+  const handleReviewSubmit = async (e) => {
     e.preventDefault();
-    if (!reviewName || !reviewComment) return;
-    const newRev = {
-      id: Date.now(),
-      name: reviewName,
-      rating: reviewRating,
-      date: 'Just now',
-      comment: reviewComment,
-    };
-    setReviewsList([newRev, ...reviewsList]);
-    setReviewName('');
-    setReviewComment('');
-    setShowReviewSuccess(true);
-    setTimeout(() => setShowReviewSuccess(false), 3000);
+    const reviewer = activeReviewerName.trim();
+    if (!reviewer || !reviewComment.trim()) return;
+
+    try {
+      await addReviewMutation.mutateAsync({
+        productId: product.id,
+        reviewData: {
+          name: reviewer,
+          rating: reviewRating,
+          comment: reviewComment.trim(),
+          userId: currentUser?.uid || 'guest',
+          userEmail: currentUser?.email || '',
+          userPhoto: currentUser?.photoURL || '',
+        },
+      });
+      setReviewComment('');
+      setShowReviewSuccess(true);
+      setTimeout(() => setShowReviewSuccess(false), 3500);
+    } catch (err) {
+      console.error('Review submit error:', err);
+    }
   };
 
   if (loading && !product) {
@@ -430,23 +416,30 @@ const ProductDetailsPage = () => {
                 {product.name}
               </h1>
 
-              {/* Star Rating & Review Count */}
+              {/* Dynamic Star Rating & Review Count */}
               <div className="flex items-center gap-2 text-xs">
                 <div className="flex items-center text-amber-400">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
-                      className={`w-4 h-4 ${
-                        i < (product.rating || 5)
+                      className={`w-4 h-4 transition-colors ${
+                        i < Math.round(dynamicRating)
                           ? 'fill-amber-400 text-amber-400'
                           : 'fill-slate-200 text-slate-200'
                       }`}
                     />
                   ))}
                 </div>
-                <span className="text-slate-500 font-medium">
-                  ({product.reviews || 24} customer reviews)
+                <span className="font-bold text-[#0F172A]">
+                  {dynamicRating.toFixed(1)}
                 </span>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('reviews')}
+                  className="text-slate-500 hover:text-[#003D73] font-medium underline-offset-2 hover:underline cursor-pointer"
+                >
+                  ({dynamicReviewCount} customer reviews)
+                </button>
               </div>
 
               {/* Pricing Section */}
@@ -666,7 +659,7 @@ const ProductDetailsPage = () => {
                   : 'border border-slate-300 text-slate-600 bg-white hover:border-slate-400'
               }`}
             >
-              REVIEWS ({reviewsList.length})
+              REVIEWS ({dynamicReviewCount})
             </button>
           </div>
 
@@ -679,10 +672,9 @@ const ProductDetailsPage = () => {
                   <h3 className="text-base sm:text-lg font-bold text-[#0F172A] mb-3">
                     {product.name} Features
                   </h3>
-                <p>{product.description}</p>
+                  <p>{product.description}</p>
                 </div>
 
-            
                 {/* Pricing in BD */}
                 <div>
                   <h3 className="text-base sm:text-lg font-bold text-[#0F172A] mb-2">
@@ -704,41 +696,110 @@ const ProductDetailsPage = () => {
                 </div>
               </div>
             ) : (
-              /* REVIEWS TAB */
+              /* REVIEWS TAB (DYNAMIC STARS & REVIEWS) */
               <div className="space-y-8">
+                {/* Dynamic Rating Summary & Logical Breakdown Banner */}
+                <div className="bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                  <div className="md:col-span-5 flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-[#003D73] text-white flex flex-col items-center justify-center shadow-xs shrink-0">
+                      <span className="text-xl font-black leading-none">
+                        {dynamicRating.toFixed(1)}
+                      </span>
+                      <span className="text-[10px] text-slate-200 mt-0.5">
+                        out of 5
+                      </span>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1 text-amber-400">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-5 h-5 transition-colors ${
+                              i < Math.round(dynamicRating)
+                                ? 'fill-amber-400 text-amber-400'
+                                : 'fill-slate-200 text-slate-200'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <p className="text-xs sm:text-sm font-bold text-[#0F172A] mt-1">
+                        {dynamicReviewCount > 0
+                          ? `Based on ${dynamicReviewCount} ${
+                              dynamicReviewCount === 1 ? 'Review' : 'Reviews'
+                            }`
+                          : 'No Reviews Yet (0.0 / 5)'}
+                      </p>
+                      <p className="text-[11px] text-slate-500">
+                        {dynamicReviewCount > 0
+                          ? `Total Score: ${totalRatingSum} ★ ÷ ${dynamicReviewCount} = ${dynamicRating.toFixed(
+                              1
+                            )} ★`
+                          : 'Submit the first review below to calculate rating'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Star Breakdown Progress Bars */}
+                  <div className="md:col-span-7 space-y-1.5 border-t md:border-t-0 md:border-l border-slate-200 pt-4 md:pt-0 md:pl-6">
+                    {ratingBreakdown.map(({ star, count, percentage }) => (
+                      <div key={star} className="flex items-center gap-2.5 text-xs">
+                        <span className="w-10 font-bold text-slate-600 flex items-center gap-0.5 shrink-0">
+                          <span>{star}</span>
+                          <Star className="w-3 h-3 fill-amber-400 text-amber-400" />
+                        </span>
+                        <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-amber-400 rounded-full transition-all duration-300"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <span className="w-14 text-right text-[11px] text-slate-500 font-medium shrink-0">
+                          {count} ({percentage}%)
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Review Form */}
                 <form
                   onSubmit={handleReviewSubmit}
                   className="bg-slate-50 p-5 sm:p-6 rounded-xl border border-slate-200 space-y-4"
                 >
                   <h4 className="font-bold text-sm text-[#0F172A]">
-                    Leave a Review for this Product
+                    Leave a Review &amp; Rating for this Product
                   </h4>
                   {showReviewSuccess && (
                     <div className="p-3 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-md border border-emerald-200">
-                      Thank you! Your review has been published.
+                      Thank you! Your review has been saved and the product&apos;s star rating has been recalculated dynamically.
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-slate-600">Your Rating:</span>
-                    <div className="flex text-amber-400">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <span className="text-xs font-bold text-slate-700">
+                      Select Your Star Rating:
+                    </span>
+                    <div className="flex items-center text-amber-400">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           type="button"
                           onClick={() => setReviewRating(star)}
-                          className="p-1 hover:scale-110 transition-transform"
+                          className="p-1 hover:scale-110 transition-transform cursor-pointer"
+                          aria-label={`Rate ${star} stars`}
                         >
                           <Star
-                            className={`w-4 h-4 ${
+                            className={`w-5 h-5 ${
                               star <= reviewRating
                                 ? 'fill-amber-400 text-amber-400'
-                                : 'text-slate-300'
+                                : 'text-slate-300 fill-slate-200'
                             }`}
                           />
                         </button>
                       ))}
                     </div>
+                    <span className="text-xs font-bold text-[#003D73] bg-white px-2.5 py-1 rounded-full border border-slate-200">
+                      {reviewRating} {reviewRating === 1 ? 'Star' : 'Stars'}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -746,7 +807,7 @@ const ProductDetailsPage = () => {
                       type="text"
                       required
                       placeholder="Your Full Name *"
-                      value={reviewName}
+                      value={activeReviewerName}
                       onChange={(e) => setReviewName(e.target.value)}
                       className="bg-white border border-slate-200 text-xs px-3.5 py-2.5 rounded-lg outline-none focus:border-[#003D73]"
                     />
@@ -763,40 +824,64 @@ const ProductDetailsPage = () => {
 
                   <button
                     type="submit"
-                    className="bg-[#003D73] hover:bg-[#002b52] text-white text-xs font-bold py-2.5 px-6 rounded-lg uppercase tracking-wider transition-colors shadow-2xs"
+                    disabled={addReviewMutation.isPending}
+                    className="bg-[#003D73] hover:bg-[#002b52] text-white text-xs font-bold py-2.5 px-6 rounded-lg uppercase tracking-wider transition-colors shadow-2xs disabled:opacity-50 cursor-pointer"
                   >
-                    Submit Review
+                    {addReviewMutation.isPending ? 'Submitting Review...' : 'Submit Review'}
                   </button>
                 </form>
 
                 {/* Reviews List */}
                 <div className="space-y-4">
-                  {reviewsList.map((rev) => (
-                    <div
-                      key={rev.id}
-                      className="p-4 rounded-xl border border-slate-100 bg-white space-y-2 shadow-2xs"
-                    >
-                      <div className="flex items-center justify-between">
-                        <span className="font-bold text-xs sm:text-sm text-[#0F172A]">
-                          {rev.name}
-                        </span>
-                        <span className="text-[11px] text-slate-400">{rev.date}</span>
-                      </div>
-                      <div className="flex text-amber-400 text-xs">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-3 h-3 ${
-                              i < rev.rating
-                                ? 'fill-amber-400 text-amber-400'
-                                : 'text-slate-200'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <p className="text-xs text-slate-600">{rev.comment}</p>
+                  {reviewsList.length === 0 ? (
+                    <div className="p-8 text-center rounded-xl border border-dashed border-slate-200 bg-white">
+                      <p className="text-sm font-bold text-slate-700">
+                        No customer reviews yet
+                      </p>
+                      <p className="text-xs text-slate-400 mt-1">
+                        Be the first to rate and review this product using the form above!
+                      </p>
                     </div>
-                  ))}
+                  ) : (
+                    reviewsList.map((rev, idx) => (
+                      <div
+                        key={rev._id || rev.id || idx}
+                        className="p-4 rounded-xl border border-slate-100 bg-white space-y-2 shadow-2xs"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-xs sm:text-sm text-[#0F172A]">
+                              {rev.name}
+                            </span>
+                            <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                              Verified
+                            </span>
+                          </div>
+                          <span className="text-[11px] text-slate-400">
+                            {rev.date || formatReviewDate(rev.createdAt)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5 text-amber-400 text-xs">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3.5 h-3.5 ${
+                                i < Number(rev.rating)
+                                  ? 'fill-amber-400 text-amber-400'
+                                  : 'text-slate-200 fill-slate-200'
+                              }`}
+                            />
+                          ))}
+                          <span className="text-[11px] font-bold text-slate-600 ml-1">
+                            ({rev.rating}/5)
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {rev.comment}
+                        </p>
+                      </div>
+                    ))
+                  )}
                 </div>
               </div>
             )}

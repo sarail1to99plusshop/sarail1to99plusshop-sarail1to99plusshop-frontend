@@ -1,12 +1,15 @@
 import { Link } from 'react-router-dom';
 import { FaFire, FaArrowRight, FaShieldAlt, FaTruck, FaUndo, FaTag } from 'react-icons/fa';
 import { BsBoxSeam } from 'react-icons/bs';
-import { sampleProducts, categoriesList } from '../data/mockData';
+import { useAllProducts, useCategories } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
 import HeroCarousel from '../components/common/HeroCarousel';
 import MessengerChatButton from '../components/common/MessengerChatButton';
 
 const Home = () => {
+  const { data: sampleProducts = [] } = useAllProducts();
+  const { data: categoriesList = [] } = useCategories();
+
   const hotOffers = sampleProducts
     .filter(
       (p) =>

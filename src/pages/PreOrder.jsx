@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { BsBoxSeam, BsCheckCircle } from 'react-icons/bs';
+import { createPreOrderInDB } from '../services/api';
 
 const PreOrder = () => {
   const [productName, setProductName] = useState('');
@@ -8,8 +9,18 @@ const PreOrder = () => {
   const [notes, setNotes] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await createPreOrderInDB({
+        productName: productName.trim(),
+        customerName: customerName.trim(),
+        phone: phone.trim(),
+        notes: notes.trim(),
+      });
+    } catch (err) {
+      console.warn('Could not sync pre-order to backend:', err);
+    }
     setSubmitted(true);
   };
 
