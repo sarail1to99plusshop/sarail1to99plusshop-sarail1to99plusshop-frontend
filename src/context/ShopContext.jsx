@@ -252,7 +252,7 @@ export const ShopProvider = ({ children }) => {
       totalAmount,
       totalQuantity: formattedItems.reduce((acc, it) => acc + it.quantity, 0),
       paymentMethod: paymentMethod || 'COD',
-      orderStatus: 'Shipped',
+      orderStatus: 'Pending',
       courierData: {
         provider: 'Steadfast',
         consignmentId,
