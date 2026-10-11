@@ -105,7 +105,7 @@ const Home = () => {
           </div>
           <Link
             to="/shop"
-            className="text-xs font-bold text-primary hover:text-[#B80D18] flex items-center gap-1 transition-colors"
+            className="text-xs font-bold text-primary hover:text-[#B80D18] inline-flex items-center gap-1 py-2 px-2 min-h-[36px] transition-colors"
           >
             <span>View All Categories</span>
             <FaArrowRight className="text-[10px]" aria-hidden="true" />
@@ -159,7 +159,7 @@ const Home = () => {
 
           <Link
             to="/hot-offers"
-            className="bg-white hover:bg-gray-100 text-[#990B14] font-bold text-xs uppercase px-5 py-2.5 rounded-full shadow-md transition-all shrink-0"
+            className="bg-white hover:bg-gray-100 text-[#990B14] font-bold text-xs uppercase px-5 py-2.5 min-h-[40px] inline-flex items-center rounded-full shadow-md transition-all shrink-0"
           >
             Explore All Deals
           </Link>
@@ -190,7 +190,7 @@ const Home = () => {
           </div>
           <Link
             to="/best-selling"
-            className="text-xs font-bold text-primary hover:text-[#B80D18] flex items-center gap-1 transition-colors"
+            className="text-xs font-bold text-primary hover:text-[#B80D18] inline-flex items-center gap-1 py-2 px-2 min-h-[36px] transition-colors"
           >
             <span>See More Best Sellers</span>
             <FaArrowRight className="text-[10px]" aria-hidden="true" />
@@ -228,7 +228,7 @@ const Home = () => {
 
           <Link
             to="/pre-order"
-            className="bg-[#B80D18] hover:bg-[#990B14] text-white font-bold text-xs uppercase px-6 py-3 rounded-md shadow-md transition-all flex items-center gap-2 shrink-0"
+            className="bg-[#B80D18] hover:bg-[#990B14] text-white font-bold text-xs uppercase px-6 py-3 min-h-[44px] rounded-md shadow-md transition-all flex items-center gap-2 shrink-0"
           >
             <BsBoxSeam className="text-base" aria-hidden="true" />
             <span>Place Special Request</span>
@@ -247,7 +247,7 @@ const Home = () => {
           </div>
           <Link
             to="/new-arrivals"
-            className="text-xs font-bold text-primary hover:text-[#B80D18] flex items-center gap-1 transition-colors"
+            className="text-xs font-bold text-primary hover:text-[#B80D18] inline-flex items-center gap-1 py-2 px-2 min-h-[36px] transition-colors"
           >
             <span>View All New Arrivals</span>
             <FaArrowRight className="text-[10px]" aria-hidden="true" />

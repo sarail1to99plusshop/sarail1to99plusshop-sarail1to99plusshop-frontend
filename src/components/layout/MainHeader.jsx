@@ -29,7 +29,7 @@ const MainHeader = () => {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden text-charcoal hover:text-[#B80D18] p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            className="lg:hidden w-11 h-11 flex items-center justify-center text-charcoal hover:text-[#B80D18] rounded-lg hover:bg-slate-100 transition-colors"
             aria-label="Open navigation menu"
           >
             <FiMenu className="text-2xl text-charcoal" aria-hidden="true" />
@@ -40,10 +40,10 @@ const MainHeader = () => {
             <img
               src={logoImg}
               alt="Sarail 1 to 99 Plus Shop"
-              width="170"
+              width="85"
               height="48"
               decoding="async"
-              className="h-10 sm:h-11 md:h-12 w-auto max-w-[170px] sm:max-w-[190px] md:max-w-[210px] object-contain transition-transform group-hover:scale-[1.02]"
+              className="h-10 sm:h-11 md:h-12 w-auto object-contain transition-transform group-hover:scale-[1.02]"
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
@@ -162,11 +162,11 @@ const MainHeader = () => {
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
             placeholder="Search for products..."
-            className="w-full bg-white text-charcoal placeholder-slate-500 text-xs px-3.5 py-2 outline-none font-medium"
+            className="w-full bg-white text-charcoal placeholder-slate-500 text-xs px-3.5 py-2.5 min-h-[40px] outline-none font-medium"
           />
           <button
             type="submit"
-            className="bg-primary hover:bg-primary-dark text-white px-3.5 py-2 flex items-center justify-center shrink-0 transition-colors"
+            className="bg-primary hover:bg-primary-dark text-white min-w-[44px] min-h-[40px] px-3.5 py-2.5 flex items-center justify-center shrink-0 transition-colors"
             aria-label="Search products"
           >
             <FiSearch className="text-sm stroke-[2.5]" aria-hidden="true" />
