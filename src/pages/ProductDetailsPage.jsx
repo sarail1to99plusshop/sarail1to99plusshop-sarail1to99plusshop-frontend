@@ -26,6 +26,10 @@ import {
   useProductReviews,
   useAddReviewMutation,
 } from '../hooks/useQueries';
+import {
+  optimizeImageUrl,
+  handleOptimizedImageError,
+} from '../utils/imageOptimizer';
 
 const formatReviewDate = (dateStr) => {
   if (!dateStr) return 'Recently';
@@ -335,6 +339,7 @@ const ProductDetailsPage = () => {
               <div className="flex sm:flex-col gap-3.5 order-2 sm:order-1 shrink-0">
                 {variantImages.map((imgUrl, idx) => {
                   const isActive = selectedImageIndex === idx;
+                  const optimizedThumb = optimizeImageUrl(imgUrl, { width: 160, quality: 75 });
                   return (
                     <button
                       key={idx}
@@ -348,10 +353,14 @@ const ProductDetailsPage = () => {
                       aria-label={`View photo ${idx + 1}`}
                     >
                       <img
-                        src={imgUrl}
+                        src={optimizedThumb}
                         alt={`${product.name} thumbnail ${idx + 1}`}
+                        width="80"
+                        height="80"
                         className="w-full h-full object-contain"
                         loading="lazy"
+                        decoding="async"
+                        onError={(e) => handleOptimizedImageError(e, imgUrl)}
                       />
                     </button>
                   );
@@ -361,8 +370,13 @@ const ProductDetailsPage = () => {
               {/* Main Preview Image */}
               <div className="flex-1 flex items-center justify-center p-4 order-1 sm:order-2 min-h-[280px] sm:min-h-[360px] w-full">
                 <img
-                  src={mainPreviewImage}
+                  src={optimizeImageUrl(mainPreviewImage, { width: 680, quality: 82 })}
                   alt={product.name}
+                  width="600"
+                  height="600"
+                  fetchPriority="high"
+                  decoding="async"
+                  onError={(e) => handleOptimizedImageError(e, mainPreviewImage)}
                   className="max-h-[340px] w-auto max-w-full object-contain transition-transform duration-300 hover:scale-105 select-none"
                 />
               </div>
@@ -907,6 +921,7 @@ const ProductDetailsPage = () => {
                 relProd.thumbnail ||
                 relProd.variants?.[0]?.images?.[0] ||
                 'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80';
+              const optimizedRelImg = optimizeImageUrl(relImage, { width: 260, quality: 76 });
 
               return (
                 <Link
@@ -916,28 +931,32 @@ const ProductDetailsPage = () => {
                 >
                   <div className="relative pt-[100%] bg-slate-50 rounded-lg overflow-hidden mb-2">
                     <img
-                      src={relImage}
+                      src={optimizedRelImg}
                       alt={relProd.name}
+                      width="200"
+                      height="200"
                       className="absolute inset-0 w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
+                      decoding="async"
+                      onError={(e) => handleOptimizedImageError(e, relImage)}
                     />
                     {relProd.discount && (
-                      <span className="absolute top-1.5 left-1.5 bg-[#DE111E] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                      <span className="absolute top-1.5 left-1.5 bg-[#B80D18] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
                         {relProd.discount}
                       </span>
                     )}
                   </div>
                   <div>
-                    <h4 className="font-bold text-[11px] sm:text-xs text-[#0F172A] line-clamp-1 group-hover:text-[#DE111E] transition-colors">
+                    <h4 className="font-bold text-[11px] sm:text-xs text-[#0F172A] line-clamp-1 group-hover:text-[#B80D18] transition-colors">
                       {relProd.name}
                     </h4>
                     <div className="flex items-center justify-center gap-1.5 mt-1">
                       {relProd.oldPrice && (
-                        <span className="text-[10px] text-slate-400 line-through">
+                        <span className="text-[10px] text-slate-600 line-through">
                           ৳{relProd.oldPrice}
                         </span>
                       )}
-                      <span className="text-xs font-black text-[#DE111E]">
+                      <span className="text-xs font-black text-[#B80D18]">
                         ৳{relProd.price}
                       </span>
                     </div>

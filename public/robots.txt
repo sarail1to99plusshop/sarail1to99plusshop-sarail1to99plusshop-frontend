@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sarail1to99plusshop-sarail1to99plus.vercel.app/sitemap.xml
+

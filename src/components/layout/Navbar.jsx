@@ -1,9 +1,14 @@
+import { lazy, Suspense } from 'react';
 import TopBar from './TopBar';
 import MainHeader from './MainHeader';
 import BottomNav from './BottomNav';
-import MobileDrawer from './MobileDrawer';
+import { useShop } from '../../context/ShopContext';
+
+const MobileDrawer = lazy(() => import('./MobileDrawer'));
 
 const Navbar = () => {
+  const { isMobileMenuOpen } = useShop();
+
   return (
     <header className="w-full flex flex-col z-40 bg-white">
       {/* 1. Top Bar (Socials, Phone, Email, Track Order) */}
@@ -15,8 +20,12 @@ const Navbar = () => {
       {/* 3. Bottom Bar (Gadgets Dropdown, Menu links with dividers) */}
       <BottomNav />
 
-      {/* Mobile drawer overlay */}
-      <MobileDrawer />
+      {/* Mobile drawer overlay (loaded on demand) */}
+      {isMobileMenuOpen && (
+        <Suspense fallback={null}>
+          <MobileDrawer />
+        </Suspense>
+      )}
     </header>
   );
 };

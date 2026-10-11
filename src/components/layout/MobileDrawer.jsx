@@ -7,7 +7,7 @@ import { TbTruckDelivery } from 'react-icons/tb';
 import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
 import { useCategories } from '../../hooks/useQueries';
-import logoImg from '../../assets/Without BG logo.png';
+import logoImg from '../../assets/Without BG logo.webp';
 
 const MobileDrawer = () => {
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useShop();
@@ -20,7 +20,7 @@ const MobileDrawer = () => {
   const closeDrawer = () => setIsMobileMenuOpen(false);
 
   return (
-    <div className="fixed inset-0 z-50 lg:hidden">
+    <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Mobile navigation menu">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
@@ -33,17 +33,18 @@ const MobileDrawer = () => {
         {/* Drawer Header */}
         <div className="p-4 bg-primary text-white flex items-center justify-between border-b border-primary-dark">
           <div className="flex items-center gap-2">
-            <img src={logoImg} alt="Logo" className="h-8 object-contain" />
+            <img src={logoImg} alt="Sarail 1 to 99 Plus Shop Logo" width="32" height="32" className="h-8 w-8 object-contain" />
             <div className="flex flex-col">
               <span className="font-bold text-base tracking-tight leading-tight">
                 SARAIL 1 TO 99+
               </span>
-              <span className="text-[9px] text-white/70">Variety & Household Shop</span>
+              <span className="text-[10px] text-slate-200">Variety & Household Shop</span>
             </div>
           </div>
           <button
+            type="button"
             onClick={closeDrawer}
-            className="p-2 text-white/80 hover:text-white rounded-full hover:bg-white/10"
+            className="p-2 text-white hover:text-white rounded-full hover:bg-white/10"
             aria-label="Close menu"
           >
             <FiX className="text-2xl" />
