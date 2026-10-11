@@ -8,6 +8,8 @@ import {
   fetchCategories,
   fetchDeliveryCharges,
   fetchUserProfileFromDB,
+  fetchUserOrdersFromDB,
+  cancelOrderInDB,
 } from '../services/api';
 
 // 1. Paginated Products Hook (default 10 products per page from MongoDB)
@@ -134,5 +136,27 @@ export const useUserProfile = (uidOrEmail) => {
     queryFn: () => fetchUserProfileFromDB(uidOrEmail),
     enabled: Boolean(uidOrEmail),
     staleTime: 1000 * 10,
+  });
+};
+
+// 9. User Order History Hook (fetches all orders for the logged-in user from MongoDB)
+export const useUserOrders = ({ email = '', userId = '' } = {}) => {
+  return useQuery({
+    queryKey: ['userOrders', email?.toLowerCase() || '', userId || ''],
+    queryFn: () => fetchUserOrdersFromDB({ email, userId }),
+    enabled: Boolean(email || userId),
+    staleTime: 1000 * 10,
+  });
+};
+
+// 10. Cancel User Order Mutation Hook
+export const useCancelOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (invoiceNumber) => cancelOrderInDB(invoiceNumber),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+    },
   });
 };

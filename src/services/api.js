@@ -149,8 +149,11 @@ export const createOrderInDB = async (orderPayload) => {
   return res.data.order;
 };
 
-export const fetchOrdersFromDB = async () => {
-  const res = await api.get('/api/orders');
+export const fetchUserOrdersFromDB = async ({ email = '', userId = '' } = {}) => {
+  if (!email && !userId) return [];
+  const res = await api.get('/api/orders', {
+    params: { email, userId },
+  });
   return res.data.orders || [];
 };
 
@@ -159,6 +162,13 @@ export const trackOrderInDB = async ({ invoiceNumber, phone }) => {
     params: { invoiceNumber, phone },
   });
   return res.data.order;
+};
+
+export const cancelOrderInDB = async (invoiceNumber) => {
+  const res = await api.patch(
+    `/api/orders/${encodeURIComponent(invoiceNumber)}/cancel`
+  );
+  return res.data;
 };
 
 export const createPreOrderInDB = async (preOrderPayload) => {

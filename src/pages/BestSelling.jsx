@@ -1,9 +1,10 @@
 import { useAllProducts } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
+import { ProductGridSkeleton } from '../components/common/ProductCardSkeleton';
 import { FaCrown } from 'react-icons/fa';
 
 const BestSelling = () => {
-  const { data: sampleProducts = [] } = useAllProducts();
+  const { data: sampleProducts = [], isLoading } = useAllProducts();
   const bestSellers = sampleProducts.filter(
     (p) =>
       p.tag?.toLowerCase().includes('best') ||
@@ -23,19 +24,27 @@ const BestSelling = () => {
             Best Selling Products
           </h1>
           <p className="text-xs text-gray-500">
-            Showing {displayProducts.length} top-ranked products voted by satisfied customers across Bangladesh
+            {isLoading
+              ? 'Loading top-ranked products...'
+              : `Showing ${displayProducts.length} top-ranked products voted by satisfied customers across Bangladesh`}
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-        {displayProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {isLoading ? (
+        <ProductGridSkeleton
+          count={8}
+          columnsClass="grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {displayProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 export default BestSelling;
-

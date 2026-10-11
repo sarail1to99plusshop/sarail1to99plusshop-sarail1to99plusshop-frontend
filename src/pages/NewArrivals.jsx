@@ -1,9 +1,10 @@
 import { useAllProducts } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
+import { ProductGridSkeleton } from '../components/common/ProductCardSkeleton';
 import { FiZap } from 'react-icons/fi';
 
 const NewArrivals = () => {
-  const { data: sampleProducts = [] } = useAllProducts();
+  const { data: sampleProducts = [], isLoading } = useAllProducts();
   const newArrivals = sampleProducts.filter(
     (p) =>
       p.tag?.toLowerCase().includes('trending') ||
@@ -28,14 +29,20 @@ const NewArrivals = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-        {displayProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      {isLoading ? (
+        <ProductGridSkeleton
+          count={8}
+          columnsClass="grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
+        />
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+          {displayProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 export default NewArrivals;
-

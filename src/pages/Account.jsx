@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Mail,
@@ -16,10 +16,20 @@ import {
   ShoppingCart,
   Clock,
   Sparkles,
+  FileText,
+  MapPin,
+  Phone,
+  Truck,
+  ExternalLink,
+  ShoppingBag,
+  XCircle,
+  Ban,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useShop } from '../context/ShopContext';
 import { getAuthErrorMessage } from '../utils/authErrors';
-import { useUserProfile } from '../hooks/useQueries';
+import { useUserProfile, useUserOrders } from '../hooks/useQueries';
+import { OrderCardSkeleton } from '../components/common/ProductCardSkeleton';
 
 const Account = () => {
   const {
@@ -35,8 +45,67 @@ const Account = () => {
     logOut,
   } = useAuth();
 
+  const { orders: sessionOrders, cancelOrder } = useShop();
+
   const { data: queriedUser } = useUserProfile(currentUser?.uid);
   const activeDbUser = dbUser || queriedUser;
+
+  const {
+    data: dbOrders = [],
+    isLoading: ordersLoading,
+    isFetching: ordersFetching,
+    refetch: refetchOrders,
+  } = useUserOrders({
+    email: currentUser?.email,
+    userId: currentUser?.uid,
+  });
+
+  // Merge MongoDB orders with any session orders belonging to the user
+  const userOrders = useMemo(() => {
+    if (!currentUser) return [];
+    const map = new Map();
+
+    dbOrders.forEach((order) => {
+      if (order?.invoiceNumber) {
+        map.set(order.invoiceNumber, order);
+      }
+    });
+
+    sessionOrders.forEach((order) => {
+      const matchesUser =
+        (order?.userId && order.userId === currentUser.uid) ||
+        (order?.customerDetails?.email &&
+          currentUser.email &&
+          order.customerDetails.email.toLowerCase() === currentUser.email.toLowerCase());
+      if (matchesUser && order?.invoiceNumber) {
+        if (!map.has(order.invoiceNumber)) {
+          map.set(order.invoiceNumber, order);
+        } else if (order.orderStatus === 'Cancelled') {
+          map.set(order.invoiceNumber, {
+            ...map.get(order.invoiceNumber),
+            orderStatus: 'Cancelled',
+          });
+        }
+      }
+    });
+
+    return Array.from(map.values()).sort(
+      (a, b) =>
+        new Date(b.createdAt?.$date || b.createdAt || 0) -
+        new Date(a.createdAt?.$date || a.createdAt || 0)
+    );
+  }, [currentUser, dbOrders, sessionOrders]);
+
+  const [orderStatusFilter, setOrderStatusFilter] = useState('All');
+  const [cancellingInvoice, setCancellingInvoice] = useState('');
+  const [confirmCancelInvoice, setConfirmCancelInvoice] = useState('');
+
+  const filteredOrders = useMemo(() => {
+    if (orderStatusFilter === 'All') return userOrders;
+    return userOrders.filter(
+      (o) => (o.orderStatus || 'Pending').toLowerCase() === orderStatusFilter.toLowerCase()
+    );
+  }, [userOrders, orderStatusFilter]);
 
   // Mode: 'login' | 'signup' | 'forgot-password'
   const [authMode, setAuthMode] = useState('login');
@@ -54,6 +123,35 @@ const Account = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [isRefreshingVerification, setIsRefreshingVerification] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Handle Cancel Order (Allowed when Pending/Processing; blocked when Shipped/Delivered)
+  const handleCancelOrder = async (order) => {
+    if (!order?.invoiceNumber) return;
+    const status = order.orderStatus || 'Pending';
+
+    if (status === 'Shipped' || status === 'Delivered') {
+      setErrorMessage(
+        `Order #${order.invoiceNumber} cannot be cancelled because its status is already ${status}.`
+      );
+      setConfirmCancelInvoice('');
+      return;
+    }
+
+    setCancellingInvoice(order.invoiceNumber);
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      await cancelOrder(order.invoiceNumber);
+      await refetchOrders();
+      setSuccessMessage(`Order #${order.invoiceNumber} has been cancelled successfully.`);
+      setConfirmCancelInvoice('');
+    } catch (err) {
+      setErrorMessage(err?.message || 'Could not cancel order. Please try again.');
+    } finally {
+      setCancellingInvoice('');
+    }
+  };
 
   // Handle Sign In with Email & Password
   const handleSignIn = async (e) => {
@@ -411,6 +509,354 @@ const Account = () => {
                 </div>
               </Link>
             </div>
+          </div>
+
+          {/* My Order History Section */}
+          <div
+            id="order-history"
+            className="bg-white rounded-2xl border border-slate-200 shadow-2xs p-6 sm:p-8 space-y-6"
+          >
+            {/* Header & Refresh */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#003D73]/10 text-[#003D73] flex items-center justify-center shrink-0">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-extrabold text-[#0F172A]">
+                      My Order History
+                    </h3>
+                    <span className="px-2 py-0.5 rounded-full bg-slate-100 text-[#0F172A] text-[11px] font-bold">
+                      {userOrders.length} {userOrders.length === 1 ? 'Order' : 'Orders'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    View all your placed orders, status updates, and shipment tracking
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => refetchOrders()}
+                disabled={ordersFetching}
+                className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-[#003D73] text-xs font-bold text-[#0F172A] hover:text-[#003D73] bg-[#F8FAFC] hover:bg-white transition-colors disabled:opacity-50"
+              >
+                <RefreshCw
+                  className={`w-3.5 h-3.5 ${ordersFetching ? 'animate-spin text-[#003D73]' : ''}`}
+                />
+                <span>Refresh</span>
+              </button>
+            </div>
+
+            {/* Filter Pills */}
+            {userOrders.length > 0 && (
+              <div className="flex flex-wrap items-center gap-2">
+                {['All', 'Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(
+                  (status) => {
+                    const count =
+                      status === 'All'
+                        ? userOrders.length
+                        : userOrders.filter(
+                            (o) =>
+                              (o.orderStatus || 'Pending').toLowerCase() === status.toLowerCase()
+                          ).length;
+                    const isActive = orderStatusFilter === status;
+                    return (
+                      <button
+                        key={status}
+                        type="button"
+                        onClick={() => setOrderStatusFilter(status)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 ${
+                          isActive
+                            ? 'bg-[#003D73] text-white shadow-2xs'
+                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                        }`}
+                      >
+                        <span>{status}</span>
+                        <span
+                          className={`px-1.5 py-0.2 rounded-full text-[10px] ${
+                            isActive ? 'bg-white/20 text-white' : 'bg-white text-slate-700'
+                          }`}
+                        >
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  }
+                )}
+              </div>
+            )}
+
+            {/* Loading State: YouTube-Style Shimmer Skeleton */}
+            {ordersLoading ? (
+              <OrderCardSkeleton count={3} />
+            ) : filteredOrders.length === 0 ? (
+              /* Empty State */
+              <div className="text-center py-12 px-4 bg-[#F8FAFC] rounded-xl border border-dashed border-slate-200 space-y-3">
+                <div className="w-12 h-12 rounded-full bg-slate-200/70 text-slate-500 flex items-center justify-center mx-auto">
+                  <ShoppingBag className="w-6 h-6" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="text-sm font-bold text-[#0F172A]">
+                    {userOrders.length === 0
+                      ? 'You have not placed any orders yet'
+                      : `No ${orderStatusFilter.toLowerCase()} orders found`}
+                  </h4>
+                  <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                    {userOrders.length === 0
+                      ? 'When you place an order, it will automatically appear here with its invoice and live tracking details.'
+                      : 'Try switching to the "All" filter tab to view all of your orders.'}
+                  </p>
+                </div>
+                {userOrders.length === 0 && (
+                  <div className="pt-2">
+                    <Link
+                      to="/shop"
+                      className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#DE111E] hover:bg-[#bf0e19] text-white text-xs font-extrabold uppercase tracking-wider rounded-lg transition-colors shadow-2xs"
+                    >
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>Start Shopping</span>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            ) : (
+              /* Order Cards List */
+              <div className="space-y-4">
+                {filteredOrders.map((order) => {
+                  const status = order.orderStatus || 'Pending';
+                  const canCancel = status === 'Pending' || status === 'Processing';
+                  const isShippedOrDelivered = status === 'Shipped' || status === 'Delivered';
+                  const isCancelling = cancellingInvoice === order.invoiceNumber;
+                  const isConfirmingCancel = confirmCancelInvoice === order.invoiceNumber;
+                  const rawDate = order.createdAt?.$date || order.createdAt;
+
+                  const statusBadgeStyle =
+                    status === 'Delivered' || status === 'Shipped'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : status === 'Cancelled'
+                      ? 'bg-red-50 text-[#DE111E] border-red-200'
+                      : status === 'Processing'
+                      ? 'bg-blue-50 text-[#003D73] border-blue-200'
+                      : 'bg-amber-50 text-amber-800 border-amber-200';
+
+                  return (
+                    <div
+                      key={order._id?.$oid || order._id || order.invoiceNumber}
+                      className="rounded-xl border border-slate-200 overflow-hidden bg-white hover:border-slate-300 transition-all shadow-2xs"
+                    >
+                      {/* Order Card Top Bar */}
+                      <div className="bg-[#F8FAFC] px-4 sm:px-5 py-3.5 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-5">
+                          <div>
+                            <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                              Invoice Number
+                            </span>
+                            <span className="text-xs sm:text-sm font-black text-[#003D73] font-mono">
+                              {order.invoiceNumber}
+                            </span>
+                          </div>
+
+                          <div className="h-6 w-px bg-slate-200 hidden sm:block" />
+
+                          <div>
+                            <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                              Order Date
+                            </span>
+                            <span className="text-xs font-semibold text-[#0F172A]">
+                              {rawDate
+                                ? new Date(rawDate).toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'short',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                  })
+                                : 'Recent'}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2.5">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${statusBadgeStyle}`}
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                            <span>{status}</span>
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Order Items List */}
+                      <div className="p-4 sm:p-5 space-y-4">
+                        <div className="divide-y divide-slate-100">
+                          {(order.items || []).map((item, idx) => (
+                            <div
+                              key={`${order.invoiceNumber}-item-${idx}`}
+                              className="py-2.5 first:pt-0 last:pb-0 flex items-center justify-between gap-3"
+                            >
+                              <div className="flex items-center gap-3 min-w-0">
+                                {item.image ? (
+                                  <img
+                                    src={item.image}
+                                    alt={item.title}
+                                    className="w-12 h-12 rounded-lg object-cover border border-slate-200 bg-slate-50 shrink-0"
+                                  />
+                                ) : (
+                                  <div className="w-12 h-12 rounded-lg bg-slate-100 flex items-center justify-center text-slate-400 shrink-0">
+                                    <Package className="w-5 h-5" />
+                                  </div>
+                                )}
+                                <div className="min-w-0">
+                                  <p className="text-xs sm:text-sm font-bold text-[#0F172A] line-clamp-1">
+                                    {item.title}
+                                  </p>
+                                  <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[11px] text-slate-500">
+                                    <span>
+                                      Qty: <strong className="text-[#0F172A]">{item.quantity}</strong>
+                                    </span>
+                                    <span>•</span>
+                                    <span>৳{Number(item.price || 0).toLocaleString()} each</span>
+                                    {(item.color || item.selectedVariant?.colorName) && (
+                                      <>
+                                        <span>•</span>
+                                        <span className="inline-flex items-center gap-1">
+                                          {(item.colorCode || item.selectedVariant?.colorCode) && (
+                                            <span
+                                              className="w-2.5 h-2.5 rounded-full border border-slate-300 inline-block"
+                                              style={{
+                                                backgroundColor:
+                                                  item.colorCode || item.selectedVariant?.colorCode,
+                                              }}
+                                            />
+                                          )}
+                                          <span>
+                                            {item.color || item.selectedVariant?.colorName}
+                                          </span>
+                                        </span>
+                                      </>
+                                    )}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="text-right shrink-0">
+                                <span className="text-xs sm:text-sm font-extrabold text-[#0F172A]">
+                                  ৳{(Number(item.price || 0) * Number(item.quantity || 1)).toLocaleString()}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Delivery & Summary Footer */}
+                        <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/60 -mx-4 sm:-mx-5 -mb-4 sm:-mb-5 px-4 sm:px-5 py-3.5">
+                          <div className="space-y-1 text-[11px] text-slate-600">
+                            {order.customerDetails?.address && (
+                              <div className="flex items-center gap-1.5">
+                                <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                <span className="line-clamp-1">
+                                  <strong>Delivery to:</strong> {order.customerDetails.name} —{' '}
+                                  {order.customerDetails.address}
+                                </span>
+                              </div>
+                            )}
+                            {order.customerDetails?.phone && (
+                              <div className="flex items-center gap-1.5">
+                                <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                                <span>{order.customerDetails.phone}</span>
+                                {order.courierData?.trackingCode && (
+                                  <>
+                                    <span className="text-slate-300">|</span>
+                                    <Truck className="w-3.5 h-3.5 text-[#003D73] shrink-0" />
+                                    <span className="font-semibold text-[#003D73]">
+                                      Tracking: {order.courierData.trackingCode}
+                                    </span>
+                                  </>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-3 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/70">
+                            <div className="text-left sm:text-right mr-1">
+                              <span className="text-[10px] uppercase tracking-wider font-bold text-slate-400 block">
+                                Total Amount
+                              </span>
+                              <span className="text-sm sm:text-base font-black text-[#DE111E]">
+                                ৳{Number(order.totalAmount || 0).toLocaleString()}
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-2">
+                              {/* Cancel Order Action: Allowed when Pending/Processing */}
+                              {canCancel && !isConfirmingCancel && (
+                                <button
+                                  type="button"
+                                  disabled={isCancelling}
+                                  onClick={() => setConfirmCancelInvoice(order.invoiceNumber)}
+                                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-red-200 bg-white hover:bg-red-50 text-[#DE111E] text-xs font-bold transition-colors shadow-2xs disabled:opacity-50"
+                                >
+                                  <XCircle className="w-3.5 h-3.5" />
+                                  <span>{isCancelling ? 'Cancelling...' : 'Cancel Order'}</span>
+                                </button>
+                              )}
+
+                              {/* Inline Confirmation Step */}
+                              {canCancel && isConfirmingCancel && (
+                                <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 px-2.5 py-1.5 rounded-lg">
+                                  <span className="text-[11px] font-bold text-[#DE111E]">
+                                    Cancel this order?
+                                  </span>
+                                  <button
+                                    type="button"
+                                    disabled={isCancelling}
+                                    onClick={() => handleCancelOrder(order)}
+                                    className="px-2.5 py-1 rounded-md bg-[#DE111E] hover:bg-[#bf0e19] text-white text-[11px] font-extrabold transition-colors disabled:opacity-50"
+                                  >
+                                    {isCancelling ? 'Wait...' : 'Yes, Cancel'}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    disabled={isCancelling}
+                                    onClick={() => setConfirmCancelInvoice('')}
+                                    className="px-2 py-1 rounded-md bg-white hover:bg-slate-100 text-slate-600 border border-slate-200 text-[11px] font-bold transition-colors"
+                                  >
+                                    No
+                                  </button>
+                                </div>
+                              )}
+
+                              {/* Locked Notice: Cannot cancel once Shipped or Delivered */}
+                              {isShippedOrDelivered && (
+                                <span
+                                  title={`Order cannot be cancelled because it is already ${status}`}
+                                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-slate-200 bg-slate-100 text-slate-400 text-xs font-semibold cursor-not-allowed select-none"
+                                >
+                                  <Ban className="w-3.5 h-3.5" />
+                                  <span>Cannot Cancel ({status})</span>
+                                </span>
+                              )}
+
+                              <Link
+                                to={`/track-order?invoice=${encodeURIComponent(order.invoiceNumber)}`}
+                                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-[#003D73] hover:bg-[#002b52] text-white text-xs font-bold transition-colors shadow-2xs shrink-0"
+                              >
+                                <Truck className="w-3.5 h-3.5" />
+                                <span>Track Order</span>
+                                <ExternalLink className="w-3 h-3 opacity-80" />
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
         </div>

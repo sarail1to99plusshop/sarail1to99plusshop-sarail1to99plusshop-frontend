@@ -50,6 +50,8 @@ const AppRoutes = () => {
         <Route path="register" element={<Account />} />
         <Route path="signup" element={<Account />} />
         <Route path="profile" element={<Account />} />
+        <Route path="orders" element={<Account />} />
+        <Route path="order-history" element={<Account />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

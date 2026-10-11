@@ -105,6 +105,7 @@ const Cart = () => {
 
     setLoading(true);
     const order = createOrder({
+      userId: currentUser?.uid || '',
       customerDetails: {
         name: activeName,
         email: customerEmail,
