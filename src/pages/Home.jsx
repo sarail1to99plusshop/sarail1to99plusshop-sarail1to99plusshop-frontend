@@ -3,12 +3,13 @@ import { FaFire, FaArrowRight, FaShieldAlt, FaTruck, FaUndo, FaTag } from 'react
 import { BsBoxSeam } from 'react-icons/bs';
 import { useAllProducts, useCategories } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
+import { ProductGridSkeleton } from '../components/common/ProductCardSkeleton';
 import HeroCarousel from '../components/common/HeroCarousel';
 import MessengerChatButton from '../components/common/MessengerChatButton';
 
 const Home = () => {
-  const { data: sampleProducts = [] } = useAllProducts();
-  const { data: categoriesList = [] } = useCategories();
+  const { data: sampleProducts = [], isLoading: productsLoading } = useAllProducts();
+  const { data: categoriesList = [], isLoading: categoriesLoading } = useCategories();
 
   const hotOffers = sampleProducts
     .filter(
@@ -108,19 +109,32 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-          {categoriesList.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/shop?category=${cat.id}`}
-              className="bg-white border border-gray-200 hover:border-primary rounded-lg p-3 text-center shadow-2xs hover:shadow-md transition-all duration-200 group flex flex-col items-center justify-center min-h-[72px]"
-            >
-              <h3 className="font-bold text-xs text-charcoal group-hover:text-primary transition-colors text-center line-clamp-2 leading-snug">
-                {cat.name}
-              </h3>
-            </Link>
-          ))}
-        </div>
+        {categoriesLoading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-gray-200 rounded-lg p-3 min-h-[72px] flex items-center justify-center shadow-2xs"
+              >
+                <div className="h-3.5 w-3/4 rounded yt-skeleton" />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+            {categoriesList.map((cat) => (
+              <Link
+                key={cat.id}
+                to={`/shop?category=${cat.id}`}
+                className="bg-white border border-gray-200 hover:border-primary rounded-lg p-3 text-center shadow-2xs hover:shadow-md transition-all duration-200 group flex flex-col items-center justify-center min-h-[72px]"
+              >
+                <h3 className="font-bold text-xs text-charcoal group-hover:text-primary transition-colors text-center line-clamp-2 leading-snug">
+                  {cat.name}
+                </h3>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 4. Flash Sale & Hot Offers */}
@@ -148,11 +162,18 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          {hotOffers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {productsLoading ? (
+          <ProductGridSkeleton
+            count={4}
+            columnsClass="grid-cols-2 sm:grid-cols-2 md:grid-cols-4"
+          />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {hotOffers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 5. Best Selling Products */}
@@ -173,11 +194,18 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          {bestSellers.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {productsLoading ? (
+          <ProductGridSkeleton
+            count={4}
+            columnsClass="grid-cols-2 sm:grid-cols-2 md:grid-cols-4"
+          />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {bestSellers.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* 6. Special Pre-Order Banner */}
@@ -223,11 +251,18 @@ const Home = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          {newArrivals.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {productsLoading ? (
+          <ProductGridSkeleton
+            count={4}
+            columnsClass="grid-cols-2 sm:grid-cols-2 md:grid-cols-4"
+          />
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {newArrivals.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Floating Facebook Messenger Chat Widget (Home page only) */}

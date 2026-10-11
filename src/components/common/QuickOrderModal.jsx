@@ -130,6 +130,7 @@ const QuickOrderModal = () => {
     ];
 
     const order = createOrder({
+      userId: currentUser?.uid || '',
       customerDetails: {
         name: activeName,
         email: customerEmail,

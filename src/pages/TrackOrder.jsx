@@ -1,20 +1,79 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { TbTruckDelivery } from 'react-icons/tb';
-import { FiCheckCircle, FiExternalLink } from 'react-icons/fi';
+import { FiCheckCircle, FiExternalLink, FiXCircle, FiSlash } from 'react-icons/fi';
 import { useShop } from '../context/ShopContext';
 import { trackOrderInDB } from '../services/api';
 
 const TrackOrder = () => {
-  const { orders } = useShop();
-  const [orderId, setOrderId] = useState('');
+  const { orders, cancelOrder } = useShop();
+  const [searchParams] = useSearchParams();
+  const initialInvoice = searchParams.get('invoice') || '';
+  const [orderId, setOrderId] = useState(initialInvoice);
   const [phone, setPhone] = useState('');
   const [trackingResult, setTrackingResult] = useState(null);
   const [notFoundError, setNotFoundError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(Boolean(initialInvoice));
+  const [cancelling, setCancelling] = useState(false);
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  const [cancelFeedback, setCancelFeedback] = useState({ type: '', message: '' });
+
+  useEffect(() => {
+    const cleanInvoice = initialInvoice.trim();
+    if (!cleanInvoice) return;
+
+    let cancelled = false;
+
+    trackOrderInDB({ invoiceNumber: cleanInvoice, phone: '' })
+      .then((dbOrder) => {
+        if (cancelled) return;
+        if (dbOrder) {
+          setTrackingResult(dbOrder);
+          setNotFoundError('');
+          return;
+        }
+        const matched = orders.find(
+          (o) => o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()
+        );
+        if (matched) {
+          setTrackingResult(matched);
+          setNotFoundError('');
+        } else {
+          setNotFoundError(
+            'No shipment found matching this Invoice Number. Please verify your details and try again.'
+          );
+        }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        const matched = orders.find(
+          (o) => o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()
+        );
+        if (matched) {
+          setTrackingResult(matched);
+          setNotFoundError('');
+        } else {
+          setNotFoundError(
+            'No shipment found matching this Invoice Number in our database.'
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [initialInvoice, orders]);
 
   const handleTrack = async (e) => {
     e.preventDefault();
-    if (!orderId && !phone) return;
+    const cleanInvoice = orderId.trim();
+    const cleanPhone = phone.trim();
+    if (!cleanInvoice && !cleanPhone) return;
 
     setLoading(true);
     setNotFoundError('');
@@ -22,8 +81,8 @@ const TrackOrder = () => {
     try {
       // 1. Check backend MongoDB first
       const dbOrder = await trackOrderInDB({
-        invoiceNumber: orderId.trim(),
-        phone: phone.trim(),
+        invoiceNumber: cleanInvoice,
+        phone: cleanPhone,
       });
 
       if (dbOrder) {
@@ -34,8 +93,9 @@ const TrackOrder = () => {
       // 2. Search in current session orders if any
       const matched = orders.find(
         (o) =>
-          o.invoiceNumber?.toLowerCase() === orderId.trim().toLowerCase() ||
-          (phone && o.customerDetails?.phone?.includes(phone.trim()))
+          (cleanInvoice &&
+            o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()) ||
+          (cleanPhone && o.customerDetails?.phone?.includes(cleanPhone))
       );
 
       if (matched) {
@@ -48,8 +108,9 @@ const TrackOrder = () => {
     } catch {
       const matched = orders.find(
         (o) =>
-          o.invoiceNumber?.toLowerCase() === orderId.trim().toLowerCase() ||
-          (phone && o.customerDetails?.phone?.includes(phone.trim()))
+          (cleanInvoice &&
+            o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()) ||
+          (cleanPhone && o.customerDetails?.phone?.includes(cleanPhone))
       );
       if (matched) {
         setTrackingResult(matched);
@@ -60,6 +121,41 @@ const TrackOrder = () => {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCancelTrackedOrder = async () => {
+    if (!trackingResult?.invoiceNumber) return;
+    const currentStatus = trackingResult.orderStatus || 'Pending';
+
+    if (currentStatus === 'Shipped' || currentStatus === 'Delivered') {
+      setCancelFeedback({
+        type: 'error',
+        message: `Cannot cancel order because it is already ${currentStatus}.`,
+      });
+      setConfirmCancel(false);
+      return;
+    }
+
+    setCancelling(true);
+    setCancelFeedback({ type: '', message: '' });
+    try {
+      const updated = await cancelOrder(trackingResult.invoiceNumber);
+      setTrackingResult((prev) =>
+        prev ? { ...prev, orderStatus: updated?.orderStatus || 'Cancelled' } : prev
+      );
+      setCancelFeedback({
+        type: 'success',
+        message: `Order #${trackingResult.invoiceNumber} has been cancelled successfully.`,
+      });
+      setConfirmCancel(false);
+    } catch (err) {
+      setCancelFeedback({
+        type: 'error',
+        message: err?.message || 'Could not cancel order.',
+      });
+    } finally {
+      setCancelling(false);
     }
   };
 
@@ -129,17 +225,94 @@ const TrackOrder = () => {
       {trackingResult && (
         <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fadeIn space-y-6">
           
+          {cancelFeedback.message && (
+            <div
+              className={`p-3.5 rounded-lg text-xs font-semibold border ${
+                cancelFeedback.type === 'success'
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
+                  : 'bg-red-50 border-red-200 text-actionRed'
+              }`}
+            >
+              {cancelFeedback.message}
+            </div>
+          )}
+
           {/* Header Summary */}
-          <div className="flex flex-wrap items-center justify-between border-b border-gray-100 pb-4 gap-2">
+          <div className="flex flex-wrap items-center justify-between border-b border-gray-100 pb-4 gap-3">
             <div>
               <span className="text-xs text-gray-400">Invoice Number:</span>
               <h3 className="font-black text-lg text-primary">{trackingResult.invoiceNumber}</h3>
             </div>
-            <div className="text-right">
-              <span className="text-xs text-gray-400">Status:</span>
-              <span className="block font-bold text-xs text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-sm">
-                {trackingResult.orderStatus}
-              </span>
+
+            <div className="flex flex-wrap items-center gap-3">
+              {/* Cancel Order Button (when Pending or Processing) */}
+              {(trackingResult.orderStatus === 'Pending' ||
+                trackingResult.orderStatus === 'Processing' ||
+                !trackingResult.orderStatus) &&
+                !confirmCancel && (
+                  <button
+                    type="button"
+                    disabled={cancelling}
+                    onClick={() => setConfirmCancel(true)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-red-200 bg-white hover:bg-red-50 text-actionRed text-xs font-bold transition-colors disabled:opacity-50"
+                  >
+                    <FiXCircle />
+                    <span>{cancelling ? 'Cancelling...' : 'Cancel Order'}</span>
+                  </button>
+                )}
+
+              {(trackingResult.orderStatus === 'Pending' ||
+                trackingResult.orderStatus === 'Processing' ||
+                !trackingResult.orderStatus) &&
+                confirmCancel && (
+                  <div className="inline-flex items-center gap-1.5 bg-red-50 border border-red-200 px-2.5 py-1 rounded-md">
+                    <span className="text-[11px] font-bold text-actionRed">Cancel order?</span>
+                    <button
+                      type="button"
+                      disabled={cancelling}
+                      onClick={handleCancelTrackedOrder}
+                      className="px-2 py-0.5 rounded bg-actionRed text-white text-[11px] font-bold"
+                    >
+                      {cancelling ? 'Wait...' : 'Yes'}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={cancelling}
+                      onClick={() => setConfirmCancel(false)}
+                      className="px-2 py-0.5 rounded bg-white border border-gray-200 text-gray-600 text-[11px] font-bold"
+                    >
+                      No
+                    </button>
+                  </div>
+                )}
+
+              {/* Locked Notice when Shipped or Delivered */}
+              {(trackingResult.orderStatus === 'Shipped' ||
+                trackingResult.orderStatus === 'Delivered') && (
+                <span
+                  title={`Order cannot be cancelled because it is already ${trackingResult.orderStatus}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md border border-gray-200 bg-gray-100 text-gray-400 text-xs font-semibold cursor-not-allowed"
+                >
+                  <FiSlash />
+                  <span>Cannot Cancel ({trackingResult.orderStatus})</span>
+                </span>
+              )}
+
+              <div className="text-right">
+                <span className="text-xs text-gray-400 block">Status:</span>
+                <span
+                  className={`inline-block font-bold text-xs px-2.5 py-1 rounded-sm ${
+                    trackingResult.orderStatus === 'Shipped' ||
+                    trackingResult.orderStatus === 'Delivered'
+                      ? 'text-emerald-700 bg-emerald-50'
+                      : trackingResult.orderStatus === 'Cancelled'
+                      ? 'text-actionRed bg-red-50'
+                      : 'text-amber-800 bg-amber-50'
+                  }`}
+                >
+                  {trackingResult.orderStatus || 'Pending'}
+                </span>
+              </div>
             </div>
           </div>
 

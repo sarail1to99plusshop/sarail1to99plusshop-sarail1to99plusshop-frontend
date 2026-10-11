@@ -19,6 +19,7 @@ import {
 import { FaFacebookF, FaWhatsapp } from 'react-icons/fa';
 import { useShop } from '../context/ShopContext';
 import { useAuth } from '../context/AuthContext';
+import { ProductDetailsSkeleton } from '../components/common/ProductCardSkeleton';
 import {
   useProductDetails,
   useAllProducts,
@@ -228,14 +229,7 @@ const ProductDetailsPage = () => {
   };
 
   if (loading && !product) {
-    return (
-      <div className="bg-[#F8FAFC] min-h-screen py-20 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-4 border-[#003D73] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm font-semibold text-[#0F172A]">লোড হচ্ছে... (Loading product...)</p>
-        </div>
-      </div>
-    );
+    return <ProductDetailsSkeleton />;
   }
 
   if (!product) {

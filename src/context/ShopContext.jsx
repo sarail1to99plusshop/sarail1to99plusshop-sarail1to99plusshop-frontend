@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { createOrderInDB } from '../services/api';
+import { useQueryClient } from '@tanstack/react-query';
+import { createOrderInDB, cancelOrderInDB } from '../services/api';
 import { useDeliveryCharges } from '../hooks/useQueries';
 
 const ShopContext = createContext();
@@ -14,6 +15,7 @@ const generateMongoId = () => {
 };
 
 export const ShopProvider = ({ children }) => {
+  const queryClient = useQueryClient();
   const { data: deliveryCharges = [] } = useDeliveryCharges();
   // Lazy initialize cart items from localStorage (or empty array)
   const [cartItems, setCartItems] = useState(() => {
@@ -162,7 +164,13 @@ export const ShopProvider = ({ children }) => {
   };
 
   // Create order matching the exact schema requested by user with product color, image and essential metadata
-  const createOrder = ({ customerDetails, itemsList = null, deliveryFee = 60, paymentMethod = 'COD' }) => {
+  const createOrder = ({
+    userId = '',
+    customerDetails,
+    itemsList = null,
+    deliveryFee = 60,
+    paymentMethod = 'COD',
+  }) => {
     const rawItems = itemsList || cartItems;
     if (!rawItems || rawItems.length === 0) return null;
 
@@ -236,6 +244,7 @@ export const ShopProvider = ({ children }) => {
         $oid: generateMongoId(),
       },
       invoiceNumber,
+      userId,
       customerDetails: {
         name: customerDetails.name,
         email: customerDetails.email || '',
@@ -279,12 +288,73 @@ export const ShopProvider = ({ children }) => {
       console.error('Error saving order:', e);
     }
 
-    // Asynchronously persist order to MongoDB backend
-    createOrderInDB(newOrder).catch((err) => {
-      console.warn('Could not sync order to backend:', err);
-    });
+    // Asynchronously persist order to MongoDB backend and refresh Order History query
+    createOrderInDB(newOrder)
+      .then(() => {
+        queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+      })
+      .catch((err) => {
+        console.warn('Could not sync order to backend:', err);
+      });
 
     return newOrder;
+  };
+
+  // Cancel an order if its status is not Shipped or Delivered
+  const cancelOrder = async (invoiceNumber) => {
+    const cleanInvoice = (invoiceNumber || '').trim();
+    if (!cleanInvoice) {
+      throw new Error('Invoice number is required to cancel order.');
+    }
+
+    // Check if the order in local state is already Shipped or Delivered
+    const localMatch = orders.find(
+      (o) => o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()
+    );
+    if (
+      localMatch &&
+      (localMatch.orderStatus === 'Shipped' || localMatch.orderStatus === 'Delivered')
+    ) {
+      throw new Error(
+        `Cannot cancel order because it is already ${localMatch.orderStatus}.`
+      );
+    }
+
+    let backendOrder = null;
+    try {
+      const res = await cancelOrderInDB(cleanInvoice);
+      backendOrder = res?.order || null;
+    } catch (err) {
+      const serverMsg = err?.response?.data?.message;
+      // If backend explicitly rejected (e.g. already Shipped or Delivered), rethrow
+      if (err?.response?.status === 400) {
+        throw new Error(serverMsg || 'Cannot cancel this order.', { cause: err });
+      }
+      // If 404 in DB (e.g., only in local session), allow local update if localMatch exists
+      if (!localMatch) {
+        throw new Error(serverMsg || 'Failed to cancel order.', { cause: err });
+      }
+    }
+
+    // Update local orders state & localStorage
+    const updatedOrders = orders.map((o) =>
+      o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()
+        ? {
+            ...o,
+            orderStatus: 'Cancelled',
+            updatedAt: new Date().toISOString(),
+          }
+        : o
+    );
+    setOrders(updatedOrders);
+    try {
+      localStorage.setItem('sarail_orders', JSON.stringify(updatedOrders));
+    } catch (e) {
+      console.error('Error updating cancelled order in localStorage:', e);
+    }
+
+    queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+    return backendOrder || { ...(localMatch || {}), orderStatus: 'Cancelled' };
   };
 
   return (
@@ -298,6 +368,7 @@ export const ShopProvider = ({ children }) => {
         clearCart,
         buyNow,
         createOrder,
+        cancelOrder,
         orders,
         deliveryCharges,
         defaultDeliveryCharge:

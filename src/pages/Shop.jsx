@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/common/ProductCard';
+import { ProductGridSkeleton } from '../components/common/ProductCardSkeleton';
 import {
   usePaginatedProducts,
   useCategories,
@@ -323,20 +324,10 @@ const Shop = () => {
 
           {/* Product Grid (10 products per page) */}
           {isLoading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
-              {[...Array(6)].map((_, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-xl border border-slate-200 p-4 h-72 animate-pulse flex flex-col justify-between"
-                >
-                  <div className="bg-slate-100 rounded-lg h-40 w-full" />
-                  <div className="space-y-2">
-                    <div className="bg-slate-100 h-4 w-3/4 rounded" />
-                    <div className="bg-slate-100 h-4 w-1/2 rounded" />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ProductGridSkeleton
+              count={10}
+              columnsClass="grid-cols-2 sm:grid-cols-2 md:grid-cols-3"
+            />
           ) : paginatedProducts.length > 0 ? (
             <>
               <div

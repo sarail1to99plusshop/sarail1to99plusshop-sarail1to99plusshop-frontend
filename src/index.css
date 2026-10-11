@@ -39,3 +39,26 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
 }
+
+/* YouTube-style sweeping shadow shimmer loader */
+@keyframes ytShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.yt-skeleton {
+  background: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #f1f5f9 35%,
+    #f8fafc 50%,
+    #f1f5f9 65%,
+    #e2e8f0 100%
+  );
+  background-size: 200% 100%;
+  animation: ytShimmer 1.6s ease-in-out infinite;
+}
