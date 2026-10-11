@@ -1,5 +1,3 @@
-import daisyui from 'daisyui'
-
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -41,25 +39,5 @@ export default {
       },
     },
   },
-  plugins: [daisyui],
-  daisyui: {
-    themes: [
-      {
-        shopTheme: {
-          "primary": "#003D73",
-          "secondary": "#DE111E",
-          "accent": "#DE111E",
-          "neutral": "#0F172A",
-          "base-100": "#FFFFFF",
-          "base-200": "#F8FAFC",
-          "base-300": "#E2E8F0",
-          "info": "#003D73",
-          "success": "#16a34a",
-          "warning": "#f59e0b",
-          "error": "#DE111E",
-        },
-      },
-      "light",
-    ],
-  },
+  plugins: [],
 }

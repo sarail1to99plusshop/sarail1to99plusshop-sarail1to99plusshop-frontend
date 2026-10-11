@@ -98,13 +98,13 @@ const Footer = () => {
             </div>
 
             {/* Social Icons */}
-            <div className="flex items-center space-x-2 pt-2">
+            <div className="flex items-center gap-3 pt-2">
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Facebook"
-                className="w-8 h-8 rounded-full bg-[#3B5998] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#3B5998] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaFacebookF className="text-xs" aria-hidden="true" />
               </a>
@@ -113,7 +113,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Instagram"
-                className="w-8 h-8 rounded-full bg-[#6B1D2F] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#6B1D2F] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaInstagram className="text-xs" aria-hidden="true" />
               </a>
@@ -122,7 +122,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Subscribe on YouTube"
-                className="w-8 h-8 rounded-full bg-[#B80D18] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#B80D18] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaYoutube className="text-xs" aria-hidden="true" />
               </a>
@@ -131,7 +131,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat on WhatsApp"
-                className="w-8 h-8 rounded-full bg-[#0F7A52] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#0F7A52] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaWhatsapp className="text-sm" aria-hidden="true" />
               </a>
@@ -143,44 +143,44 @@ const Footer = () => {
             <h2 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-[#FF6B74] pl-2.5">
               Categories
             </h2>
-            <ul className="space-y-2 text-xs text-slate-300">
+            <ul className="space-y-1 text-xs text-slate-300">
               <li>
-                <Link to="/shop?category=kitchen" className="hover:text-white transition-colors">
+                <Link to="/shop?category=kitchen" className="inline-block py-1.5 hover:text-white transition-colors">
                   Kitchen &amp; Dining
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=cleaning" className="hover:text-white transition-colors">
+                <Link to="/shop?category=cleaning" className="inline-block py-1.5 hover:text-white transition-colors">
                   Cleaning &amp; Hygiene
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=baby-kids" className="hover:text-white transition-colors">
+                <Link to="/shop?category=baby-kids" className="inline-block py-1.5 hover:text-white transition-colors">
                   Baby &amp; Kids
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=beauty" className="hover:text-white transition-colors">
+                <Link to="/shop?category=beauty" className="inline-block py-1.5 hover:text-white transition-colors">
                   Beauty &amp; Personal Care
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=melamine-crockery" className="hover:text-white transition-colors">
+                <Link to="/shop?category=melamine-crockery" className="inline-block py-1.5 hover:text-white transition-colors">
                   Melamine &amp; Crockery
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=toys" className="hover:text-white transition-colors">
+                <Link to="/shop?category=toys" className="inline-block py-1.5 hover:text-white transition-colors">
                   Toys &amp; Games
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=home-household" className="hover:text-white transition-colors">
+                <Link to="/shop?category=home-household" className="inline-block py-1.5 hover:text-white transition-colors">
                   Home &amp; Household
                 </Link>
               </li>
               <li>
-                <Link to="/shop?category=womens-fashion" className="hover:text-white transition-colors">
+                <Link to="/shop?category=womens-fashion" className="inline-block py-1.5 hover:text-white transition-colors">
                   Women&apos;s Fashion &amp; Accessories
                 </Link>
               </li>
@@ -192,39 +192,39 @@ const Footer = () => {
             <h2 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-[#FF6B74] pl-2.5">
               Quick Links
             </h2>
-            <ul className="space-y-2 text-xs text-slate-300">
+            <ul className="space-y-1 text-xs text-slate-300">
               <li>
-                <Link to="/" className="hover:text-white transition-colors">
+                <Link to="/" className="inline-block py-1.5 hover:text-white transition-colors">
                   Home
                 </Link>
               </li>
               <li>
-                <Link to="/shop" className="hover:text-white transition-colors">
+                <Link to="/shop" className="inline-block py-1.5 hover:text-white transition-colors">
                   Shop All Products
                 </Link>
               </li>
               <li>
-                <Link to="/best-selling" className="hover:text-white transition-colors">
+                <Link to="/best-selling" className="inline-block py-1.5 hover:text-white transition-colors">
                   Best Selling
                 </Link>
               </li>
               <li>
-                <Link to="/new-arrivals" className="hover:text-white transition-colors">
+                <Link to="/new-arrivals" className="inline-block py-1.5 hover:text-white transition-colors">
                   New Arrivals
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-white transition-colors">
+                <Link to="/about" className="inline-block py-1.5 hover:text-white transition-colors">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link to="/hot-offers" className="text-[#FF6B74] hover:underline font-semibold flex items-center gap-1">
+                <Link to="/hot-offers" className="inline-flex items-center gap-1 py-1.5 text-[#FF6B74] hover:underline font-semibold">
                   🔥 Hot Offers
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-white transition-colors">
+                <Link to="/contact" className="inline-block py-1.5 hover:text-white transition-colors">
                   Contact Us
                 </Link>
               </li>
@@ -236,26 +236,26 @@ const Footer = () => {
             <h2 className="text-white font-bold text-sm uppercase tracking-wider border-l-2 border-[#FF6B74] pl-2.5">
               Customer Help
             </h2>
-            <ul className="space-y-2 text-xs text-slate-300">
+            <ul className="space-y-1 text-xs text-slate-300">
               <li>
-                <Link to="/track-order" className="hover:text-white transition-colors font-medium text-white">
+                <Link to="/track-order" className="inline-block py-1.5 hover:text-white transition-colors font-medium text-white">
                   🚚 Track My Order
                 </Link>
               </li>
               <li>
-                <Link to="/pre-order" className="hover:text-white transition-colors">
+                <Link to="/pre-order" className="inline-block py-1.5 hover:text-white transition-colors">
                   Pre-Order / Special Request
                 </Link>
               </li>
               <li>
-                <Link to="/account" className="hover:text-white transition-colors">
+                <Link to="/account" className="inline-block py-1.5 hover:text-white transition-colors">
                   My Account / Login
                 </Link>
               </li>
-              <li>
+              <li className="py-1">
                 <span className="text-slate-300">Return &amp; Replacement Policy</span>
               </li>
-              <li>
+              <li className="py-1">
                 <span className="text-slate-300">Terms &amp; Conditions</span>
               </li>
             </ul>
@@ -271,11 +271,11 @@ const Footer = () => {
                   type="email"
                   aria-label="Your email address for discount newsletter"
                   placeholder="Your email address"
-                  className="w-full bg-gray-900 border border-gray-700 text-xs text-white px-3 py-2 rounded-l-md outline-none focus:border-[#FF6B74] placeholder-slate-400"
+                  className="w-full bg-gray-900 border border-gray-700 text-xs text-white px-3 py-2.5 min-h-[40px] rounded-l-md outline-none focus:border-[#FF6B74] placeholder-slate-400"
                 />
                 <button
                   type="submit"
-                  className="bg-[#B80D18] hover:bg-[#990B14] text-white px-3 py-2 rounded-r-md text-xs font-bold flex items-center justify-center transition-colors shrink-0"
+                  className="bg-[#B80D18] hover:bg-[#990B14] text-white min-w-[44px] min-h-[40px] px-3.5 py-2.5 rounded-r-md text-xs font-bold flex items-center justify-center transition-colors shrink-0"
                   aria-label="Subscribe to newsletter"
                 >
                   <FaPaperPlane aria-hidden="true" />

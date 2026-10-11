@@ -1,34 +1,78 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  signOut,
-  sendPasswordResetEmail,
-  sendEmailVerification,
-  updateProfile,
-  onAuthStateChanged,
-} from 'firebase/auth';
-import { auth, googleProvider } from '../firebase/firebase';
-import {
   registerUserInDB,
   updateUserLoginTimeInDB,
   fetchUserProfileFromDB,
 } from '../services/api';
 
 const AuthContext = createContext(null);
+const AUTH_CACHE_KEY = 'sarail_cached_auth_user';
+
+const readCachedUser = () => {
+  try {
+    const raw = localStorage.getItem(AUTH_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const writeCachedUser = (user) => {
+  try {
+    if (!user) {
+      localStorage.removeItem(AUTH_CACHE_KEY);
+      return;
+    }
+    localStorage.setItem(
+      AUTH_CACHE_KEY,
+      JSON.stringify({
+        uid: user.uid,
+        email: user.email || '',
+        displayName: user.displayName || '',
+        photoURL: user.photoURL || '',
+        emailVerified: Boolean(user.emailVerified),
+      })
+    );
+  } catch {
+    // ignore storage errors
+  }
+};
+
+let firebaseBundlePromise = null;
+const loadFirebaseAuth = () => {
+  if (!firebaseBundlePromise) {
+    firebaseBundlePromise = Promise.all([
+      import('firebase/auth'),
+      import('../firebase/firebase'),
+    ]).then(([authMod, fbConfig]) => ({
+      ...authMod,
+      ...fbConfig,
+    }));
+  }
+  return firebaseBundlePromise;
+};
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(() => readCachedUser());
   const [dbUser, setDbUser] = useState(null);
-  const [userLoading, setUserLoading] = useState(true);
+  const [userLoading, setUserLoading] = useState(false);
 
   // Sign up with Email, Password and Display Name + store user in MongoDB collection
   const signUp = async (email, password, displayName = '') => {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const {
+      auth,
+      createUserWithEmailAndPassword,
+      updateProfile,
+      sendEmailVerification,
+    } = await loadFirebaseAuth();
+
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
 
-    // Update display name if provided
     if (displayName) {
       try {
         await updateProfile(user, { displayName });
@@ -37,14 +81,12 @@ export const AuthProvider = ({ children }) => {
       }
     }
 
-    // Automatically send verification email
     try {
       await sendEmailVerification(user);
     } catch (e) {
       console.warn('Failed to send initial verification email:', e);
     }
 
-    // Store newly registered account in MongoDB 'users' collection
     try {
       const savedUser = await registerUserInDB({
         uid: user.uid,
@@ -59,18 +101,23 @@ export const AuthProvider = ({ children }) => {
       console.warn('Failed to sync registered user to MongoDB:', e);
     }
 
-    // Sync state
     setCurrentUser(auth.currentUser);
+    writeCachedUser(auth.currentUser);
     return user;
   };
 
   // Sign in with Email and Password + update lastLoginAt time in MongoDB
   const signIn = async (email, password) => {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const { auth, signInWithEmailAndPassword } = await loadFirebaseAuth();
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
     setCurrentUser(user);
+    writeCachedUser(user);
 
-    // Update login time in MongoDB 'users' collection
     try {
       const updatedUser = await updateUserLoginTimeInDB({
         uid: user.uid,
@@ -90,11 +137,22 @@ export const AuthProvider = ({ children }) => {
 
   // Sign in with Google Popup + store/update lastLoginAt time in MongoDB
   const signInWithGoogle = async () => {
-    const userCredential = await signInWithPopup(auth, googleProvider);
+    const {
+      auth,
+      googleProvider,
+      browserPopupRedirectResolver,
+      signInWithPopup,
+    } = await loadFirebaseAuth();
+
+    const userCredential = await signInWithPopup(
+      auth,
+      googleProvider,
+      browserPopupRedirectResolver
+    );
     const user = userCredential.user;
     setCurrentUser(user);
+    writeCachedUser(user);
 
-    // Upsert user & update login time in MongoDB 'users' collection
     try {
       const updatedUser = await updateUserLoginTimeInDB({
         uid: user.uid,
@@ -114,21 +172,25 @@ export const AuthProvider = ({ children }) => {
 
   // Send Password Reset Email
   const resetPassword = async (email) => {
+    const { auth, sendPasswordResetEmail } = await loadFirebaseAuth();
     return await sendPasswordResetEmail(auth, email);
   };
 
   // Resend Email Verification to Current User
   const sendVerificationEmail = async () => {
+    const { auth, sendEmailVerification } = await loadFirebaseAuth();
     if (!auth.currentUser) throw new Error('No user is currently signed in.');
     return await sendEmailVerification(auth.currentUser);
   };
 
   // Reload user state to check if emailVerified status changed
   const reloadUser = async () => {
+    const { auth } = await loadFirebaseAuth();
     if (!auth.currentUser) return null;
     await auth.currentUser.reload();
     const freshUser = { ...auth.currentUser };
     setCurrentUser(freshUser);
+    writeCachedUser(freshUser);
 
     if (freshUser.emailVerified) {
       try {
@@ -150,41 +212,78 @@ export const AuthProvider = ({ children }) => {
 
   // Sign out
   const logOut = async () => {
+    const { auth, signOut } = await loadFirebaseAuth();
     await signOut(auth);
     setCurrentUser(null);
     setDbUser(null);
+    writeCachedUser(null);
   };
 
-  // Listen to Firebase auth state changes and load MongoDB profile
+  // Defer Firebase Auth listener initialization until after initial paint so LCP/FCP are never blocked
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      setUserLoading(false);
+    let unsubscribe = () => {};
+    let cancelled = false;
 
-      if (user) {
-        try {
-          const existingProfile = await fetchUserProfileFromDB(user.uid);
-          if (existingProfile) {
-            setDbUser(existingProfile);
+    const initAuthListener = async () => {
+      try {
+        const { auth, onAuthStateChanged } = await loadFirebaseAuth();
+        if (cancelled) return;
+
+        unsubscribe = onAuthStateChanged(auth, async (user) => {
+          if (cancelled) return;
+          setCurrentUser(user);
+          writeCachedUser(user);
+          setUserLoading(false);
+
+          if (user) {
+            try {
+              const existingProfile = await fetchUserProfileFromDB(user.uid);
+              if (existingProfile) {
+                setDbUser(existingProfile);
+              } else {
+                const synced = await updateUserLoginTimeInDB({
+                  uid: user.uid,
+                  email: user.email,
+                  displayName: user.displayName || '',
+                  photoURL: user.photoURL || '',
+                  emailVerified: user.emailVerified,
+                });
+                setDbUser(synced);
+              }
+            } catch {
+              // ignore
+            }
           } else {
-            const synced = await updateUserLoginTimeInDB({
-              uid: user.uid,
-              email: user.email,
-              displayName: user.displayName || '',
-              photoURL: user.photoURL || '',
-              emailVerified: user.emailVerified,
-            });
-            setDbUser(synced);
+            setDbUser(null);
           }
-        } catch {
-          // ignore
-        }
-      } else {
-        setDbUser(null);
+        });
+      } catch {
+        setUserLoading(false);
       }
-    });
+    };
 
-    return () => unsubscribe();
+    // Only load Firebase immediately if there's an existing cached session or on `/account`;
+    // otherwise wait until idle after initial render so mobile LCP is unblocked.
+    const hasCachedSession = Boolean(readCachedUser());
+    const isAccountRoute =
+      typeof window !== 'undefined' &&
+      window.location.pathname.startsWith('/account');
+
+    if (hasCachedSession || isAccountRoute) {
+      initAuthListener();
+    } else {
+      const timer = setTimeout(initAuthListener, 1800);
+      return () => {
+        cancelled = true;
+        clearTimeout(timer);
+        unsubscribe();
+      };
+    }
+
+    return () => {
+      cancelled = true;
+      unsubscribe();
+    };
   }, []);
 
   const value = {
