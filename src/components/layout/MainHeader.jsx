@@ -4,7 +4,7 @@ import { FiSearch, FiUser, FiMenu } from 'react-icons/fi';
 import { BsCart3, BsBoxSeam } from 'react-icons/bs';
 import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
-import logoImg from '../../assets/Website logo.png';
+import logoImg from '../../assets/Website logo.webp';
 
 const MainHeader = () => {
   const { cartCount, searchQuery, setSearchQuery, setIsMobileMenuOpen } = useShop();
@@ -27,19 +27,23 @@ const MainHeader = () => {
         {/* Mobile Hamburger & Logo Container */}
         <div className="flex items-center gap-2 sm:gap-3">
           <button
+            type="button"
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden text-charcoal hover:text-actionRed p-2 rounded-lg hover:bg-slate-100 transition-colors"
-            aria-label="Open Mobile Menu"
+            className="lg:hidden text-charcoal hover:text-[#B80D18] p-2 rounded-lg hover:bg-slate-100 transition-colors"
+            aria-label="Open navigation menu"
           >
-            <FiMenu className="text-2xl text-charcoal" />
+            <FiMenu className="text-2xl text-charcoal" aria-hidden="true" />
           </button>
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group shrink-0">
+          <Link to="/" className="flex items-center gap-2 group shrink-0" aria-label="Sarail 1 to 99 Plus Shop Home">
             <img
               src={logoImg}
               alt="Sarail 1 to 99 Plus Shop"
-              className="h-10 sm:h-11 md:h-12 max-w-[170px] sm:max-w-[190px] md:max-w-[210px] object-contain transition-transform group-hover:scale-[1.02]"
+              width="170"
+              height="48"
+              decoding="async"
+              className="h-10 sm:h-11 md:h-12 w-auto max-w-[170px] sm:max-w-[190px] md:max-w-[210px] object-contain transition-transform group-hover:scale-[1.02]"
               onError={(e) => {
                 e.target.style.display = 'none';
               }}
@@ -50,22 +54,28 @@ const MainHeader = () => {
         {/* Center: Search Bar */}
         <div className="hidden md:flex flex-1 max-w-xl mx-2 lg:mx-4">
           <form
+            role="search"
             onSubmit={handleSearchSubmit}
             className="relative w-full flex items-center border-2 border-slate-200 hover:border-primary/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 rounded-lg overflow-hidden bg-white shadow-2xs transition-all"
           >
+            <label htmlFor="desktop-search-input" className="sr-only">
+              Search for household products, cookware, and lifestyle items
+            </label>
             <input
-              type="text"
+              id="desktop-search-input"
+              type="search"
+              aria-label="Search for household products, cookware, and lifestyle items"
               value={localSearch}
               onChange={(e) => setLocalSearch(e.target.value)}
               placeholder="Search for household products, cookware, lifestyle items..."
-              className="w-full bg-white text-charcoal placeholder-slate-400 text-xs sm:text-sm px-4 py-2.5 outline-none font-medium"
+              className="w-full bg-white text-charcoal placeholder-slate-500 text-xs sm:text-sm px-4 py-2.5 outline-none font-medium"
             />
             <button
               type="submit"
               className="bg-primary hover:bg-primary-dark text-white px-5 py-2.5 flex items-center justify-center transition-colors shrink-0"
-              aria-label="Search button"
+              aria-label="Search products"
             >
-              <FiSearch className="text-lg text-white stroke-[2.5]" />
+              <FiSearch className="text-lg text-white stroke-[2.5]" aria-hidden="true" />
             </button>
           </form>
         </div>
@@ -77,55 +87,55 @@ const MainHeader = () => {
           <Link
             to="/cart"
             className="relative flex items-center gap-2 p-2 rounded-lg hover:bg-slate-50 transition-colors group"
-            aria-label="Shopping Cart"
+            aria-label={`Shopping Cart, ${cartCount} items`}
           >
             <div className="relative flex items-center justify-center">
-              <BsCart3 className="text-2xl text-actionRed group-hover:scale-105 transition-transform" />
-              <span className="absolute -top-1.5 -right-2 bg-actionRed text-white font-extrabold text-[10px] min-w-4 h-4 px-1 rounded-full flex items-center justify-center shadow-xs border-2 border-white">
+              <BsCart3 className="text-2xl text-[#B80D18] group-hover:scale-105 transition-transform" aria-hidden="true" />
+              <span className="absolute -top-1.5 -right-2 bg-[#B80D18] text-white font-extrabold text-[10px] min-w-4 h-4 px-1 rounded-full flex items-center justify-center shadow-xs border-2 border-white">
                 {cartCount}
               </span>
             </div>
             <div className="hidden xl:flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold text-charcoal group-hover:text-actionRed transition-colors">
+              <span className="text-xs font-bold text-charcoal group-hover:text-[#B80D18] transition-colors">
                 Cart
               </span>
-              <span className="text-[10px] text-slate-500 font-medium">
+              <span className="text-[10px] text-slate-600 font-medium">
                 {cartCount > 0 ? `${cartCount} items` : '৳0.00'}
               </span>
             </div>
           </Link>
 
           {/* Vertical Divider */}
-          <div className="hidden md:block h-7 w-[1px] bg-slate-200 select-none" />
+          <div className="hidden md:block h-7 w-[1px] bg-slate-200 select-none" aria-hidden="true" />
 
           {/* Pre-Order / Order Today */}
           <Link
             to="/pre-order"
             className="hidden md:flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 group transition-colors"
           >
-            <BsBoxSeam className="text-2xl text-primary group-hover:text-actionRed group-hover:scale-105 transition-all" />
+            <BsBoxSeam className="text-2xl text-primary group-hover:text-[#B80D18] group-hover:scale-105 transition-all" aria-hidden="true" />
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold text-charcoal group-hover:text-actionRed transition-colors">
+              <span className="text-xs font-bold text-charcoal group-hover:text-[#B80D18] transition-colors">
                 Pre-Order
               </span>
-              <span className="text-[10px] text-slate-500 font-medium">Order Today</span>
+              <span className="text-[10px] text-slate-600 font-medium">Order Today</span>
             </div>
           </Link>
 
           {/* Vertical Divider */}
-          <div className="hidden md:block h-7 w-[1px] bg-slate-200 select-none" />
+          <div className="hidden md:block h-7 w-[1px] bg-slate-200 select-none" aria-hidden="true" />
 
           {/* Account / Register or Login */}
           <Link
             to="/account"
             className="hidden md:flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 group transition-colors"
           >
-            <FiUser className="text-2xl text-primary group-hover:text-actionRed group-hover:scale-105 transition-all" />
+            <FiUser className="text-2xl text-primary group-hover:text-[#B80D18] group-hover:scale-105 transition-all" aria-hidden="true" />
             <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold text-charcoal group-hover:text-actionRed transition-colors max-w-[110px] truncate">
+              <span className="text-xs font-bold text-charcoal group-hover:text-[#B80D18] transition-colors max-w-[110px] truncate">
                 {currentUser?.displayName || (currentUser ? 'My Account' : 'Account')}
               </span>
-              <span className="text-[10px] text-slate-500 font-medium">
+              <span className="text-[10px] text-slate-600 font-medium">
                 {currentUser ? (currentUser.emailVerified ? 'Verified' : 'My Profile') : 'Register or Login'}
               </span>
             </div>
@@ -138,22 +148,28 @@ const MainHeader = () => {
       {/* Mobile Search Bar below header */}
       <div className="mt-2.5 md:hidden">
         <form
+          role="search"
           onSubmit={handleSearchSubmit}
           className="relative w-full flex items-center border border-slate-300 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 rounded-lg overflow-hidden bg-white shadow-2xs"
         >
+          <label htmlFor="mobile-search-input" className="sr-only">
+            Search for products
+          </label>
           <input
-            type="text"
+            id="mobile-search-input"
+            type="search"
+            aria-label="Search for products"
             value={localSearch}
             onChange={(e) => setLocalSearch(e.target.value)}
-            placeholder="Search for products"
-            className="w-full bg-white text-charcoal placeholder-slate-400 text-xs px-3.5 py-2 outline-none font-medium"
+            placeholder="Search for products..."
+            className="w-full bg-white text-charcoal placeholder-slate-500 text-xs px-3.5 py-2 outline-none font-medium"
           />
           <button
             type="submit"
             className="bg-primary hover:bg-primary-dark text-white px-3.5 py-2 flex items-center justify-center shrink-0 transition-colors"
-            aria-label="Search button"
+            aria-label="Search products"
           >
-            <FiSearch className="text-sm stroke-[2.5]" />
+            <FiSearch className="text-sm stroke-[2.5]" aria-hidden="true" />
           </button>
         </form>
       </div>

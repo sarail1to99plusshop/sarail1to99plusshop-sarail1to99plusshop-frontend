@@ -3,6 +3,10 @@ import { FiX, FiCheck, FiShoppingBag, FiUser, FiLock, FiMail, FiRefreshCw } from
 import { useNavigate } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
+import {
+  optimizeImageUrl,
+  handleOptimizedImageError,
+} from '../../utils/imageOptimizer';
 
 const QuickOrderModal = () => {
   const {
@@ -209,8 +213,13 @@ const QuickOrderModal = () => {
                 <div key={idx} className="flex items-center gap-3 bg-white p-2.5 rounded-md border border-gray-100">
                   {item.image && (
                     <img
-                      src={item.image}
+                      src={optimizeImageUrl(item.image, { width: 120, quality: 75 })}
                       alt={item.title}
+                      width="48"
+                      height="48"
+                      loading="lazy"
+                      decoding="async"
+                      onError={(e) => handleOptimizedImageError(e, item.image)}
                       className="w-12 h-12 object-cover rounded-md border border-gray-200 bg-white shrink-0"
                     />
                   )}
@@ -296,8 +305,13 @@ const QuickOrderModal = () => {
             {/* Selected Product Preview */}
             <div className="flex items-center gap-3.5 bg-gray-50 p-3 rounded-lg border border-gray-200">
               <img
-                src={activeImage}
+                src={optimizeImageUrl(activeImage, { width: 140, quality: 76 })}
                 alt={product.name}
+                width="64"
+                height="64"
+                loading="lazy"
+                decoding="async"
+                onError={(e) => handleOptimizedImageError(e, activeImage)}
                 className="w-16 h-16 object-cover rounded-md bg-white border border-gray-200 shrink-0"
               />
               <div className="flex-1 min-w-0">

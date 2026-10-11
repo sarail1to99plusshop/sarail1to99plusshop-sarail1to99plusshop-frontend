@@ -32,8 +32,8 @@ const BottomNav = () => {
   const navItemClass = ({ isActive }) =>
     `font-bold text-xs tracking-wider uppercase px-3 py-2.5 transition-colors duration-150 relative ${
       isActive
-        ? 'text-actionRed after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-actionRed'
-        : 'text-charcoal hover:text-actionRed'
+        ? 'text-[#B80D18] after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-[#B80D18]'
+        : 'text-charcoal hover:text-[#B80D18]'
     }`;
 
   return (
@@ -43,15 +43,18 @@ const BottomNav = () => {
         {/* Left: CATEGORIES Dropdown Trigger */}
         <div className="relative" ref={dropdownRef}>
           <button
+            type="button"
             onClick={() => setDropdownOpen(!dropdownOpen)}
             onMouseEnter={() => setDropdownOpen(true)}
             className="bg-primary hover:bg-primary-dark text-white font-bold text-xs tracking-wider uppercase px-4 py-2.5 rounded-t-md flex items-center gap-2.5 cursor-pointer transition-all select-none shadow-2xs hover:shadow-xs focus:outline-none"
             aria-expanded={dropdownOpen}
+            aria-haspopup="true"
           >
-            <FiMenu className="text-sm text-white stroke-[2.5]" />
+            <FiMenu className="text-sm text-white stroke-[2.5]" aria-hidden="true" />
             <span className="tracking-wider">CATEGORIES</span>
             <FiChevronDown
-              className={`text-sm text-white/80 transition-transform duration-200 ${
+              aria-hidden="true"
+              className={`text-sm text-white transition-transform duration-200 ${
                 dropdownOpen ? 'rotate-180' : ''
               }`}
             />
@@ -63,7 +66,7 @@ const BottomNav = () => {
               onMouseLeave={() => setDropdownOpen(false)}
               className="absolute left-0 top-full w-64 bg-white border border-slate-200 shadow-xl rounded-b-lg py-2 z-50 animate-fadeIn divide-y divide-slate-100"
             >
-              <div className="px-4 py-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              <div className="px-4 py-2 text-[11px] font-bold text-slate-600 uppercase tracking-wider">
                 Browse Departments
               </div>
               {categories.map((cat, idx) => (
@@ -71,7 +74,7 @@ const BottomNav = () => {
                   key={idx}
                   to={cat.path}
                   onClick={() => setDropdownOpen(false)}
-                  className="block px-4 py-2.5 text-xs text-charcoal hover:bg-slate-50 hover:text-actionRed transition-colors font-semibold"
+                  className="block px-4 py-2.5 text-xs text-charcoal hover:bg-slate-50 hover:text-[#B80D18] transition-colors font-semibold"
                 >
                   <span>{cat.name}</span>
                 </Link>
@@ -81,54 +84,52 @@ const BottomNav = () => {
         </div>
 
         {/* Center / Right: Nav items with dividers */}
-        <nav className="hidden lg:flex items-center space-x-1">
+        <nav aria-label="Main navigation" className="hidden lg:flex items-center space-x-1">
           <NavLink to="/" end className={navItemClass}>
             HOME
           </NavLink>
 
-          <span className="text-slate-200 select-none font-light">|</span>
+          <span className="text-slate-200 select-none font-light" aria-hidden="true">|</span>
 
           <NavLink to="/shop" className={navItemClass}>
             SHOP
           </NavLink>
 
-          <span className="text-slate-200 select-none font-light">|</span>
+          <span className="text-slate-200 select-none font-light" aria-hidden="true">|</span>
 
           <NavLink to="/best-selling" className={navItemClass}>
             BEST SELLING
           </NavLink>
 
-          <span className="text-slate-200 select-none font-light">|</span>
+          <span className="text-slate-200 select-none font-light" aria-hidden="true">|</span>
 
           <NavLink to="/new-arrivals" className={navItemClass}>
             NEW ARRIVALS
           </NavLink>
 
-       
-
-          <span className="text-slate-200 select-none font-light">|</span>
+          <span className="text-slate-200 select-none font-light" aria-hidden="true">|</span>
 
           <NavLink
             to="/hot-offers"
             className={({ isActive }) =>
               `flex items-center gap-1.5 font-bold text-xs tracking-wider uppercase px-3 py-2.5 transition-colors relative ${
                 isActive
-                  ? 'text-actionRed after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-actionRed'
-                  : 'text-actionRed hover:opacity-80'
+                  ? 'text-[#B80D18] after:absolute after:bottom-0 after:left-3 after:right-3 after:h-[2px] after:bg-[#B80D18]'
+                  : 'text-[#B80D18] hover:opacity-80'
               }`
             }
           >
-            <FaFire className="text-actionRed text-xs" />
+            <FaFire className="text-[#B80D18] text-xs" aria-hidden="true" />
             <span>HOT OFFER</span>
           </NavLink>
 
-             <span className="text-slate-200 select-none font-light">|</span>
+          <span className="text-slate-200 select-none font-light" aria-hidden="true">|</span>
 
           <NavLink to="/about" className={navItemClass}>
             ABOUT US
           </NavLink>
 
-          <span className="text-slate-200 select-none font-light">|</span>
+          <span className="text-slate-200 select-none font-light" aria-hidden="true">|</span>
 
           <NavLink to="/contact" className={navItemClass}>
             CONTACT
@@ -139,9 +140,9 @@ const BottomNav = () => {
         <div className="hidden sm:flex items-center">
           <Link
             to="/hot-offers"
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-actionRed bg-actionRed/10 hover:bg-actionRed hover:text-white px-3 py-1 rounded-full transition-all shadow-2xs"
+            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#990B14] bg-red-50 border border-red-200 hover:bg-[#B80D18] hover:text-white px-3 py-1 rounded-full transition-all shadow-2xs"
           >
-            <FaFire className="text-xs" />
+            <FaFire className="text-xs" aria-hidden="true" />
             <span>FLASH DISCOUNTS</span>
           </Link>
         </div>
