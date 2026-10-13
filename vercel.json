@@ -21,7 +21,18 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!assets/|banners/|\\.well-known/|robots\\.txt|sitemap\\.xml|llms\\.txt|ai-catalog\\.json|ard\\.json|favicon\\.png|favicon\\.svg|logo\\.png|.*\\.[a-zA-Z0-9]+$).*)",
+      "source": "/product/:id",
+      "has": [
+        {
+          "type": "header",
+          "key": "user-agent",
+          "value": "(?i).*(facebookexternalhit|facebot|whatsapp|twitterbot|telegrambot|discordbot|slackbot|linkedinbot|pinterestbot|skypeuripreview|applebot|googlebot|bingbot|baiduspider|yandexbot).*"
+        }
+      ],
+      "destination": "/api/og?id=:id"
+    },
+    {
+      "source": "/((?!assets/|banners/|api/|\\.well-known/|robots\\.txt|sitemap\\.xml|llms\\.txt|ai-catalog\\.json|ard\\.json|favicon\\.png|favicon\\.svg|logo\\.png|.*\\.[a-zA-Z0-9]+$).*)",
       "destination": "/index.html"
     }
   ]
