@@ -1,11 +1,52 @@
 import { Link } from 'react-router-dom';
-import { FaFire, FaArrowRight, FaShieldAlt, FaTruck, FaUndo, FaTag } from 'react-icons/fa';
-import { BsBoxSeam } from 'react-icons/bs';
+import { FaFire, FaArrowRight, FaWhatsapp } from 'react-icons/fa';
 import { useAllProducts, useCategories } from '../hooks/useQueries';
 import ProductCard from '../components/common/ProductCard';
 import { ProductGridSkeleton } from '../components/common/ProductCardSkeleton';
 import HeroCarousel from '../components/common/HeroCarousel';
-import MessengerChatButton from '../components/common/MessengerChatButton';
+
+const categoryMetadata = {
+  kitchen: {
+    number: '01',
+    name: 'Kitchen & Dining',
+    desc: 'Cookware, utensils, storage essentials, and everyday kitchen accessories.',
+  },
+  cleaning: {
+    number: '02',
+    name: 'Cleaning & Hygiene',
+    desc: 'Spin mops, multi-surface brushes, organizers, and home sanitizers.',
+  },
+  'baby-kids': {
+    number: '03',
+    name: 'Baby & Kids',
+    desc: 'BPA-free feeding bottles, gentle silicon bibs, and play accessories.',
+  },
+  beauty: {
+    number: '04',
+    name: 'Beauty & Personal Care',
+    desc: 'Skincare tools, grooming accessories, mirrors, and daily beauty essentials.',
+  },
+  'melamine-crockery': {
+    number: '05',
+    name: 'Melamine & Crockery',
+    desc: 'Durable floral dinner sets, serving trays, plates, and bowls.',
+  },
+  toys: {
+    number: '06',
+    name: 'Toys & Games',
+    desc: 'Engaging educational toys, building blocks, and family board games.',
+  },
+  'home-household': {
+    number: '07',
+    name: 'Home & Household',
+    desc: 'Space-saving wardrobe organizers, multi-tier shoe racks, and decor.',
+  },
+  'womens-fashion': {
+    number: '08',
+    name: "Women's Fashion & Accessories",
+    desc: 'Everyday jewelry, hair accessories, travel pouches, and lifestyle items.',
+  },
+};
 
 const Home = () => {
   const { data: sampleProducts = [], isLoading: productsLoading } = useAllProducts();
@@ -14,6 +55,7 @@ const Home = () => {
   const hotOffers = sampleProducts
     .filter(
       (p) =>
+        p.collections?.hotOffer === true ||
         p.discount ||
         p.tag?.toLowerCase().includes('hot') ||
         p.tag?.toLowerCase().includes('deal')
@@ -23,6 +65,7 @@ const Home = () => {
   const bestSellers = sampleProducts
     .filter(
       (p) =>
+        p.collections?.bestSelling === true ||
         p.tag?.toLowerCase().includes('best') ||
         p.tag?.toLowerCase().includes('popular') ||
         p.tag?.toLowerCase().includes('top')
@@ -32,6 +75,7 @@ const Home = () => {
   const newArrivals = sampleProducts
     .filter(
       (p) =>
+        p.collections?.newArrival === true ||
         p.tag?.toLowerCase().includes('trending') ||
         p.tag?.toLowerCase().includes('essential') ||
         p.tag?.toLowerCase().includes('special')
@@ -39,7 +83,7 @@ const Home = () => {
     .slice(0, 4);
 
   return (
-    <div className="w-full pb-16 space-y-10">
+    <div className="w-full pb-16 space-y-12">
       <h1 className="sr-only">
         Sarail 1 to 99 Plus Shop - Best Household, Kitchen &amp; Daily Deals in Bangladesh
       </h1>
@@ -49,63 +93,23 @@ const Home = () => {
         <HeroCarousel />
       </section>
 
-      {/* 2. Value Strip */}
-      <section className="max-w-7xl mx-auto px-4" aria-label="Store Highlights">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 bg-white p-4 rounded-xl border border-gray-200 shadow-2xs">
-          <div className="flex items-center gap-3 p-2">
-            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg shrink-0">
-              <FaTruck aria-hidden="true" />
-            </div>
-            <div>
-              <p className="font-bold text-xs md:text-sm text-charcoal">Nationwide Delivery</p>
-              <p className="text-[11px] text-slate-600">Fast shipping in 24-48 hours</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 p-2">
-            <div className="w-10 h-10 rounded-full bg-actionRed/10 text-[#B80D18] flex items-center justify-center text-lg shrink-0">
-              <FaTag aria-hidden="true" />
-            </div>
-            <div>
-              <p className="font-bold text-xs md:text-sm text-charcoal">Affordable 1 to 99+</p>
-              <p className="text-[11px] text-slate-600">Best wholesale &amp; retail rates</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 p-2">
-            <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg shrink-0">
-              <FaShieldAlt aria-hidden="true" />
-            </div>
-            <div>
-              <p className="font-bold text-xs md:text-sm text-charcoal">100% Quality Checked</p>
-              <p className="text-[11px] text-slate-600">Durable household items</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3 p-2">
-            <div className="w-10 h-10 rounded-full bg-actionRed/10 text-[#B80D18] flex items-center justify-center text-lg shrink-0">
-              <FaUndo aria-hidden="true" />
-            </div>
-            <div>
-              <p className="font-bold text-xs md:text-sm text-charcoal">Easy Replacement</p>
-              <p className="text-[11px] text-slate-600">7-day simple return warranty</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. The 8 Main Categories */}
-      <section className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between mb-6">
+      {/* 2. Featured Categories (Redesigned per Section 06) */}
+      <section className="max-w-7xl mx-auto px-4" aria-label="Featured Categories">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div>
+            <span className="text-[11px] font-bold text-[#e96542] uppercase tracking-wider block mb-1">
+              Shop by category
+            </span>
             <h2 className="text-xl md:text-2xl font-black text-charcoal">
-              Explore Our 8 Departments
+              Find What You Need, All in One Place
             </h2>
-            <p className="text-xs text-slate-600">Pick from our variety store collections</p>
+            <p className="text-xs text-slate-600 mt-1 max-w-2xl">
+              Explore our collections of everyday essentials, useful finds, and more. Something for every home, every need, and every budget.
+            </p>
           </div>
           <Link
             to="/shop"
-            className="text-xs font-bold text-primary hover:text-[#B80D18] inline-flex items-center gap-1 py-2 px-2 min-h-[36px] transition-colors"
+            className="text-xs font-bold text-primary hover:text-[#B80D18] inline-flex items-center gap-1 py-1 transition-colors self-start sm:self-auto shrink-0"
           >
             <span>View All Categories</span>
             <FaArrowRight className="text-[10px]" aria-hidden="true" />
@@ -113,34 +117,59 @@ const Home = () => {
         </div>
 
         {categoriesLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, idx) => (
               <div
                 key={idx}
-                className="bg-white border border-gray-200 rounded-lg p-3 min-h-[72px] flex items-center justify-center shadow-2xs"
+                className="bg-white border border-gray-200 rounded-xl p-5 min-h-[160px] flex flex-col justify-between shadow-2xs"
               >
-                <div className="h-3.5 w-3/4 rounded yt-skeleton" />
+                <div className="space-y-3">
+                  <div className="h-6 w-8 rounded yt-skeleton" />
+                  <div className="h-4 w-3/4 rounded yt-skeleton" />
+                  <div className="h-3 w-full rounded yt-skeleton" />
+                </div>
+                <div className="h-4 w-1/3 rounded yt-skeleton pt-3" />
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
-            {categoriesList.map((cat) => (
-              <Link
-                key={cat.id}
-                to={`/shop?category=${cat.id}`}
-                className="bg-white border border-gray-200 hover:border-primary rounded-lg p-3 text-center shadow-2xs hover:shadow-md transition-all duration-200 group flex flex-col items-center justify-center min-h-[72px]"
-              >
-                <h3 className="font-bold text-xs text-charcoal group-hover:text-primary transition-colors text-center line-clamp-2 leading-snug">
-                  {cat.name}
-                </h3>
-              </Link>
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {categoriesList.map((cat, idx) => {
+              const meta = categoryMetadata[cat.id] || {
+                number: String(idx + 1).padStart(2, '0'),
+                name: cat.name,
+                desc: 'Everyday household items and useful finds for the whole family.',
+              };
+              return (
+                <Link
+                  key={cat.id}
+                  to={`/shop?category=${cat.id}`}
+                  className="bg-white border border-gray-200 hover:border-primary/80 hover:shadow-md rounded-xl p-5 transition-all group flex flex-col justify-between min-h-[164px] focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <div className="space-y-2">
+                    <div className="text-2xl font-black text-[#e96542]">
+                      {meta.number}
+                    </div>
+                    <h3 className="font-bold text-sm md:text-base text-charcoal group-hover:text-primary transition-colors leading-snug">
+                      {cat.name}
+                    </h3>
+                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
+                      {meta.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-4 mt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-primary group-hover:text-[#B80D18] transition-colors">
+                    <span>Browse Products</span>
+                    <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         )}
       </section>
 
-      {/* 4. Flash Sale & Hot Offers */}
+      {/* 3. Flash Sale & Hot Offers */}
       <section className="max-w-7xl mx-auto px-4 cv-auto">
         <div className="bg-gradient-to-r from-[#990B14] via-[#B80D18] to-[#C20E1A] text-white p-6 rounded-xl shadow-lg mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
@@ -179,7 +208,7 @@ const Home = () => {
         )}
       </section>
 
-      {/* 5. Best Selling Products */}
+      {/* 4. Best Selling Products */}
       <section className="max-w-7xl mx-auto px-4 cv-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -211,32 +240,34 @@ const Home = () => {
         )}
       </section>
 
-      {/* 6. Special Pre-Order Banner */}
-      <section className="max-w-7xl mx-auto px-4 cv-auto">
-        <div className="bg-[#00274B] text-white rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-primary-light/30">
+      {/* 5. Custom Product Request (Updated per Section 07) */}
+      <section className="max-w-7xl mx-auto px-4 cv-auto" aria-label="Custom Product Assistance">
+        <div className="bg-[#102338] text-white rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-700 shadow-md">
           <div className="space-y-2 max-w-xl text-center md:text-left">
-            <span className="text-xs font-bold uppercase tracking-wider text-amber-300">
-              Special Order Booking
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#e96542] block">
+              Need something else?
             </span>
             <h2 className="text-2xl font-bold text-white">
-              Need Specific Dinner Sets or Wholesale Lots?
+              Looking for Something Special?
             </h2>
-            <p className="text-xs text-slate-200">
-              We arrange custom party crockery, wedding gifts, baby toys &amp; bulk household items directly from leading manufacturers.
+            <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+              Can&apos;t find what you&apos;re looking for? Let us know what you need. We&apos;re always happy to help you explore available options and find the right products.
             </p>
           </div>
 
-          <Link
-            to="/pre-order"
-            className="bg-[#B80D18] hover:bg-[#990B14] text-white font-bold text-xs uppercase px-6 py-3 min-h-[44px] rounded-md shadow-md transition-all flex items-center gap-2 shrink-0"
+          <a
+            href="https://wa.me/8801998789157?text=Hello%2C%20I%27m%20looking%20for%20a%20product%20and%20would%20like%20some%20assistance."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase px-6 py-3 min-h-[44px] rounded-lg shadow-md transition-all flex items-center justify-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-white"
           >
-            <BsBoxSeam className="text-base" aria-hidden="true" />
-            <span>Place Special Request</span>
-          </Link>
+            <FaWhatsapp className="text-base" aria-hidden="true" />
+            <span>Contact Us</span>
+          </a>
         </div>
       </section>
 
-      {/* 7. New Arrivals */}
+      {/* 6. New Arrivals */}
       <section className="max-w-7xl mx-auto px-4 cv-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -267,10 +298,6 @@ const Home = () => {
           </div>
         )}
       </section>
-
-      {/* Floating Facebook Messenger Chat Widget (Home page only) */}
-      <MessengerChatButton />
-
     </div>
   );
 };

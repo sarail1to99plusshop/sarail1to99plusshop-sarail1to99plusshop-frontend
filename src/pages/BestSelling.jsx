@@ -7,8 +7,8 @@ const BestSelling = () => {
   const { data: sampleProducts = [], isLoading } = useAllProducts();
   const bestSellers = sampleProducts.filter(
     (p) =>
+      p.collections?.bestSelling === true ||
       p.tag?.toLowerCase().includes('best') ||
-      p.tag?.toLowerCase().includes('popular') ||
       p.tag?.toLowerCase().includes('top')
   );
   const displayProducts = bestSellers.length > 0 ? bestSellers : sampleProducts;

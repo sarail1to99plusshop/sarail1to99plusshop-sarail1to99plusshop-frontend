@@ -1,63 +1,81 @@
 import { Link } from 'react-router-dom';
-import { FaFacebookF, FaInstagram, FaYoutube, FaWhatsapp, FaShieldAlt, FaTruck, FaUndo, FaHeadset, FaPaperPlane } from 'react-icons/fa';
-import { HiOutlineMail, HiOutlineLocationMarker, HiOutlinePhone } from 'react-icons/hi';
+import {
+  FaFacebookF,
+  FaTiktok,
+  FaWhatsapp,
+  FaShieldAlt,
+  FaTruck,
+  FaUndo,
+  FaHeadset,
+  FaPaperPlane,
+  FaMapMarkerAlt,
+} from 'react-icons/fa';
+import { HiOutlineMail, HiOutlinePhone } from 'react-icons/hi';
 import logoImg from '../../assets/Without BG logo.webp';
 
 const Footer = () => {
   return (
     <footer className="w-full bg-[#050914] text-slate-300 pt-12 border-t border-gray-800 mt-auto cv-auto">
-      
-      {/* 1. Value Proposition Strip */}
+      {/* 1. Value Proposition Strip (Approved Section 08 Draft Copy) */}
       <div className="max-w-7xl mx-auto px-4 pb-12 border-b border-gray-800">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          
           <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
-            <div className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl shrink-0" aria-hidden="true">
+            <div
+              className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl shrink-0"
+              aria-hidden="true"
+            >
               <FaShieldAlt />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">100% Quality Checked</p>
-              <p className="text-slate-300 text-xs mt-0.5">Reliable &amp; durable household items</p>
+              <p className="text-white font-bold text-sm">Quality You Can Trust</p>
+              <p className="text-slate-300 text-xs mt-0.5">Carefully selected products for your everyday needs.</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-xl shrink-0" aria-hidden="true">
+            <div
+              className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-xl shrink-0"
+              aria-hidden="true"
+            >
               <FaTruck />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">Fast Nationwide Delivery</p>
-              <p className="text-slate-300 text-xs mt-0.5">Speedy delivery across Bangladesh</p>
+              <p className="text-white font-bold text-sm">Delivery Across Bangladesh</p>
+              <p className="text-slate-300 text-xs mt-0.5">Convenient shipping to your doorstep, wherever we deliver.</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
-            <div className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl shrink-0" aria-hidden="true">
+            <div
+              className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl shrink-0"
+              aria-hidden="true"
+            >
               <FaUndo />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">7-Day Easy Return</p>
-              <p className="text-slate-300 text-xs mt-0.5">Simple hassle-free replacement</p>
+              <p className="text-white font-bold text-sm">3-Day Return Request</p>
+              <p className="text-slate-300 text-xs mt-0.5">Report eligible product issues within 3 days of delivery.</p>
             </div>
           </div>
 
           <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
-            <div className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-xl shrink-0" aria-hidden="true">
+            <div
+              className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-xl shrink-0"
+              aria-hidden="true"
+            >
               <FaHeadset />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">Dedicated Customer Care</p>
-              <p className="text-slate-300 text-xs mt-0.5">Friendly support 7 days a week</p>
+              <p className="text-white font-bold text-sm">Here to Help</p>
+              <p className="text-slate-300 text-xs mt-0.5">Have a question? Our team is ready to assist you.</p>
             </div>
           </div>
-
         </div>
       </div>
 
       {/* 2. Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-          
           {/* Column 1: Brand Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link to="/" className="flex items-center gap-2">
@@ -84,12 +102,25 @@ const Footer = () => {
 
             <div className="space-y-2 text-xs text-slate-300 pt-1">
               <div className="flex items-start gap-2.5">
-                <HiOutlineLocationMarker className="text-[#FF6B74] text-base shrink-0 mt-0.5" aria-hidden="true" />
-                <span>Shop #14, Main Road, Sarail, Brahmanbaria, Bangladesh</span>
+                <Link
+                  to="/about#store-location"
+                  onClick={() => {
+                    const el = document.getElementById('store-location');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                  className="flex items-start gap-2.5 hover:text-white transition-colors"
+                >
+                  <FaMapMarkerAlt className="text-[#FF6B74] text-base shrink-0 mt-0.5" aria-hidden="true" />
+                  <span>Munshi market, Bikal bazar, Sarail, Brahmanbaria</span>
+                </Link>
               </div>
               <div className="flex items-center gap-2.5">
                 <HiOutlinePhone className="text-[#FF6B74] text-base shrink-0" aria-hidden="true" />
-                <span>01970-605584</span>
+                <a href="tel:+8801998789157" className="hover:text-white transition-colors">
+                  +880 1998-789157
+                </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <HiOutlineMail className="text-[#FF6B74] text-base shrink-0" aria-hidden="true" />
@@ -97,48 +128,53 @@ const Footer = () => {
               </div>
             </div>
 
-            {/* Social Icons */}
+            {/* Social Icons (Section 01: Facebook, TikTok, WhatsApp, Store Location) */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61565363597487"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Facebook"
-                className="w-10 h-10 rounded-full bg-[#3B5998] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
-                <FaFacebookF className="text-xs" aria-hidden="true" />
+                <FaFacebookF className="text-sm" aria-hidden="true" />
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.tiktok.com/@.1.to.99.shop"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Follow us on Instagram"
-                className="w-10 h-10 rounded-full bg-[#6B1D2F] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                aria-label="Follow us on TikTok"
+                className="w-10 h-10 rounded-full bg-black border border-gray-700 text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
-                <FaInstagram className="text-xs" aria-hidden="true" />
+                <FaTiktok className="text-sm" aria-hidden="true" />
               </a>
               <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Subscribe on YouTube"
-                className="w-10 h-10 rounded-full bg-[#B80D18] text-white flex items-center justify-center hover:scale-110 transition-transform"
-              >
-                <FaYoutube className="text-xs" aria-hidden="true" />
-              </a>
-              <a
-                href="https://wa.me/8801970605584"
+                href="https://wa.me/8801998789157"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat on WhatsApp"
-                className="w-10 h-10 rounded-full bg-[#0F7A52] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
-                <FaWhatsapp className="text-sm" aria-hidden="true" />
+                <FaWhatsapp className="text-base" aria-hidden="true" />
               </a>
+              <Link
+                to="/about#store-location"
+                onClick={() => {
+                  const el = document.getElementById('store-location');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
+                aria-label="Find our Store Location on Google Maps"
+                title="Store Location"
+                className="w-10 h-10 rounded-full bg-[#112b45] border border-slate-700 text-[#FF6B74] flex items-center justify-center hover:scale-110 transition-transform"
+              >
+                <FaMapMarkerAlt className="text-sm" aria-hidden="true" />
+              </Link>
             </div>
           </div>
 
-          {/* Column 2: Popular Categories (The 8 English Categories) */}
+          {/* Column 2: Categories (The 8 Main Categories) */}
           <div>
             <h2 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-[#FF6B74] pl-2.5">
               Categories
@@ -187,7 +223,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Quick Links */}
+          {/* Column 3: Quick Links (Synchronized with Navbar) */}
           <div>
             <h2 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-[#FF6B74] pl-2.5">
               Quick Links
@@ -214,13 +250,18 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="inline-block py-1.5 hover:text-white transition-colors">
-                  About Us
+                <Link to="/hot-offers" className="inline-flex items-center gap-1 py-1.5 text-[#FF6B74] hover:underline font-semibold">
+                  🔥 Hot Offers
                 </Link>
               </li>
               <li>
-                <Link to="/hot-offers" className="inline-flex items-center gap-1 py-1.5 text-[#FF6B74] hover:underline font-semibold">
-                  🔥 Hot Offers
+                <Link to="/popular-items" className="inline-block py-1.5 hover:text-white transition-colors">
+                  Popular / Hit Items
+                </Link>
+              </li>
+              <li>
+                <Link to="/about" className="inline-block py-1.5 hover:text-white transition-colors">
+                  About Us
                 </Link>
               </li>
               <li>
@@ -231,7 +272,7 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 4: Customer Help & Newsletter */}
+          {/* Column 4: Customer Help (Updated Policy Routes) */}
           <div className="space-y-4">
             <h2 className="text-white font-bold text-sm uppercase tracking-wider border-l-2 border-[#FF6B74] pl-2.5">
               Customer Help
@@ -252,11 +293,15 @@ const Footer = () => {
                   My Account / Login
                 </Link>
               </li>
-              <li className="py-1">
-                <span className="text-slate-300">Return &amp; Replacement Policy</span>
+              <li>
+                <Link to="/return-policy" className="inline-block py-1.5 hover:text-white transition-colors text-amber-200">
+                  Return Policy
+                </Link>
               </li>
-              <li className="py-1">
-                <span className="text-slate-300">Terms &amp; Conditions</span>
+              <li>
+                <Link to="/privacy-policy" className="inline-block py-1.5 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
               </li>
             </ul>
 
@@ -282,30 +327,30 @@ const Footer = () => {
                 </button>
               </form>
             </div>
-
           </div>
-
         </div>
       </div>
 
-      {/* 3. Bottom Bar: Copyright & Payment Badges */}
+      {/* 3. Bottom Bar: Copyright & Agency Credit (Section 09) */}
       <div className="bg-[#020610] py-5 border-t border-gray-800/80">
         <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-300">
           <p className="text-center md:text-left">
             © {new Date().getFullYear()} <strong className="text-white">Sarail 1 to 99 Plus Shop</strong>. All rights reserved.
           </p>
 
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-[10px] font-semibold text-pink-300">bKash</span>
-            <span className="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-[10px] font-semibold text-orange-300">Nagad</span>
-            <span className="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-[10px] font-semibold text-purple-300">Rocket</span>
-            <span className="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-[10px] font-semibold text-blue-300">VISA</span>
-            <span className="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-[10px] font-semibold text-red-300">Mastercard</span>
-            <span className="px-2 py-1 rounded bg-gray-900 border border-gray-800 text-[10px] font-semibold text-emerald-300">Cash on Delivery</span>
-          </div>
+          <p className="text-center md:text-right text-slate-400">
+            Designed &amp; Developed by{' '}
+            <a
+              href="https://sarail1to99plusshop-sarail1to99plus.vercel.app/"
+              className="text-[#FF6B74] hover:underline font-semibold"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              [Agency Name]
+            </a>
+          </p>
         </div>
       </div>
-
     </footer>
   );
 };

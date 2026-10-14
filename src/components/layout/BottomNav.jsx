@@ -136,14 +136,14 @@ const BottomNav = () => {
           </NavLink>
         </nav>
 
-        {/* Subtle right promotion tag */}
+        {/* Popular / Hit Items badge */}
         <div className="hidden sm:flex items-center">
           <Link
-            to="/hot-offers"
-            className="inline-flex items-center gap-1.5 text-[11px] font-bold text-[#990B14] bg-red-50 border border-red-200 hover:bg-[#B80D18] hover:text-white px-3 py-1 rounded-full transition-all shadow-2xs"
+            to="/popular-items"
+            className="inline-flex items-center gap-1.5 text-[11px] font-black text-[#990B14] bg-red-50 border border-red-200 hover:bg-[#B80D18] hover:text-white px-3 py-1 rounded-full transition-all shadow-2xs"
           >
             <FaFire className="text-xs" aria-hidden="true" />
-            <span>FLASH DISCOUNTS</span>
+            <span>POPULAR / HIT ITEMS</span>
           </Link>
         </div>
 

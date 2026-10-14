@@ -78,26 +78,28 @@ const ProductCard = ({ product, priority = false }) => {
           </span>
         )}
 
-        {/* Top-Right: Product Tag Badge (WCAG >= 6.5:1 contrast, pointer-events-none so it doesn't create tiny overlapping touch targets) */}
-        {product.tag && (
+        {/* Top-Right: Product Tag Badge or Popular Badge (WCAG >= 6.5:1 contrast, pointer-events-none so it doesn't create tiny overlapping touch targets) */}
+        {(product.tag || product.collections?.popular) && (
           <span
             className={`absolute top-2 right-2 text-white text-[9px] sm:text-[10px] font-black px-1.5 sm:px-2 py-0.5 rounded shadow-xs uppercase tracking-wider pointer-events-none z-10 ${
-              product.tag.toLowerCase().includes('hot') ||
-              product.tag.toLowerCase().includes('deal')
+              product.collections?.popular || product.tag?.toLowerCase().includes('popular')
+                ? 'bg-[#B80D18]'
+                : product.tag?.toLowerCase().includes('hot') ||
+                  product.tag?.toLowerCase().includes('deal')
                 ? 'bg-amber-800'
-                : product.tag.toLowerCase().includes('best')
+                : product.tag?.toLowerCase().includes('best')
                 ? 'bg-[#003D73]'
-                : product.tag.toLowerCase().includes('trending')
+                : product.tag?.toLowerCase().includes('trending')
                 ? 'bg-purple-800'
-                : product.tag.toLowerCase().includes('top')
+                : product.tag?.toLowerCase().includes('top')
                 ? 'bg-rose-800'
-                : product.tag.toLowerCase().includes('special') ||
-                  product.tag.toLowerCase().includes('discount')
+                : product.tag?.toLowerCase().includes('special') ||
+                  product.tag?.toLowerCase().includes('discount')
                 ? 'bg-orange-800'
                 : 'bg-emerald-800'
             }`}
           >
-            {product.tag}
+            {product.collections?.popular && !product.tag ? 'Popular' : product.tag}
           </span>
         )}
 

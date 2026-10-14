@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
 import { FiX, FiUser, FiPhoneCall, FiChevronRight, FiChevronDown } from 'react-icons/fi';
 import { BsBoxSeam } from 'react-icons/bs';
-import { FaFire, FaWhatsapp } from 'react-icons/fa';
+import { FaFire, FaWhatsapp, FaFacebookF, FaMapMarkerAlt } from 'react-icons/fa';
+import { FaTiktok } from 'react-icons/fa6';
 import { TbTruckDelivery } from 'react-icons/tb';
 import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
@@ -179,6 +180,24 @@ const MobileDrawer = () => {
             </NavLink>
 
             <NavLink
+              to="/popular-items"
+              onClick={closeDrawer}
+              className={({ isActive }) =>
+                `flex items-center justify-between px-4 py-2.5 text-sm font-bold border-b border-gray-100 ${
+                  isActive ? 'text-[#B80D18] bg-red-50/50' : 'text-[#B80D18] hover:bg-red-50/30'
+                }`
+              }
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-xs bg-[#B80D18] text-white px-1.5 py-0.5 rounded text-[10px] uppercase font-black">
+                  POPULAR
+                </span>
+                <span>POPULAR / HIT ITEMS</span>
+              </div>
+              <FiChevronRight className="text-gray-400 text-xs" />
+            </NavLink>
+
+            <NavLink
               to="/contact"
               onClick={closeDrawer}
               className={({ isActive }) =>
@@ -188,6 +207,26 @@ const MobileDrawer = () => {
               }
             >
               <span>CONTACT</span>
+              <FiChevronRight className="text-gray-400 text-xs" />
+            </NavLink>
+
+            <NavLink
+              to="/about#store-location"
+              onClick={() => {
+                closeDrawer();
+                setTimeout(() => {
+                  const el = document.getElementById('store-location');
+                  if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }, 100);
+              }}
+              className="flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 text-charcoal hover:bg-gray-50"
+            >
+              <div className="flex items-center gap-2">
+                <FaMapMarkerAlt className="text-base text-actionRed" />
+                <span>STORE LOCATION</span>
+              </div>
               <FiChevronRight className="text-gray-400 text-xs" />
             </NavLink>
 
@@ -218,16 +257,54 @@ const MobileDrawer = () => {
         </div>
 
         {/* Footer Support Info */}
-        <div className="p-4 bg-gray-50 border-t border-gray-200 text-xs text-gray-600">
-          <div className="font-semibold text-charcoal mb-2">Need Assistance?</div>
-          <a href="tel:01970605584" className="flex items-center gap-2 mb-1.5 hover:text-primary">
-            <FiPhoneCall />
-            <span>01970-605584</span>
-          </a>
-          <a href="https://wa.me/8801970605584" className="flex items-center gap-2 text-emerald-600 font-medium">
-            <FaWhatsapp />
-            <span>WhatsApp Support</span>
-          </a>
+        <div className="p-4 bg-gray-50 border-t border-gray-200 text-xs text-gray-600 space-y-3">
+          <div>
+            <div className="font-semibold text-charcoal mb-1">Customer Support</div>
+            <a href="tel:+8801998789157" className="flex items-center gap-2 mb-1 hover:text-primary font-medium">
+              <FiPhoneCall className="text-primary" />
+              <span>+880 1998-789157</span>
+            </a>
+            <a
+              href="https://wa.me/8801998789157"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-emerald-600 font-semibold"
+            >
+              <FaWhatsapp className="text-base" />
+              <span>WhatsApp Chat</span>
+            </a>
+          </div>
+
+          {/* Social Row */}
+          <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
+            <a
+              href="https://www.facebook.com/profile.php?id=61565363597487"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full bg-[#1558B0] text-white flex items-center justify-center hover:opacity-90"
+              aria-label="Facebook"
+            >
+              <FaFacebookF className="text-xs" />
+            </a>
+            <a
+              href="https://www.tiktok.com/@.1.to.99.shop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:opacity-90"
+              aria-label="TikTok"
+            >
+              <FaTiktok className="text-xs" />
+            </a>
+            <a
+              href="https://wa.me/8801998789157"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-8 h-8 rounded-full bg-[#0F7A52] text-white flex items-center justify-center hover:opacity-90"
+              aria-label="WhatsApp"
+            >
+              <FaWhatsapp className="text-sm" />
+            </a>
+          </div>
         </div>
 
       </div>
