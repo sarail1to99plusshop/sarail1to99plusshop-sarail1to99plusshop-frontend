@@ -24,6 +24,10 @@ const Cart = () => {
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [trxId, setTrxId] = useState('');
+  const [senderPhone, setSenderPhone] = useState('');
+  const [copiedNumber, setCopiedNumber] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
   const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
   const [placedOrder, setPlacedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -33,6 +37,14 @@ const Cart = () => {
   const [resendCooldown, setResendCooldown] = useState(0);
 
   const activeName = customerName !== '' ? customerName : (currentUser?.displayName || '');
+
+  const handleCopyBkash = () => {
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText('01998789157');
+    }
+    setCopiedNumber(true);
+    setTimeout(() => setCopiedNumber(false), 2000);
+  };
 
   const handleResendVerification = async () => {
     if (resendCooldown > 0) return;
@@ -103,6 +115,19 @@ const Cart = () => {
     }
     if (!activeName || !phone || !address) return;
 
+    if (paymentMethod === 'bKash') {
+      const cleanTrx = trxId.trim();
+      if (!cleanTrx) {
+        setPaymentError('Please enter your bKash Transaction ID (TrxID).');
+        return;
+      }
+      if (cleanTrx.length < 6) {
+        setPaymentError('Please enter a valid bKash Transaction ID.');
+        return;
+      }
+    }
+    setPaymentError('');
+
     setLoading(true);
     const order = createOrder({
       userId: currentUser?.uid || '',
@@ -116,6 +141,12 @@ const Cart = () => {
       },
       deliveryFee,
       paymentMethod,
+      paymentDetails: {
+        trxId: trxId.trim().toUpperCase(),
+        senderPhone: senderPhone.trim(),
+        bKashNumber: '01998789157',
+        mode: 'full',
+      },
     });
 
     setLoading(false);
@@ -228,13 +259,38 @@ const Cart = () => {
             </div>
             <div className="flex justify-between">
               <span className="text-gray-500">Payment Mode:</span>
-              <span className="font-bold text-emerald-600">{placedOrder.paymentMethod} (Cash on Delivery)</span>
+              <span className={`font-bold ${placedOrder.paymentMethod === 'bKash' ? 'text-[#E2136E]' : 'text-emerald-600'}`}>
+                {placedOrder.paymentMethod === 'bKash' ? 'bKash (Send Money)' : 'Cash on Delivery (COD)'}
+              </span>
             </div>
+            {placedOrder.paymentMethod === 'bKash' && (
+              <>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Transaction ID (TrxID):</span>
+                  <span className="font-mono font-bold text-charcoal">{placedOrder.paymentDetails?.trxId}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-500">Payment Status:</span>
+                  <span className="font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-[10px]">
+                    Pending Verification
+                  </span>
+                </div>
+              </>
+            )}
             <div className="flex justify-between border-t border-gray-200 pt-2 font-black text-sm">
               <span>Total Payable Amount:</span>
               <span className="text-actionRed">৳{placedOrder.totalAmount.toLocaleString()}</span>
             </div>
           </div>
+
+          {placedOrder.paymentMethod === 'bKash' && (
+            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-left text-xs space-y-1">
+              <p className="font-bold text-amber-900">Payment Pending Verification</p>
+              <p className="text-amber-800 text-[11px] leading-relaxed">
+                We&apos;ve received your order and bKash transaction details. Your payment is currently pending verification. We&apos;ll proceed with your order once the payment has been verified.
+              </p>
+            </div>
+          )}
 
           <div className="flex flex-col sm:flex-row gap-3 pt-3">
             <button
@@ -603,22 +659,138 @@ const Cart = () => {
                   </div>
                 </div>
 
-                {/* Payment Option */}
-                <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 text-xs flex items-center justify-between">
-                  <label htmlFor="cod-radio-input" className="flex items-center gap-2 cursor-pointer font-bold text-charcoal">
-                    <input
-                      id="cod-radio-input"
-                      type="radio"
-                      name="payment"
-                      checked={paymentMethod === 'COD'}
-                      onChange={() => setPaymentMethod('COD')}
-                      className="accent-actionRed"
-                    />
-                    <span>Cash on Delivery (COD)</span>
-                  </label>
-                  <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-2 py-0.5 rounded">
-                    Pay upon receipt
+                {/* Payment Option Selection */}
+                <div className="space-y-2.5">
+                  <span className="block text-xs font-bold text-charcoal">
+                    Payment Method *
                   </span>
+
+                  {/* Cash on Delivery */}
+                  <label
+                    htmlFor="cod-radio-input"
+                    className={`p-3 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-all ${
+                      paymentMethod === 'COD'
+                        ? 'border-primary bg-primary/5 ring-1 ring-primary'
+                        : 'border-gray-200 bg-gray-50 hover:bg-gray-100/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        id="cod-radio-input"
+                        type="radio"
+                        name="payment"
+                        checked={paymentMethod === 'COD'}
+                        onChange={() => {
+                          setPaymentMethod('COD');
+                          setPaymentError('');
+                        }}
+                        className="accent-actionRed"
+                      />
+                      <div>
+                        <span className="font-bold text-charcoal block">Cash on Delivery (COD)</span>
+                        <span className="text-[11px] text-gray-500">Pay when your order arrives</span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-emerald-700 font-bold bg-emerald-100 border border-emerald-200 px-2 py-0.5 rounded">
+                      Pay upon receipt
+                    </span>
+                  </label>
+
+                  {/* Payment via bKash */}
+                  <label
+                    htmlFor="bkash-radio-input"
+                    className={`p-3 rounded-lg border text-xs flex items-center justify-between cursor-pointer transition-all ${
+                      paymentMethod === 'bKash'
+                        ? 'border-[#E2136E] bg-pink-50/50 ring-1 ring-[#E2136E]'
+                        : 'border-gray-200 bg-gray-50 hover:bg-gray-100/60'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <input
+                        id="bkash-radio-input"
+                        type="radio"
+                        name="payment"
+                        checked={paymentMethod === 'bKash'}
+                        onChange={() => {
+                          setPaymentMethod('bKash');
+                          setPaymentError('');
+                        }}
+                        className="accent-[#E2136E]"
+                      />
+                      <div>
+                        <span className="font-bold text-[#E2136E] block">Payment via bKash</span>
+                        <span className="text-[11px] text-gray-500">Send Money &amp; submit Transaction ID</span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] text-[#E2136E] font-bold bg-pink-100 border border-pink-200 px-2 py-0.5 rounded">
+                      Manual Verification
+                    </span>
+                  </label>
+
+                  {/* bKash Payment Instructions & Input fields */}
+                  {paymentMethod === 'bKash' && (
+                    <div className="p-3.5 bg-pink-50/40 border border-pink-200 rounded-lg text-xs space-y-3 animate-fadeIn">
+                      <div className="space-y-1">
+                        <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
+                          Send Money to:
+                        </span>
+                        <div className="flex items-center justify-between bg-white px-3 py-2 rounded-md border border-pink-200">
+                          <strong className="text-base text-charcoal font-mono tracking-wider">
+                            01998789157
+                          </strong>
+                          <button
+                            type="button"
+                            onClick={handleCopyBkash}
+                            className="bg-[#E2136E] hover:bg-[#C1105D] text-white text-[11px] font-bold px-3 py-1 rounded transition-colors"
+                          >
+                            {copiedNumber ? '✓ Copied!' : 'Copy Number'}
+                          </button>
+                        </div>
+                      </div>
+
+                      <p className="text-[11px] text-slate-700 leading-relaxed bg-white/80 p-2.5 rounded border border-pink-100">
+                        Send the total payable amount of <strong className="text-actionRed font-bold">৳{total.toLocaleString()}</strong> to the bKash number above using <strong>Send Money</strong>.
+                      </p>
+
+                      <div>
+                        <label htmlFor="bkash-trxid-field" className="block text-xs font-bold text-charcoal mb-1">
+                          bKash Transaction ID (TrxID) *
+                        </label>
+                        <input
+                          id="bkash-trxid-field"
+                          type="text"
+                          required
+                          value={trxId}
+                          onChange={(e) => {
+                            setTrxId(e.target.value.toUpperCase());
+                            setPaymentError('');
+                          }}
+                          placeholder="e.g. 9J54AKL980"
+                          className="w-full bg-white border border-pink-300 text-xs px-3 py-2 rounded-md font-mono tracking-wider outline-none focus:border-[#E2136E]"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="bkash-sender-phone" className="block text-xs font-bold text-charcoal mb-1">
+                          Sender bKash Phone Number (Optional)
+                        </label>
+                        <input
+                          id="bkash-sender-phone"
+                          type="tel"
+                          value={senderPhone}
+                          onChange={(e) => setSenderPhone(e.target.value)}
+                          placeholder="01XXXXXXXXX"
+                          className="w-full bg-white border border-gray-200 text-xs px-3 py-2 rounded-md outline-none focus:border-[#E2136E]"
+                        />
+                      </div>
+
+                      {paymentError && (
+                        <p className="text-[11px] font-bold text-actionRed">
+                          ⚠️ {paymentError}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {!currentUser ? (

@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 
 import carusel1 from '../../assets/carusel1.webp';
 import carusel2 from '../../assets/carusel2.webp';
@@ -10,34 +9,34 @@ import carusel4 from '../../assets/carusel4.webp';
 const slides = [
   {
     id: 'carousel-slide-1',
-    image: carusel1,
+    image: carusel3,
     srcSet:
-      '/banners/carusel1-640.webp 640w, /banners/carusel1-1024.webp 1024w, /banners/carusel1-1920.webp 1920w',
-    alt: 'Sarail 1 to 99 Plus Shop - Promotional Banner 1',
+      '/banners/carusel3-640.webp 640w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1920.webp 1920w',
+    alt: 'দৈনন্দিন জিনিস, পছন্দসই দামে - Sarail 1 to 99 Plus Shop',
     link: '/shop',
   },
   {
     id: 'carousel-slide-2',
-    image: carusel2,
+    image: carusel4,
     srcSet:
-      '/banners/carusel2-640.webp 640w, /banners/carusel2-1024.webp 1024w, /banners/carusel2-1920.webp 1920w',
-    alt: 'Sarail 1 to 99 Plus Shop - Promotional Banner 2',
+      '/banners/carusel4-640.webp 640w, /banners/carusel4-1024.webp 1024w, /banners/carusel4-1920.webp 1920w',
+    alt: 'যা দরকার, সবই এখন এক শপে - Sarail 1 to 99 Plus Shop',
     link: '/shop',
   },
   {
     id: 'carousel-slide-3',
-    image: carusel3,
+    image: carusel1,
     srcSet:
-      '/banners/carusel3-640.webp 640w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1920.webp 1920w',
-    alt: 'Sarail 1 to 99 Plus Shop - Promotional Banner 3',
+      '/banners/carusel1-640.webp 640w, /banners/carusel1-1024.webp 1024w, /banners/carusel1-1920.webp 1920w',
+    alt: 'স্বাগতম প্রয়োজনীয় পণ্যের সেরা ঠিকানায়! - Sarail 1 to 99 Plus Shop',
     link: '/shop',
   },
   {
     id: 'carousel-slide-4',
-    image: carusel4,
+    image: carusel2,
     srcSet:
-      '/banners/carusel4-640.webp 640w, /banners/carusel4-1024.webp 1024w, /banners/carusel4-1920.webp 1920w',
-    alt: 'Sarail 1 to 99 Plus Shop - Promotional Banner 4',
+      '/banners/carusel2-640.webp 640w, /banners/carusel2-1024.webp 1024w, /banners/carusel2-1920.webp 1920w',
+    alt: 'দেশজুড়ে সহজ অর্ডার, নির্ভরযোগ্য ডেলিভারি - Sarail 1 to 99 Plus Shop',
     link: '/shop',
   },
 ];
@@ -46,22 +45,6 @@ const HeroCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const touchStartX = useRef(null);
-
-  const handleNext = useCallback((e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setActiveIndex((prev) => (prev + 1) % slides.length);
-  }, []);
-
-  const handlePrev = useCallback((e) => {
-    if (e) {
-      e.preventDefault();
-      e.stopPropagation();
-    }
-    setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
-  }, []);
 
   const handleGoToSlide = (index, e) => {
     if (e) {
@@ -72,10 +55,18 @@ const HeroCarousel = () => {
   };
 
   useEffect(() => {
-    if (isPaused) return undefined;
+    // Respect user's reduced-motion preference
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (isPaused || prefersReducedMotion) return undefined;
+
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
-    }, 4500);
+    }, 5000);
+
     return () => clearInterval(timer);
   }, [isPaused]);
 
@@ -149,31 +140,11 @@ const HeroCarousel = () => {
           })}
         </div>
 
-        {/* Previous Slide Button (infinite wrap-around & event stopPropagation) */}
-        <button
-          type="button"
-          onClick={handlePrev}
-          aria-label="Previous promotional banner"
-          className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-slate-900/75 hover:bg-slate-900 text-white flex items-center justify-center shadow-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white"
-        >
-          <FaChevronLeft className="text-sm" aria-hidden="true" />
-        </button>
-
-        {/* Next Slide Button */}
-        <button
-          type="button"
-          onClick={handleNext}
-          aria-label="Next promotional banner"
-          className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-slate-900/75 hover:bg-slate-900 text-white flex items-center justify-center shadow-md transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-white"
-        >
-          <FaChevronRight className="text-sm" aria-hidden="true" />
-        </button>
-
-        {/* Accessible 44x44px Touch-Target Pagination Dots */}
+        {/* Subtle, non-intrusive safe-zone pagination dots */}
         <div
-          className="absolute bottom-1.5 sm:bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center"
+          className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-xs pointer-events-auto"
           role="tablist"
-          aria-label="Choose banner slide"
+          aria-label="Banner slide indicators"
         >
           {slides.map((slide, idx) => {
             const isActive = idx === activeIndex;
@@ -183,15 +154,15 @@ const HeroCarousel = () => {
                 type="button"
                 role="tab"
                 aria-selected={isActive}
-                aria-label={`Go to banner ${idx + 1}`}
+                aria-label={`Go to slide ${idx + 1}`}
                 onClick={(e) => handleGoToSlide(idx, e)}
-                className="w-11 h-11 flex items-center justify-center cursor-pointer focus:outline-none"
+                className="p-1 flex items-center justify-center cursor-pointer focus:outline-none"
               >
                 <span
-                  className={`block h-2 sm:h-2.5 rounded-full transition-all duration-300 shadow-xs ${
+                  className={`block h-1.5 rounded-full transition-all duration-300 ${
                     isActive
-                      ? 'w-6 bg-[#B80D18] ring-1 ring-white/80'
-                      : 'w-2.5 bg-slate-900/65 hover:bg-slate-900/90 ring-1 ring-white/70'
+                      ? 'w-4 bg-[#e96542]'
+                      : 'w-1.5 bg-white/70 hover:bg-white'
                   }`}
                 />
               </button>

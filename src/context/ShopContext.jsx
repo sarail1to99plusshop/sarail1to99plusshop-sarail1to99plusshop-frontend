@@ -170,6 +170,7 @@ export const ShopProvider = ({ children }) => {
     itemsList = null,
     deliveryFee = 60,
     paymentMethod = 'COD',
+    paymentDetails = {},
   }) => {
     const rawItems = itemsList || cartItems;
     if (!rawItems || rawItems.length === 0) return null;
@@ -239,6 +240,9 @@ export const ShopProvider = ({ children }) => {
     const consignmentId = Math.floor(500000 + Math.random() * 90000);
     const trackingCode = `SF${Math.floor(10000000 + Math.random() * 90000000)}`;
 
+    const isBkash = paymentMethod === 'bKash';
+    const submittedTrx = (paymentDetails.trxId || '').trim().toUpperCase();
+
     const newOrder = {
       _id: {
         $oid: generateMongoId(),
@@ -260,7 +264,16 @@ export const ShopProvider = ({ children }) => {
       itemsSubtotal,
       totalAmount,
       totalQuantity: formattedItems.reduce((acc, it) => acc + it.quantity, 0),
-      paymentMethod: paymentMethod || 'COD',
+      paymentMethod: isBkash ? 'bKash' : 'COD',
+      paymentStatus: isBkash ? 'Pending Verification' : 'Pending',
+      paymentDetails: {
+        mode: paymentDetails.mode || 'full',
+        bKashNumber: '01998789157',
+        trxId: submittedTrx,
+        senderPhone: paymentDetails.senderPhone || '',
+        expectedAmount: totalAmount,
+        submittedAt: new Date().toISOString(),
+      },
       orderStatus: 'Pending',
       courierData: {
         provider: 'Steadfast',

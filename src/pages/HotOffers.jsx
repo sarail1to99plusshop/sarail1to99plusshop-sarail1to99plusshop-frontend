@@ -7,6 +7,7 @@ const HotOffers = () => {
   const { data: sampleProducts = [], isLoading } = useAllProducts();
   const deals = sampleProducts.filter(
     (p) =>
+      p.collections?.hotOffer === true ||
       p.discount ||
       p.tag?.toLowerCase().includes('hot') ||
       p.tag?.toLowerCase().includes('deal') ||

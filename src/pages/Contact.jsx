@@ -129,7 +129,7 @@ const Contact = () => {
     {
       icon: <FiMapPin className="text-xl text-amber-600" />,
       title: 'Physical Outlet',
-      info: 'Shop #14, Main Road',
+      info: 'Main Road',
       subInfo: 'Sarail, Brahmanbaria, Bangladesh',
       actionText: 'View Store Details',
       href: '#outlet-details',
@@ -141,7 +141,7 @@ const Contact = () => {
   const faqs = [
     {
       q: 'Can I visit and purchase directly from your Sarail outlet?',
-      a: 'Yes, absolutely! You can visit our store at Shop #14, Main Road, Sarail to inspect products in person and pick up orders directly.',
+      a: 'Yes, absolutely! You can visit our store at Main Road, Sarail to inspect products in person and pick up orders directly.',
     },
     {
       q: 'Do you offer Cash on Delivery (COD) outside Brahmanbaria?',
@@ -463,7 +463,7 @@ const Contact = () => {
                     <FiMapPin className="text-actionRed text-base shrink-0 mt-0.5" />
                     <div>
                       <strong className="block text-white">Store Address:</strong>
-                      <span>Shop #14, Main Road, Sarail, Brahmanbaria, Bangladesh</span>
+                      <span>Munshi market, Bikal bazar, Sarail, Brahmanbaria</span>
                     </div>
                   </div>
 

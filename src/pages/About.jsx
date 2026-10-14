@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import withoutBgLogo from '../assets/Without BG logo.png';
 import {
   FiCheckCircle,
@@ -16,6 +17,26 @@ import {
 import { FaFire } from 'react-icons/fa';
 
 const About = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#store-location') {
+      const scroll = () => {
+        const el = document.getElementById('store-location');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      scroll();
+      const t1 = setTimeout(scroll, 100);
+      const t2 = setTimeout(scroll, 300);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    }
+  }, [location.hash]);
+
   const highlights = [
     {
       icon: <FiAward className="text-xl text-primary" />,
@@ -42,13 +63,8 @@ const About = () => {
   const categories = [
     {
       name: 'Kitchen & Dining',
-      desc: 'Non-stick pans, knife sets, spatulas, spice jars, and cooking tools.',
+      desc: 'Cookware, utensils, storage essentials, and everyday kitchen accessories.',
       link: '/shop?category=kitchen',
-    },
-    {
-      name: 'Melamine & Crockery',
-      desc: 'Durable floral dinner sets, serving trays, plates, and bowls.',
-      link: '/shop?category=melamine-crockery',
     },
     {
       name: 'Cleaning & Hygiene',
@@ -61,6 +77,16 @@ const About = () => {
       link: '/shop?category=baby-kids',
     },
     {
+      name: 'Beauty & Personal Care',
+      desc: 'Skincare tools, grooming accessories, mirrors, and daily beauty essentials.',
+      link: '/shop?category=beauty',
+    },
+    {
+      name: 'Melamine & Crockery',
+      desc: 'Durable floral dinner sets, serving trays, plates, and bowls.',
+      link: '/shop?category=melamine-crockery',
+    },
+    {
       name: 'Toys & Games',
       desc: 'Engaging educational toys, building blocks, and family board games.',
       link: '/shop?category=toys',
@@ -69,6 +95,11 @@ const About = () => {
       name: 'Home & Household',
       desc: 'Space-saving wardrobe organizers, multi-tier shoe racks, and decor.',
       link: '/shop?category=home-household',
+    },
+    {
+      name: "Women's Fashion & Accessories",
+      desc: 'Everyday jewelry, hair accessories, travel pouches, and lifestyle items.',
+      link: '/shop?category=womens-fashion',
     },
   ];
 
@@ -145,7 +176,7 @@ const About = () => {
                   <FiCheckCircle className="text-actionRed text-sm" />
                 </h2>
                 <p className="text-xs text-gray-300 mt-1">
-                  Shop #14, Main Road, Sarail, Brahmanbaria
+                  Munshi market, Bikal bazar, Sarail, Brahmanbaria
                 </p>
               </div>
 
@@ -287,7 +318,7 @@ const About = () => {
       </section>
 
       {/* 4. Core Values Grid */}
-      <section className="relative z-10 bg-white py-14 md:py-20 border-y border-gray-200">
+      <section  className="relative z-10 bg-white py-14 md:py-20 border-y border-gray-200">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
             <div className="inline-flex items-center gap-1.5 text-actionRed text-xs font-bold uppercase tracking-wider">
@@ -404,7 +435,7 @@ const About = () => {
                   <FiMapPin className="text-actionRed text-base shrink-0 mt-0.5" />
                   <div>
                     <strong className="block text-white">Store Address:</strong>
-                    <span>Shop #14, Main Road, Sarail, Brahmanbaria, Bangladesh</span>
+                    <span>Munshi market, Bikal bazar, Sarail, Brahmanbaria</span>
                   </div>
                 </div>
 
@@ -412,7 +443,12 @@ const About = () => {
                   <FiPhone className="text-actionRed text-base shrink-0" />
                   <div>
                     <strong className="block text-white">Call / WhatsApp:</strong>
-                    <span>01970-605584</span>
+                    <a
+                      href="tel:+8801998789157"
+                      className="hover:underline hover:text-white transition-colors"
+                    >
+                      +880 1998-789157
+                    </a>
                   </div>
                 </div>
 
@@ -453,15 +489,63 @@ const About = () => {
                 </Link>
 
                 <a
-                  href="https://wa.me/8801970605584"
+                  href="https://wa.me/8801998789157"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold px-5 py-2.5 rounded-lg text-center transition-colors flex items-center justify-center gap-1.5"
                 >
                   <span>Chat on WhatsApp</span>
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Embedded Google Map per Section 02 */}
+      <section
+        id="store-location"
+        className="relative z-10 max-w-7xl mx-auto px-4 pb-16 scroll-mt-28"
+        aria-label="Store Location on Google Maps"
+      >
+        <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xs">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+            <div>
+              <span className="text-[11px] font-bold text-[#e96542] uppercase tracking-wider block mb-1">
+                Store Location
+              </span>
+              <h2 className="text-2xl md:text-3xl font-black text-charcoal">
+                Visit Our Store
+              </h2>
+              <h3 className="text-sm md:text-base font-bold text-slate-700 mt-1">
+                Find Us Easily, Shop With Confidence
+              </h3>
+              <p className="text-xs md:text-sm text-slate-600 mt-2 max-w-2xl leading-relaxed">
+                Prefer shopping in person? We&apos;d love to welcome you! Find our store on Google Maps, get directions, and visit us at your convenience.
+              </p>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/Z5AM3N5qj85KMEXE8"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-[#112b45] hover:bg-[#1a3d60] text-white font-bold text-xs uppercase px-5 py-3 rounded-lg shadow-xs transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              <FiMapPin className="text-sm" aria-hidden="true" />
+              <span>Get Directions ↗</span>
+            </a>
+          </div>
+
+          <div className="w-full rounded-xl overflow-hidden border border-gray-200 shadow-xs bg-slate-100 min-h-[300px] md:min-h-[420px]">
+            <iframe
+              title="Sarail 1 to 99+ Shop Location"
+              src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d254.57648721315195!2d91.11316499991568!3d24.07145550878325!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjTCsDA0JzE3LjEiTiA5McKwMDYnNDkuMCJF!5e1!3m2!1sen!2sbd!4v1791988356150!5m2!1sen!2sbd"
+              width="100%"
+              height="400"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>

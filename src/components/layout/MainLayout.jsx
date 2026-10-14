@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
 import Footer from './Footer';
 import AutoScrol from './AutoScrol';
+import GlobalSupportWidget from '../common/GlobalSupportWidget';
 import { useShop } from '../../context/ShopContext';
 
 const QuickOrderModal = lazy(() => import('../common/QuickOrderModal'));
@@ -23,6 +24,9 @@ const MainLayout = () => {
 
       {/* Footer */}
       <Footer />
+
+      {/* Global Expandable Support Widget (Messenger + WhatsApp) */}
+      <GlobalSupportWidget />
 
       {/* Global Quick Buy Now Modal (loaded on demand) */}
       {isQuickOrderOpen && (

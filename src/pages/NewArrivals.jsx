@@ -7,6 +7,7 @@ const NewArrivals = () => {
   const { data: sampleProducts = [], isLoading } = useAllProducts();
   const newArrivals = sampleProducts.filter(
     (p) =>
+      p.collections?.newArrival === true ||
       p.tag?.toLowerCase().includes('trending') ||
       p.tag?.toLowerCase().includes('essential') ||
       p.tag?.toLowerCase().includes('special')
