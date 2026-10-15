@@ -12,62 +12,64 @@ import {
 } from 'react-icons/fa';
 import { HiOutlineMail, HiOutlinePhone } from 'react-icons/hi';
 import logoImg from '../../assets/Without BG logo.webp';
+import heroStackLogo from '../../assets/herostack-logo.png';
+import { STORE_CONTACT } from '../../utils/contactInfo';
 
 const Footer = () => {
   return (
     <footer className="w-full bg-[#050914] text-slate-300 pt-12 border-t border-gray-800 mt-auto cv-auto">
       {/* 1. Value Proposition Strip (Approved Section 08 Draft Copy) */}
       <div className="max-w-7xl mx-auto px-4 pb-12 border-b border-gray-800">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
             <div
-              className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-lg sm:text-xl shrink-0"
               aria-hidden="true"
             >
               <FaShieldAlt />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">Quality You Can Trust</p>
-              <p className="text-slate-300 text-xs mt-0.5">Carefully selected products for your everyday needs.</p>
+              <p className="text-white font-bold text-xs sm:text-sm">Quality You Can Trust</p>
+              <p className="text-slate-300 text-[11px] sm:text-xs mt-0.5">Carefully selected products for your everyday needs.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
             <div
-              className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-xl shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-lg sm:text-xl shrink-0"
               aria-hidden="true"
             >
               <FaTruck />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">Delivery Across Bangladesh</p>
-              <p className="text-slate-300 text-xs mt-0.5">Convenient shipping to your doorstep, wherever we deliver.</p>
+              <p className="text-white font-bold text-xs sm:text-sm">Delivery Across Bangladesh</p>
+              <p className="text-slate-300 text-[11px] sm:text-xs mt-0.5">Convenient shipping to your doorstep, wherever we deliver.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
             <div
-              className="w-12 h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-xl shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-blue-500/20 text-blue-300 flex items-center justify-center text-lg sm:text-xl shrink-0"
               aria-hidden="true"
             >
               <FaUndo />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">3-Day Return Request</p>
-              <p className="text-slate-300 text-xs mt-0.5">Report eligible product issues within 3 days of delivery.</p>
+              <p className="text-white font-bold text-xs sm:text-sm">3-Day Return Request</p>
+              <p className="text-slate-300 text-[11px] sm:text-xs mt-0.5">Report eligible product issues within 3 days of delivery.</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-4 p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2.5 sm:gap-4 p-3 sm:p-4 rounded-lg bg-gray-900/60 border border-gray-800/80">
             <div
-              className="w-12 h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-xl shrink-0"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-500/20 text-[#FF6B74] flex items-center justify-center text-lg sm:text-xl shrink-0"
               aria-hidden="true"
             >
               <FaHeadset />
             </div>
             <div>
-              <p className="text-white font-bold text-sm">Here to Help</p>
-              <p className="text-slate-300 text-xs mt-0.5">Have a question? Our team is ready to assist you.</p>
+              <p className="text-white font-bold text-xs sm:text-sm">Here to Help</p>
+              <p className="text-slate-300 text-[11px] sm:text-xs mt-0.5">Have a question? Our team is ready to assist you.</p>
             </div>
           </div>
         </div>
@@ -103,7 +105,7 @@ const Footer = () => {
             <div className="space-y-2 text-xs text-slate-300 pt-1">
               <div className="flex items-start gap-2.5">
                 <Link
-                  to="/about#store-location"
+                  to={STORE_CONTACT.addressRoute}
                   onClick={() => {
                     const el = document.getElementById('store-location');
                     if (el) {
@@ -113,25 +115,27 @@ const Footer = () => {
                   className="flex items-start gap-2.5 hover:text-white transition-colors"
                 >
                   <FaMapMarkerAlt className="text-[#FF6B74] text-base shrink-0 mt-0.5" aria-hidden="true" />
-                  <span>Munshi market, Bikal bazar, Sarail, Brahmanbaria</span>
+                  <span>{STORE_CONTACT.address}</span>
                 </Link>
               </div>
               <div className="flex items-center gap-2.5">
                 <HiOutlinePhone className="text-[#FF6B74] text-base shrink-0" aria-hidden="true" />
-                <a href="tel:+8801998789157" className="hover:text-white transition-colors">
-                  +880 1998-789157
+                <a href={STORE_CONTACT.phoneHref} className="hover:text-white transition-colors">
+                  {STORE_CONTACT.phoneDisplay}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <HiOutlineMail className="text-[#FF6B74] text-base shrink-0" aria-hidden="true" />
-                <span>support@sarail1to99plus.com</span>
+                <a href={STORE_CONTACT.emailHref} className="hover:text-white transition-colors">
+                  {STORE_CONTACT.email}
+                </a>
               </div>
             </div>
 
             {/* Social Icons (Section 01: Facebook, TikTok, WhatsApp, Store Location) */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="https://www.facebook.com/profile.php?id=61565363597487"
+                href={STORE_CONTACT.facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Facebook"
@@ -140,7 +144,7 @@ const Footer = () => {
                 <FaFacebookF className="text-sm" aria-hidden="true" />
               </a>
               <a
-                href="https://www.tiktok.com/@.1.to.99.shop"
+                href={STORE_CONTACT.tiktokUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on TikTok"
@@ -149,7 +153,7 @@ const Footer = () => {
                 <FaTiktok className="text-sm" aria-hidden="true" />
               </a>
               <a
-                href="https://wa.me/8801998789157"
+                href={STORE_CONTACT.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat on WhatsApp"
@@ -158,7 +162,7 @@ const Footer = () => {
                 <FaWhatsapp className="text-base" aria-hidden="true" />
               </a>
               <Link
-                to="/about#store-location"
+                to={STORE_CONTACT.addressRoute}
                 onClick={() => {
                   const el = document.getElementById('store-location');
                   if (el) {
@@ -338,17 +342,24 @@ const Footer = () => {
             © {new Date().getFullYear()} <strong className="text-white">Sarail 1 to 99 Plus Shop</strong>. All rights reserved.
           </p>
 
-          <p className="text-center md:text-right text-slate-400">
-            Designed &amp; Developed by{' '}
+          <div className="flex items-center justify-center md:justify-end gap-2.5 text-slate-400">
+            <span>Designed &amp; Developed by</span>
             <a
-              href="https://sarail1to99plusshop-sarail1to99plus.vercel.app/"
-              className="text-[#FF6B74] hover:underline font-semibold"
+              href={STORE_CONTACT.agencyFacebookUrl}
+              className="inline-flex items-center hover:opacity-90 transition-opacity"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="HeroStack Tech (opens in a new tab)"
             >
-              [Agency Name]
+              <img
+                src={heroStackLogo}
+                alt="HeroStack"
+                className="h-6 sm:h-7 w-auto object-contain"
+                loading="lazy"
+                decoding="async"
+              />
             </a>
-          </p>
+          </div>
         </div>
       </div>
     </footer>

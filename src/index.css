@@ -69,6 +69,26 @@ body {
   contain-intrinsic-size: 1px 420px;
 }
 
+/* Subtle floating animation for support widget (Change Request V1.1 - Section 15) */
+@keyframes floatSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float-subtle {
+  animation: floatSubtle 3.5s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-float-subtle {
+    animation: none !important;
+  }
+}
+
 /* Accessible Swiper Carousel Controls */
 .hero-carousel-wrapper .swiper-button-prev,
 .hero-carousel-wrapper .swiper-button-next {
