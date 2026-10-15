@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { FiArrowLeft, FiPhone, FiMail, FiShield } from 'react-icons/fi';
 import { FaWhatsapp, FaFacebookF } from 'react-icons/fa';
+import { STORE_CONTACT } from '../utils/contactInfo';
 
 const PrivacyPolicy = () => {
   return (
@@ -27,9 +28,6 @@ const PrivacyPolicy = () => {
           </h1>
           <p className="text-sm font-semibold text-slate-600">
             Sarail 1 to 99+ Shop
-          </p>
-          <p className="text-xs text-slate-500">
-            <strong>Last Updated:</strong> October 14, 2026
           </p>
         </div>
 
@@ -232,16 +230,18 @@ const PrivacyPolicy = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2">
               <strong className="block text-slate-900 font-bold">Sarail 1 to 99+ Shop</strong>
-              <p className="text-slate-600">Munshi market, Bikal bazar, Sarail, Brahmanbaria</p>
+              <p className="text-slate-600">{STORE_CONTACT.address}</p>
               <div className="flex items-center gap-2 text-slate-700">
                 <FiPhone className="text-actionRed shrink-0" />
-                <a href="tel:+8801998789157" className="hover:underline font-semibold">
-                  +880 1998-789157
+                <a href={STORE_CONTACT.phoneHref} className="hover:underline font-semibold">
+                  {STORE_CONTACT.phoneDisplay}
                 </a>
               </div>
               <div className="flex items-center gap-2 text-slate-700">
                 <FiMail className="text-actionRed shrink-0" />
-                <span>support@sarail1to99plus.com</span>
+                <a href={STORE_CONTACT.emailHref} className="hover:underline">
+                  {STORE_CONTACT.email}
+                </a>
               </div>
             </div>
 
@@ -249,7 +249,7 @@ const PrivacyPolicy = () => {
               <span className="block text-slate-900 font-bold">Connect with Us Directly:</span>
               <div className="flex flex-col gap-2">
                 <a
-                  href="https://wa.me/8801998789157"
+                  href={STORE_CONTACT.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-[#25D366] text-white px-3 py-2 rounded-lg font-bold text-xs hover:bg-[#20ba59] transition-colors"

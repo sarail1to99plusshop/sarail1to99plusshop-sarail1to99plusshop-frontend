@@ -28,6 +28,7 @@ const QuickOrderModal = () => {
   const [selectedVariant, setSelectedVariant] = useState(null);
   const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
   const [paymentMethod, setPaymentMethod] = useState('COD');
+  const [bKashPaymentMode, setBKashPaymentMode] = useState('full');
   const [trxId, setTrxId] = useState('');
   const [senderPhone, setSenderPhone] = useState('');
   const [copiedNumber, setCopiedNumber] = useState(false);
@@ -108,6 +109,8 @@ const QuickOrderModal = () => {
     };
   const deliveryFee = activeDelivery.charge;
   const totalAmount = product.price * orderQuantity + deliveryFee;
+  const bKashPayNow = bKashPaymentMode === 'delivery' ? deliveryFee : totalAmount;
+  const remainingOnDelivery = totalAmount - bKashPayNow;
 
   const handleOrderSubmit = (e) => {
     e.preventDefault();
@@ -123,6 +126,10 @@ const QuickOrderModal = () => {
     if (!activeName || !phone || !address) return;
 
     if (paymentMethod === 'bKash') {
+      if (bKashPaymentMode === 'delivery' && deliveryFee <= 0) {
+        setPaymentError('Delivery charge only is unavailable when the delivery fee is zero. Please choose Full Payment.');
+        return;
+      }
       const cleanTrx = trxId.trim();
       if (!cleanTrx) {
         setPaymentError('Please enter your bKash Transaction ID (TrxID).');
@@ -176,7 +183,7 @@ const QuickOrderModal = () => {
         trxId: trxId.trim().toUpperCase(),
         senderPhone: senderPhone.trim(),
         bKashNumber: '01998789157',
-        mode: 'full',
+        mode: paymentMethod === 'bKash' ? bKashPaymentMode : 'full',
       },
     });
 
@@ -192,6 +199,7 @@ const QuickOrderModal = () => {
     setAddress('');
     setNote('');
     setPaymentMethod('COD');
+    setBKashPaymentMode('full');
     setTrxId('');
     setSenderPhone('');
     setPaymentError('');
@@ -214,7 +222,7 @@ const QuickOrderModal = () => {
           <div className="flex items-center gap-2">
             <FiShoppingBag className="text-actionRed text-lg" />
             <h3 className="font-bold text-sm md:text-base">
-              {placedOrder ? 'Order Confirmed!' : 'Quick Buy Now (Cash on Delivery)'}
+              {placedOrder ? 'Order Confirmed!' : 'Quick Buy Now'}
             </h3>
           </div>
           <button
@@ -325,6 +333,18 @@ const QuickOrderModal = () => {
                     <span className="font-mono font-bold text-charcoal">{placedOrder.paymentDetails?.trxId}</span>
                   </div>
                   <div className="flex justify-between">
+                    <span className="text-gray-500">bKash Payment Option:</span>
+                    <span className="font-semibold">{placedOrder.paymentDetails?.mode === 'delivery' || (!placedOrder.paymentDetails?.mode && bKashPaymentMode === 'delivery') ? 'Delivery Charge Only' : 'Full Payment'}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Amount to Verify:</span>
+                    <span className="font-bold">৳{(placedOrder.paymentDetails?.mode === 'delivery' || (!placedOrder.paymentDetails?.mode && bKashPaymentMode === 'delivery') ? placedOrder.deliveryFee : placedOrder.totalAmount).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500">Due on Delivery:</span>
+                    <span className="font-bold">৳{(placedOrder.paymentDetails?.mode === 'delivery' || (!placedOrder.paymentDetails?.mode && bKashPaymentMode === 'delivery') ? placedOrder.totalAmount - placedOrder.deliveryFee : 0).toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between">
                     <span className="text-gray-500">Payment Status:</span>
                     <span className="font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded text-[10px]">
                       Pending Verification
@@ -333,7 +353,7 @@ const QuickOrderModal = () => {
                 </>
               )}
               <div className="flex justify-between border-t border-gray-200 pt-1.5 font-black text-sm">
-                <span>Total Payable:</span>
+                <span>Total Order Amount:</span>
                 <span className="text-actionRed">৳{placedOrder.totalAmount.toLocaleString()}</span>
               </div>
             </div>
@@ -732,6 +752,44 @@ const QuickOrderModal = () => {
               {/* bKash Payment Details */}
               {paymentMethod === 'bKash' && (
                 <div className="p-3 bg-pink-50/40 border border-pink-200 rounded-lg text-xs space-y-2.5 animate-fadeIn">
+                  {/* Choose how much to pay in advance */}
+                  <fieldset className="space-y-2">
+                    <legend className="text-xs font-bold text-charcoal">
+                      bKash Payment Option *
+                    </legend>
+                    <label className={`flex items-start gap-2 rounded-md border p-2.5 cursor-pointer ${
+                      bKashPaymentMode === 'full' ? 'border-[#E2136E] bg-pink-50' : 'border-gray-200 bg-white'
+                    }`}>
+                      <input
+                        type="radio"
+                        name="quick-bkash-mode"
+                        value="full"
+                        checked={bKashPaymentMode === 'full'}
+                        onChange={() => { setBKashPaymentMode('full'); setPaymentError(''); }}
+                        className="mt-0.5 accent-[#E2136E]"
+                      />
+                      <span><strong className="block">Full Payment</strong>
+                        <span className="text-[11px] text-gray-600">Pay the entire order total now.</span>
+                      </span>
+                    </label>
+                    <label className={`flex items-start gap-2 rounded-md border p-2.5 cursor-pointer ${
+                      bKashPaymentMode === 'delivery' ? 'border-[#E2136E] bg-pink-50' : 'border-gray-200 bg-white'
+                    }`}>
+                      <input
+                        type="radio"
+                        name="quick-bkash-mode"
+                        value="delivery"
+                        checked={bKashPaymentMode === 'delivery'}
+                        disabled={deliveryFee <= 0}
+                        onChange={() => { setBKashPaymentMode('delivery'); setPaymentError(''); }}
+                        className="mt-0.5 accent-[#E2136E]"
+                      />
+                      <span><strong className="block">Delivery Charge Only</strong>
+                        <span className="text-[11px] text-gray-600">Pay the delivery charge now and the product price on delivery.</span>
+                      </span>
+                    </label>
+                  </fieldset>
+
                   <div className="space-y-1">
                     <span className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block">
                       Send Money to:
@@ -751,7 +809,10 @@ const QuickOrderModal = () => {
                   </div>
 
                   <p className="text-[11px] text-slate-700 leading-relaxed bg-white/80 p-2 rounded border border-pink-100">
-                    Send the total payable amount of <strong className="text-actionRed font-bold">৳{totalAmount.toLocaleString()}</strong> to the bKash number above using <strong>Send Money</strong>.
+                    Send <strong className="text-actionRed font-bold">৳{bKashPayNow.toLocaleString()}</strong> {bKashPaymentMode === 'delivery' ? '(delivery charge only)' : '(full order payment)'} to the bKash number above using <strong>Send Money</strong>.
+                    {bKashPaymentMode === 'delivery' && (
+                      <span className="block mt-1 font-medium">Remaining ৳{remainingOnDelivery.toLocaleString()} is payable on delivery after payment verification.</span>
+                    )}
                   </p>
 
                   <div>
@@ -806,9 +867,21 @@ const QuickOrderModal = () => {
                 <span className="font-bold text-charcoal">৳{deliveryFee}</span>
               </div>
               <div className="border-t border-gray-200 pt-2 flex justify-between font-black text-sm text-charcoal">
-                <span>Total Amount {paymentMethod === 'bKash' ? '(via bKash)' : '(Cash on Delivery)'}</span>
+                <span>Total Order Amount</span>
                 <span className="text-actionRed">৳{totalAmount.toLocaleString()}</span>
               </div>
+              {paymentMethod === 'bKash' && (
+                <>
+                  <div className="flex justify-between font-bold text-[#E2136E]">
+                    <span>Send Now via bKash</span>
+                    <span>৳{bKashPayNow.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between text-gray-600">
+                    <span>Due on Delivery</span>
+                    <span>৳{remainingOnDelivery.toLocaleString()}</span>
+                  </div>
+                </>
+              )}
             </div>
 
             {/* Submit Button */}
@@ -845,7 +918,7 @@ const QuickOrderModal = () => {
                 disabled={loading}
                 className="w-full bg-actionRed hover:bg-actionRed-hover text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-md disabled:opacity-50 cursor-pointer"
               >
-                {loading ? 'Processing Order...' : 'Confirm Cash On Delivery Order'}
+                {loading ? 'Processing Order...' : paymentMethod === 'bKash' ? 'Submit bKash Order' : 'Confirm Cash On Delivery Order'}
               </button>
             )}
 

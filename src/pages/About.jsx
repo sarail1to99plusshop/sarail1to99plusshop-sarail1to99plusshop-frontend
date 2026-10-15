@@ -7,7 +7,6 @@ import {
   FiTruck,
   FiShield,
   FiHeart,
-  FiClock,
   FiMapPin,
   FiPhone,
   FiMail,
@@ -15,6 +14,7 @@ import {
   FiAward,
 } from 'react-icons/fi';
 import { FaFire } from 'react-icons/fa';
+import { STORE_CONTACT } from '../utils/contactInfo';
 
 const About = () => {
   const location = useLocation();
@@ -245,29 +245,29 @@ const About = () => {
                 Every item showcased on our platform is carefully verified for build quality and practical utility.
               </p>
               <p>
-                With both an in-person outlet on Main Road, Sarail and a fast-growing digital store, we proudly
+                With both an in-person outlet at {STORE_CONTACT.address} and a fast-growing digital store, we proudly
                 serve shoppers in Sarail, across Brahmanbaria, and through reliable delivery across all 64
                 districts of Bangladesh.
               </p>
             </div>
 
             <div className="pt-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs font-semibold text-slate-700">
-                <div className="flex items-center gap-2 bg-white p-3 rounded-lg border border-gray-200">
+              <div className="grid grid-cols-2 gap-2.5 sm:gap-3 text-xs font-semibold text-slate-700">
+                <div className="flex items-center gap-2 bg-white p-2.5 sm:p-3 rounded-lg border border-gray-200">
                   <FiCheckCircle className="text-actionRed shrink-0" />
-                  <span>Transparent 1 to 99+ Pricing</span>
+                  <span className="leading-tight">Transparent 1 to 99+ Pricing</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white p-3 rounded-lg border border-gray-200">
+                <div className="flex items-center gap-2 bg-white p-2.5 sm:p-3 rounded-lg border border-gray-200">
                   <FiCheckCircle className="text-actionRed shrink-0" />
-                  <span>Secure Cash on Delivery</span>
+                  <span className="leading-tight">Secure Cash on Delivery</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white p-3 rounded-lg border border-gray-200">
+                <div className="flex items-center gap-2 bg-white p-2.5 sm:p-3 rounded-lg border border-gray-200">
                   <FiCheckCircle className="text-actionRed shrink-0" />
-                  <span>Fast Delivery Across Bangladesh</span>
+                  <span className="leading-tight">Fast Delivery Nationwide</span>
                 </div>
-                <div className="flex items-center gap-2 bg-white p-3 rounded-lg border border-gray-200">
+                <div className="flex items-center gap-2 bg-white p-2.5 sm:p-3 rounded-lg border border-gray-200">
                   <FiCheckCircle className="text-actionRed shrink-0" />
-                  <span>Dedicated Pre-Order Service</span>
+                  <span className="leading-tight">Dedicated Pre-Order Service</span>
                 </div>
               </div>
             </div>
@@ -332,19 +332,19 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {highlights.map((item, idx) => (
               <div
                 key={idx}
-                className="bg-slate-50 border border-gray-200 rounded-xl p-6 hover:shadow-md hover:border-primary transition-all group space-y-3"
+                className="bg-slate-50 border border-gray-200 rounded-xl p-3.5 sm:p-6 hover:shadow-md hover:border-primary transition-all group space-y-2 sm:space-y-3"
               >
-                <div className="w-12 h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white border border-gray-200 flex items-center justify-center shadow-2xs group-hover:scale-110 transition-transform">
                   {item.icon}
                 </div>
-                <h3 className="font-bold text-sm text-charcoal group-hover:text-primary transition-colors">
+                <h3 className="font-bold text-xs sm:text-sm text-charcoal group-hover:text-primary transition-colors leading-snug">
                   {item.title}
                 </h3>
-                <p className="text-xs text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed">
                   {item.desc}
                 </p>
               </div>
@@ -353,7 +353,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* 5. What We Offer (Categories Preview) */}
+      {/* 5. What We Offer (Categories Preview - 4 columns x 2 rows on desktop, 2 columns on mobile per V1.1 Section 17 & 22) */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 py-14 md:py-20">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
           <div>
@@ -377,27 +377,27 @@ const About = () => {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
           {categories.map((cat, idx) => (
             <Link
               key={idx}
               to={cat.link}
-              className="bg-white border border-gray-200 rounded-xl p-5 hover:border-primary hover:shadow-md transition-all group flex flex-col justify-between"
+              className="bg-white border border-gray-200 rounded-xl p-3.5 sm:p-5 hover:border-primary hover:shadow-md transition-all group flex flex-col justify-between"
             >
               <div className="space-y-2">
-                <div className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold">
                   0{idx + 1}
                 </div>
-                <h3 className="font-bold text-sm text-charcoal group-hover:text-primary transition-colors">
+                <h3 className="font-bold text-xs sm:text-sm text-charcoal group-hover:text-primary transition-colors leading-snug">
                   {cat.name}
                 </h3>
-                <p className="text-xs text-gray-500 leading-relaxed">
+                <p className="text-[11px] sm:text-xs text-gray-500 leading-relaxed line-clamp-2 sm:line-clamp-3">
                   {cat.desc}
                 </p>
               </div>
 
-              <div className="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between text-xs font-semibold text-actionRed group-hover:translate-x-0.5 transition-transform">
-                <span>Browse Products</span>
+              <div className="pt-3 sm:pt-4 mt-2 border-t border-gray-100 flex items-center justify-between text-[11px] sm:text-xs font-semibold text-actionRed group-hover:translate-x-0.5 transition-transform">
+                <span>Browse <span className="hidden sm:inline">Products</span></span>
                 <FiArrowRight />
               </div>
             </Link>
@@ -435,7 +435,7 @@ const About = () => {
                   <FiMapPin className="text-actionRed text-base shrink-0 mt-0.5" />
                   <div>
                     <strong className="block text-white">Store Address:</strong>
-                    <span>Munshi market, Bikal bazar, Sarail, Brahmanbaria</span>
+                    <span>{STORE_CONTACT.address}</span>
                   </div>
                 </div>
 
@@ -444,10 +444,10 @@ const About = () => {
                   <div>
                     <strong className="block text-white">Call / WhatsApp:</strong>
                     <a
-                      href="tel:+8801998789157"
+                      href={STORE_CONTACT.phoneTel}
                       className="hover:underline hover:text-white transition-colors"
                     >
-                      +880 1998-789157
+                      {STORE_CONTACT.phoneDisplay}
                     </a>
                   </div>
                 </div>
@@ -456,15 +456,7 @@ const About = () => {
                   <FiMail className="text-actionRed text-base shrink-0" />
                   <div>
                     <strong className="block text-white">Support Email:</strong>
-                    <span>support@sarail1to99plus.com</span>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3">
-                  <FiClock className="text-actionRed text-base shrink-0 mt-0.5" />
-                  <div>
-                    <strong className="block text-white">Operating Hours:</strong>
-                    <span>Sat – Thu: 9:00 AM – 10:00 PM | Fri: 2:30 PM – 10:00 PM</span>
+                    <span>{STORE_CONTACT.email}</span>
                   </div>
                 </div>
               </div>
@@ -489,7 +481,7 @@ const About = () => {
                 </Link>
 
                 <a
-                  href="https://wa.me/8801998789157"
+                  href={STORE_CONTACT.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold px-5 py-2.5 rounded-lg text-center transition-colors flex items-center justify-center gap-1.5"
@@ -525,13 +517,13 @@ const About = () => {
               </p>
             </div>
             <a
-              href="https://maps.app.goo.gl/Z5AM3N5qj85KMEXE8"
+              href={STORE_CONTACT.googleMapsDirectionsUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-[#112b45] hover:bg-[#1a3d60] text-white font-bold text-xs uppercase px-5 py-3 rounded-lg shadow-xs transition-all shrink-0 focus:outline-none focus:ring-2 focus:ring-primary"
             >
               <FiMapPin className="text-sm" aria-hidden="true" />
-              <span>Get Directions ↗</span>
+              <span>Get Directions</span>
             </a>
           </div>
 

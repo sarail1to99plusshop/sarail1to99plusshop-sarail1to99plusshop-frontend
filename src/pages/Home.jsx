@@ -117,23 +117,23 @@ const Home = () => {
         </div>
 
         {categoriesLoading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
             {Array.from({ length: 8 }).map((_, idx) => (
               <div
                 key={idx}
-                className="bg-white border border-gray-200 rounded-xl p-5 min-h-[160px] flex flex-col justify-between shadow-2xs"
+                className="bg-white border border-gray-200 rounded-lg sm:rounded-xl p-2 sm:p-5 min-h-[80px] sm:min-h-[160px] flex flex-col justify-between shadow-2xs"
               >
-                <div className="space-y-3">
-                  <div className="h-6 w-8 rounded yt-skeleton" />
-                  <div className="h-4 w-3/4 rounded yt-skeleton" />
-                  <div className="h-3 w-full rounded yt-skeleton" />
+                <div className="space-y-1.5 sm:space-y-3">
+                  <div className="hidden sm:block h-6 w-8 rounded yt-skeleton" />
+                  <div className="h-3 sm:h-4 w-full sm:w-3/4 rounded yt-skeleton" />
+                  <div className="hidden sm:block h-3 w-full rounded yt-skeleton" />
                 </div>
-                <div className="h-4 w-1/3 rounded yt-skeleton pt-3" />
+                <div className="h-2.5 sm:h-4 w-2/3 sm:w-1/3 rounded yt-skeleton pt-1 sm:pt-3" />
               </div>
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-4 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
             {categoriesList.map((cat, idx) => {
               const meta = categoryMetadata[cat.id] || {
                 number: String(idx + 1).padStart(2, '0'),
@@ -144,23 +144,30 @@ const Home = () => {
                 <Link
                   key={cat.id}
                   to={`/shop?category=${cat.id}`}
-                  className="bg-white border border-gray-200 hover:border-primary/80 hover:shadow-md rounded-xl p-5 transition-all group flex flex-col justify-between min-h-[164px] focus:outline-none focus:ring-2 focus:ring-primary"
+                  className="bg-white border border-gray-200 hover:border-primary/80 hover:shadow-md rounded-lg sm:rounded-xl p-2 sm:p-5 transition-all group flex flex-col justify-between min-h-[84px] sm:min-h-[164px] focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-label={`${cat.name} category`}
                 >
-                  <div className="space-y-2">
-                    <div className="text-2xl font-black text-[#e96542]">
+                  <div className="space-y-1 sm:space-y-2">
+                    {/* Number hidden on mobile per Section 21.2 */}
+                    <div className="hidden sm:block text-2xl font-black text-[#e96542]">
                       {meta.number}
                     </div>
-                    <h3 className="font-bold text-sm md:text-base text-charcoal group-hover:text-primary transition-colors leading-snug">
+                    {/* Multiline title on mobile with appropriate text scaling and wrapping */}
+                    <h3 className="font-bold text-[10px] sm:text-base text-charcoal group-hover:text-primary transition-colors leading-tight sm:leading-snug break-words hyphens-auto">
                       {cat.name}
                     </h3>
-                    <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
+                    {/* Description hidden on mobile per Section 21.2 */}
+                    <p className="hidden sm:block text-xs text-slate-500 leading-relaxed line-clamp-3">
                       {meta.desc}
                     </p>
                   </div>
 
-                  <div className="pt-4 mt-3 border-t border-gray-100 flex items-center justify-between text-xs font-bold text-primary group-hover:text-[#B80D18] transition-colors">
-                    <span>Browse Products</span>
-                    <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform">→</span>
+                  {/* Compact Browse action */}
+                  <div className="pt-1.5 sm:pt-4 mt-1 sm:mt-3 border-t border-gray-100 flex items-center justify-between text-[10px] sm:text-xs font-bold text-primary group-hover:text-[#B80D18] transition-colors">
+                    <span className="truncate">
+                      Browse <span className="hidden sm:inline">Products</span>
+                    </span>
+                    <span aria-hidden="true" className="group-hover:translate-x-1 transition-transform ml-0.5 shrink-0">→</span>
                   </div>
                 </Link>
               );
