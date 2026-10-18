@@ -6,17 +6,20 @@ import {
   FiMapPin,
   FiPhone,
   FiMail,
-  FiClock,
   FiSend,
   FiCheckCircle,
   FiTruck,
   FiPackage,
   FiMessageSquare,
   FiHelpCircle,
+  FiChevronDown,
+  FiCopy,
+  FiCheck,
 } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
+import { STORE_CONTACT } from '../utils/contactInfo';
 
-const RECIPIENT_GMAIL = import.meta.env.VITE_CONTACT_EMAIL || 'saef.ratul@gmail.com';
+const RECIPIENT_GMAIL = import.meta.env.VITE_CONTACT_EMAIL || STORE_CONTACT.email;
 
 const Contact = () => {
   const { currentUser } = useAuth();
@@ -32,6 +35,8 @@ const Contact = () => {
   const [submitted, setSubmitted] = useState(false);
   const [lastSubmittedInfo, setLastSubmittedInfo] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openFaqIndices, setOpenFaqIndices] = useState(() => new Set([0]));
+  const [faqCopied, setFaqCopied] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -99,20 +104,20 @@ const Contact = () => {
     {
       icon: <FiPhone className="text-xl text-primary" />,
       title: 'Direct Helpline',
-      info: '01970-605584',
+      info: STORE_CONTACT.phoneDisplay,
       subInfo: 'Available 7 Days a Week',
       actionText: 'Call Hotline',
-      href: 'tel:01970605584',
+      href: STORE_CONTACT.phoneTel,
       badge: 'Fastest',
       badgeColor: 'bg-primary/10 text-primary',
     },
     {
       icon: <FaWhatsapp className="text-xl text-[#25D366]" />,
       title: 'WhatsApp Support',
-      info: '01970-605584',
+      info: STORE_CONTACT.phoneDisplay,
       subInfo: 'Instant chat & photo assistance',
       actionText: 'Message on WhatsApp',
-      href: 'https://wa.me/8801970605584',
+      href: STORE_CONTACT.whatsappUrl,
       badge: 'Instant',
       badgeColor: 'bg-emerald-50 text-emerald-700',
     },
@@ -129,33 +134,94 @@ const Contact = () => {
     {
       icon: <FiMapPin className="text-xl text-amber-600" />,
       title: 'Physical Outlet',
-      info: 'Main Road',
+      info: 'Munshi market, Bikal bazar',
       subInfo: 'Sarail, Brahmanbaria, Bangladesh',
       actionText: 'View Store Details',
-      href: '#outlet-details',
+      href: STORE_CONTACT.addressRoute,
       badge: 'In-Store',
       badgeColor: 'bg-amber-50 text-amber-700',
     },
   ];
 
+  // Exact 8 Website-Ready English FAQs per V1.1 Section 18
   const faqs = [
     {
-      q: 'Can I visit and purchase directly from your Sarail outlet?',
-      a: 'Yes, absolutely! You can visit our store at Main Road, Sarail to inspect products in person and pick up orders directly.',
+      id: 1,
+      q: 'How can I place an order?',
+      a: 'Browse our products, choose the items you need, and proceed to checkout. Enter your contact and delivery details, select an available payment method, and submit your order. If you need help, you can contact us through WhatsApp or Messenger.',
     },
     {
-      q: 'Do you offer Cash on Delivery (COD) outside Brahmanbaria?',
-      a: 'Yes, we provide Cash on Delivery across all 64 districts in Bangladesh. Delivery is ৳60 Inside Dhaka (1-2 days) and ৳120 Outside Dhaka (2-4 days).',
+      id: 2,
+      q: 'Do you deliver outside Sarail?',
+      a: 'Yes, we arrange deliveries to supported locations across Bangladesh through our courier partners. Delivery availability, charges, and estimated time may vary depending on your location and the selected products.',
     },
     {
-      q: 'How can I check the status of my order?',
-      a: 'You can check your parcel real-time using our Track Order page with your Order ID or phone number, or message us directly on WhatsApp.',
+      id: 3,
+      q: 'What payment methods are available?',
+      a: 'You can choose Cash on Delivery where available. We also offer a bKash payment option when enabled at checkout. For manual bKash payments, follow the displayed instructions and submit the transaction ID. Your payment will be verified before order processing.',
     },
     {
-      q: 'How do I place a bulk or wedding gift pre-order?',
-      a: 'Visit our Pre-Order page or chat with our team on WhatsApp (01970-605584). We organize custom dinner sets and wholesale household lots with special discounts.',
+      id: 4,
+      q: 'Can I check my parcel before receiving it?',
+      a: "Parcel inspection at delivery depends on the rules of the courier company handling your order. Please check the parcel's outer condition when it arrives. If you notice damage or receive an incorrect item, contact us so we can review the issue.",
+    },
+    {
+      id: 5,
+      q: 'What should I do if I receive a wrong or damaged product?',
+      a: "Please contact us within 3 calendar days after receiving the product for a standard return request. Share your order number, a short description of the issue, and clear photos or a video if available. We'll review your request and guide you through the next steps. Applicable legal and warranty rights remain unaffected.",
+    },
+    {
+      id: 6,
+      q: 'Can I cancel or change my order?',
+      a: 'Please contact us as soon as possible if you need to cancel or change an order. Changes are generally easier before the order is dispatched. If it has already been handed over to a courier, available options may depend on its delivery status and the applicable policy.',
+    },
+    {
+      id: 7,
+      q: 'How can I request a return or refund?',
+      a: "Get in touch through our official contact channels and provide your order number and the reason for your request. Eligible cases are reviewed according to our Return Policy. If a refund is approved, we'll explain the applicable refund method and timeline.",
+      hasLink: true,
+      linkText: 'Read our Return Policy',
+      linkUrl: '/return-policy',
+    },
+    {
+      id: 8,
+      q: 'Where is your store located, and how can I contact you?',
+      a: `Our store is located at ${STORE_CONTACT.address}. You can call or WhatsApp us at ${STORE_CONTACT.phoneDisplay}, email ${STORE_CONTACT.email}, or view our store location.`,
+      hasLocationLink: true,
     },
   ];
+
+  const toggleFaq = (index) => {
+    setOpenFaqIndices((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  };
+
+  const expandAllFaqs = () => {
+    setOpenFaqIndices(new Set(faqs.map((_, i) => i)));
+  };
+
+  const collapseAllFaqs = () => {
+    setOpenFaqIndices(new Set());
+  };
+
+  const copyAllFaqs = () => {
+    const text = faqs
+      .map((faq, idx) => `${idx + 1}. ${faq.q}\n${faq.a}\n`)
+      .join('\n');
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        setFaqCopied(true);
+        setTimeout(() => setFaqCopied(false), 2000);
+      });
+    }
+  };
 
   return (
     <div className="relative min-h-screen bg-slate-50 text-charcoal overflow-hidden">
@@ -199,53 +265,50 @@ const Contact = () => {
               Direct Phone &amp; WhatsApp Hotline
             </span>
             <a
-              href="tel:01970605584"
+              href={STORE_CONTACT.phoneHref}
               className="text-xl md:text-2xl font-black text-white hover:text-actionRed transition-colors block"
             >
-              01970-605584
+              {STORE_CONTACT.phoneDisplay}
             </a>
-            <span className="text-[11px] text-emerald-300 block">
-              ● Active Today: 9:00 AM – 10:00 PM
-            </span>
           </div>
         </div>
       </section>
 
       {/* 2. Quick Contact Channels Grid */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 -mt-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {contactChannels.map((ch, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-xl border border-gray-200 p-5 shadow-xs hover:shadow-md hover:border-primary transition-all flex flex-col justify-between group"
+              className="bg-white rounded-xl border border-gray-200 p-3.5 sm:p-5 shadow-xs hover:shadow-md hover:border-primary transition-all flex flex-col justify-between group"
             >
-              <div className="space-y-3">
+              <div className="space-y-2 sm:space-y-3">
                 <div className="flex items-center justify-between">
-                  <div className="w-10 h-10 rounded-lg bg-slate-50 border border-gray-100 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-slate-50 border border-gray-100 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform text-xs sm:text-base">
                     {ch.icon}
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${ch.badgeColor}`}>
+                  <span className={`text-[9px] sm:text-[10px] font-bold px-1.5 sm:px-2 py-0.5 rounded-full ${ch.badgeColor}`}>
                     {ch.badge}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="font-bold text-xs text-gray-500 uppercase tracking-wider">
+                  <h3 className="font-bold text-[10px] sm:text-xs text-gray-500 uppercase tracking-wider">
                     {ch.title}
                   </h3>
-                  <div className="text-sm font-bold text-charcoal mt-0.5">
+                  <div className="text-xs sm:text-sm font-bold text-charcoal mt-0.5 truncate">
                     {ch.info}
                   </div>
-                  <p className="text-[11px] text-gray-400 mt-0.5">
+                  <p className="text-[10px] sm:text-[11px] text-gray-400 mt-0.5">
                     {ch.subInfo}
                   </p>
                 </div>
               </div>
 
-              <div className="pt-4 mt-3 border-t border-gray-100">
+              <div className="pt-3 sm:pt-4 mt-2 sm:mt-3 border-t border-gray-100">
                 <a
                   href={ch.href}
-                  className="text-xs font-bold text-primary group-hover:text-actionRed transition-colors flex items-center gap-1.5"
+                  className="text-[11px] sm:text-xs font-bold text-primary group-hover:text-actionRed transition-colors flex items-center gap-1"
                 >
                   <span>{ch.actionText}</span>
                   <span className="group-hover:translate-x-1 transition-transform">→</span>
@@ -463,16 +526,7 @@ const Contact = () => {
                     <FiMapPin className="text-actionRed text-base shrink-0 mt-0.5" />
                     <div>
                       <strong className="block text-white">Store Address:</strong>
-                      <span>Munshi market, Bikal bazar, Sarail, Brahmanbaria</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3">
-                    <FiClock className="text-actionRed text-base shrink-0" />
-                    <div>
-                      <strong className="block text-white">Operating Hours:</strong>
-                      <span>Sat – Thu: 9:00 AM – 10:00 PM</span>
-                      <span className="block text-gray-300">Friday: 2:30 PM – 10:00 PM</span>
+                      <span>{STORE_CONTACT.address}</span>
                     </div>
                   </div>
 
@@ -487,7 +541,7 @@ const Contact = () => {
 
                 <div className="pt-4 border-t border-white/20 flex flex-col sm:flex-row gap-2.5">
                   <a
-                    href="https://wa.me/8801970605584"
+                    href={STORE_CONTACT.whatsappUrl}
                     target="_blank"
                     rel="noreferrer"
                     className="flex-1 bg-[#25D366] hover:bg-[#20ba59] text-white text-xs font-bold py-2.5 px-3 rounded-lg text-center transition-colors flex items-center justify-center gap-1.5 shadow-sm"
@@ -497,7 +551,7 @@ const Contact = () => {
                   </a>
 
                   <a
-                    href="tel:01970605584"
+                    href={STORE_CONTACT.phoneHref}
                     className="flex-1 bg-white/10 hover:bg-white/20 text-white text-xs font-bold py-2.5 px-3 rounded-lg text-center border border-white/25 transition-colors flex items-center justify-center gap-1.5"
                   >
                     <FiPhone className="text-xs" />
@@ -547,31 +601,127 @@ const Contact = () => {
       {/* 4. Frequently Asked Questions Section */}
       <section className="relative z-10 max-w-7xl mx-auto px-4 pb-16">
         <div className="bg-white rounded-2xl border border-gray-200 p-6 sm:p-10 shadow-xs">
-          <div className="text-center max-w-xl mx-auto mb-8 space-y-1">
-            <span className="text-actionRed text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5">
-              <FiHelpCircle />
-              <span>Common Questions</span>
-            </span>
-            <h2 className="text-xl md:text-2xl font-black text-charcoal">
-              Frequently Asked Questions
-            </h2>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 pb-6 border-b border-gray-100">
+            <div className="space-y-1">
+              <span className="text-actionRed text-xs font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <FiHelpCircle />
+                <span>Common Questions</span>
+              </span>
+              <h2 className="text-xl md:text-2xl font-black text-charcoal">
+                Frequently Asked Questions
+              </h2>
+              <p className="text-xs text-gray-500 max-w-xl">
+                Have a question about shopping with us? Here are some quick answers to help you get started.
+              </p>
+            </div>
+
+            {/* Accordion Controls */}
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={expandAllFaqs}
+                className="text-[11px] font-bold text-gray-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              >
+                Expand All FAQs
+              </button>
+              <button
+                type="button"
+                onClick={collapseAllFaqs}
+                className="text-[11px] font-bold text-gray-700 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+              >
+                Collapse All FAQs
+              </button>
+              <button
+                type="button"
+                onClick={copyAllFaqs}
+                className="text-[11px] font-bold text-primary bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1 cursor-pointer"
+                title="Copy all FAQ content to clipboard"
+              >
+                {faqCopied ? (
+                  <>
+                    <FiCheck className="text-emerald-600" />
+                    <span className="text-emerald-600 font-bold">Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <FiCopy />
+                    <span>Copy All FAQ Content</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {faqs.map((faq, idx) => (
-              <div
-                key={idx}
-                className="bg-slate-50 border border-gray-200 rounded-xl p-4.5 space-y-2 hover:border-primary transition-colors"
-              >
-                <h3 className="font-bold text-xs sm:text-sm text-charcoal flex items-start gap-2">
-                  <span className="text-actionRed font-black">Q.</span>
-                  <span>{faq.q}</span>
-                </h3>
-                <p className="text-xs text-gray-500 pl-4 leading-relaxed">
-                  {faq.a}
-                </p>
-              </div>
-            ))}
+          <div className="space-y-3">
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaqIndices.has(idx);
+              return (
+                <div
+                  key={faq.id}
+                  className="border border-gray-200 rounded-xl overflow-hidden transition-all duration-200 bg-white"
+                >
+                  <button
+                    type="button"
+                    onClick={() => toggleFaq(idx)}
+                    aria-expanded={isOpen}
+                    aria-controls={`faq-answer-${faq.id}`}
+                    className="w-full px-5 py-4 text-left flex items-center justify-between gap-4 hover:bg-slate-50 transition-colors cursor-pointer"
+                  >
+                    <span className="font-bold text-xs sm:text-sm text-charcoal flex items-center gap-2.5">
+                      <span className="w-6 h-6 rounded-full bg-slate-100 text-primary text-xs font-black flex items-center justify-center shrink-0">
+                        {idx + 1}
+                      </span>
+                      <span>{faq.q}</span>
+                    </span>
+                    <FiChevronDown
+                      className={`text-gray-400 text-base shrink-0 transition-transform duration-200 ${
+                        isOpen ? 'rotate-180 text-primary' : ''
+                      }`}
+                    />
+                  </button>
+
+                  {isOpen && (
+                    <div
+                      id={`faq-answer-${faq.id}`}
+                      className="px-5 pb-4 pt-1 text-xs text-gray-600 leading-relaxed border-t border-gray-100 bg-slate-50/50"
+                    >
+                      <p>{faq.a}</p>
+                      {faq.hasLink && (
+                        <div className="mt-2.5">
+                          <Link
+                            to={faq.linkUrl}
+                            className="inline-flex items-center gap-1 font-bold text-actionRed hover:underline"
+                          >
+                            <span>{faq.linkText}</span>
+                            <span>→</span>
+                          </Link>
+                        </div>
+                      )}
+                      {faq.hasLocationLink && (
+                        <div className="mt-2.5 flex items-center gap-3">
+                          <Link
+                            to={STORE_CONTACT.addressRoute}
+                            className="inline-flex items-center gap-1 font-bold text-primary hover:underline"
+                          >
+                            <span>View Store Details</span>
+                            <span>→</span>
+                          </Link>
+                          <a
+                            href={STORE_CONTACT.googleMapsUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 font-bold text-actionRed hover:underline"
+                          >
+                            <span>Get Directions</span>
+                            <span>↗</span>
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>

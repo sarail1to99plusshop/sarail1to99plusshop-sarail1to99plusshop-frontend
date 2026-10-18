@@ -271,7 +271,12 @@ export const ShopProvider = ({ children }) => {
         bKashNumber: '01998789157',
         trxId: submittedTrx,
         senderPhone: paymentDetails.senderPhone || '',
-        expectedAmount: totalAmount,
+        expectedAmount:
+          isBkash && paymentDetails.mode === 'delivery'
+            ? deliveryFee
+            : isBkash
+            ? totalAmount
+            : 0,
         submittedAt: new Date().toISOString(),
       },
       orderStatus: 'Pending',

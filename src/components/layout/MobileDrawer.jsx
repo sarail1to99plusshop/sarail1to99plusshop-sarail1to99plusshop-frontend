@@ -9,12 +9,13 @@ import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
 import { useCategories } from '../../hooks/useQueries';
 import logoImg from '../../assets/Without BG logo.webp';
+import { STORE_CONTACT } from '../../utils/contactInfo';
 
 const MobileDrawer = () => {
   const { isMobileMenuOpen, setIsMobileMenuOpen } = useShop();
   const { currentUser } = useAuth();
   const { data: categoriesList = [] } = useCategories();
-  const [categoriesOpen, setCategoriesOpen] = useState(true);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
 
   if (!isMobileMenuOpen) return null;
 
@@ -31,7 +32,7 @@ const MobileDrawer = () => {
       {/* Drawer panel */}
       <div className="relative w-4/5 max-w-sm bg-white h-full shadow-2xl flex flex-col overflow-y-auto animate-slideIn">
         
-        {/* Drawer Header */}
+        {/* Drawer Header with My Account / Login button (Section 23.3) */}
         <div className="p-4 bg-primary text-white flex items-center justify-between border-b border-primary-dark">
           <div className="flex items-center gap-2">
             <img src={logoImg} alt="Sarail 1 to 99 Plus Shop Logo" width="32" height="32" className="h-8 w-8 object-contain" />
@@ -42,14 +43,30 @@ const MobileDrawer = () => {
               <span className="text-[10px] text-slate-200">Variety & Household Shop</span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={closeDrawer}
-            className="p-2 text-white hover:text-white rounded-full hover:bg-white/10"
-            aria-label="Close menu"
-          >
-            <FiX className="text-2xl" />
-          </button>
+
+          <div className="flex items-center gap-1.5">
+            <Link
+              to="/account"
+              onClick={closeDrawer}
+              aria-label={currentUser ? 'My Account' : 'Login / My Account'}
+              title={currentUser ? (currentUser.displayName || 'My Account') : 'My Account / Login'}
+              className="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 text-white px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+            >
+              <FiUser className="text-sm shrink-0" />
+              <span className="max-w-[70px] truncate">
+                {currentUser ? (currentUser.displayName ? currentUser.displayName.split(' ')[0] : 'Account') : 'Login'}
+              </span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={closeDrawer}
+              className="p-1.5 text-white hover:text-white rounded-full hover:bg-white/10 cursor-pointer"
+              aria-label="Close menu"
+            >
+              <FiX className="text-2xl" />
+            </button>
+          </div>
         </div>
 
         {/* Action Highlights */}
@@ -103,7 +120,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-charcoal hover:bg-gray-50'
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
                 }`
               }
             >
@@ -116,7 +133,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-charcoal hover:bg-gray-50'
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
                 }`
               }
             >
@@ -129,7 +146,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-charcoal hover:bg-gray-50'
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
                 }`
               }
             >
@@ -142,7 +159,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-charcoal hover:bg-gray-50'
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
                 }`
               }
             >
@@ -155,7 +172,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-charcoal hover:bg-gray-50'
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
                 }`
               }
             >
@@ -168,7 +185,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-bold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-actionRed hover:bg-red-50/30'
+                  isActive ? 'text-actionRed bg-primary/10 font-bold' : 'text-actionRed hover:bg-red-50/30'
                 }`
               }
             >
@@ -184,7 +201,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-bold border-b border-gray-100 ${
-                  isActive ? 'text-[#B80D18] bg-red-50/50' : 'text-[#B80D18] hover:bg-red-50/30'
+                  isActive ? 'text-[#B80D18] bg-primary/10 font-bold' : 'text-[#B80D18] hover:bg-red-50/30'
                 }`
               }
             >
@@ -202,7 +219,7 @@ const MobileDrawer = () => {
               onClick={closeDrawer}
               className={({ isActive }) =>
                 `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
-                  isActive ? 'text-actionRed bg-red-50/50' : 'text-charcoal hover:bg-gray-50'
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
                 }`
               }
             >
@@ -211,7 +228,7 @@ const MobileDrawer = () => {
             </NavLink>
 
             <NavLink
-              to="/about#store-location"
+              to={STORE_CONTACT.addressRoute}
               onClick={() => {
                 closeDrawer();
                 setTimeout(() => {
@@ -233,23 +250,15 @@ const MobileDrawer = () => {
             <NavLink
               to="/track-order"
               onClick={closeDrawer}
-              className="flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 text-charcoal hover:bg-gray-50"
+              className={({ isActive }) =>
+                `flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 ${
+                  isActive ? 'text-primary bg-primary/10 font-bold' : 'text-charcoal hover:bg-gray-50'
+                }`
+              }
             >
               <div className="flex items-center gap-2">
                 <TbTruckDelivery className="text-base text-primary" />
                 <span>TRACK ORDER</span>
-              </div>
-              <FiChevronRight className="text-gray-400 text-xs" />
-            </NavLink>
-
-            <NavLink
-              to="/account"
-              onClick={closeDrawer}
-              className="flex items-center justify-between px-4 py-2.5 text-sm font-semibold border-b border-gray-100 text-charcoal hover:bg-gray-50"
-            >
-              <div className="flex items-center gap-2">
-                <FiUser className="text-base text-actionRed" />
-                <span>{currentUser ? (currentUser.displayName || 'My Account') : 'My Account / Login'}</span>
               </div>
               <FiChevronRight className="text-gray-400 text-xs" />
             </NavLink>
@@ -260,12 +269,12 @@ const MobileDrawer = () => {
         <div className="p-4 bg-gray-50 border-t border-gray-200 text-xs text-gray-600 space-y-3">
           <div>
             <div className="font-semibold text-charcoal mb-1">Customer Support</div>
-            <a href="tel:+8801998789157" className="flex items-center gap-2 mb-1 hover:text-primary font-medium">
+            <a href={STORE_CONTACT.phoneHref} className="flex items-center gap-2 mb-1 hover:text-primary font-medium">
               <FiPhoneCall className="text-primary" />
-              <span>+880 1998-789157</span>
+              <span>{STORE_CONTACT.phoneDisplay}</span>
             </a>
             <a
-              href="https://wa.me/8801998789157"
+              href={STORE_CONTACT.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 text-emerald-600 font-semibold"
@@ -278,7 +287,7 @@ const MobileDrawer = () => {
           {/* Social Row */}
           <div className="flex items-center gap-2 pt-2 border-t border-gray-200">
             <a
-              href="https://www.facebook.com/profile.php?id=61565363597487"
+              href={STORE_CONTACT.facebookUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-full bg-[#1558B0] text-white flex items-center justify-center hover:opacity-90"
@@ -287,7 +296,7 @@ const MobileDrawer = () => {
               <FaFacebookF className="text-xs" />
             </a>
             <a
-              href="https://www.tiktok.com/@.1.to.99.shop"
+              href={STORE_CONTACT.tiktokUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:opacity-90"
@@ -296,7 +305,7 @@ const MobileDrawer = () => {
               <FaTiktok className="text-xs" />
             </a>
             <a
-              href="https://wa.me/8801998789157"
+              href={STORE_CONTACT.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="w-8 h-8 rounded-full bg-[#0F7A52] text-white flex items-center justify-center hover:opacity-90"

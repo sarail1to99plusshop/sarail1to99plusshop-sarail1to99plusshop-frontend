@@ -21,8 +21,8 @@ const MainHeader = () => {
   };
 
   return (
-    <div className="bg-white text-charcoal py-3 px-4 border-b border-slate-200/80 shadow-2xs sticky top-0 z-40 transition-colors">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-3 sm:gap-4 lg:gap-6">
+    <div className="bg-white text-charcoal py-2 sm:py-3 px-3 sm:px-4 border-b border-slate-200/80 shadow-2xs sticky top-0 z-40 transition-colors">
+      <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 sm:gap-4 lg:gap-6">
         
         {/* Mobile Hamburger & Logo Container */}
         <div className="flex items-center gap-2 sm:gap-3">

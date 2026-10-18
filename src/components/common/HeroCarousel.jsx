@@ -44,7 +44,15 @@ const slides = [
 const HeroCarousel = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const touchStartX = useRef(null);
+  const [isInteracting, setIsInteracting] = useState(false);
+  const [isDraggingActive, setIsDraggingActive] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+
+  const isPointerDown = useRef(false);
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const hasDraggedFar = useRef(false);
+  const containerRef = useRef(null);
 
   const handleGoToSlide = (index, e) => {
     if (e) {
@@ -61,49 +69,114 @@ const HeroCarousel = () => {
       window.matchMedia &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    if (isPaused || prefersReducedMotion) return undefined;
+    if (isPaused || isInteracting || prefersReducedMotion) return undefined;
 
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % slides.length);
     }, 5000);
 
     return () => clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, isInteracting]);
 
-  const onTouchStart = (e) => {
-    touchStartX.current = e.touches[0]?.clientX ?? null;
+  const handlePointerDown = (e) => {
+    // Only handle primary button for mouse (button === 0)
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+
+    isPointerDown.current = true;
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+    hasDraggedFar.current = false;
+    setIsInteracting(true);
   };
 
-  const onTouchEnd = (e) => {
-    if (touchStartX.current === null) return;
-    const endX = e.changedTouches[0]?.clientX ?? touchStartX.current;
-    const diff = touchStartX.current - endX;
-    if (Math.abs(diff) > 40) {
-      if (diff > 0) {
+  const handlePointerMove = (e) => {
+    if (!isPointerDown.current) return;
+
+    const diffX = e.clientX - startX.current;
+    const diffY = e.clientY - startY.current;
+
+    // Check if user is scrolling vertically on touch/trackpad
+    if (!hasDraggedFar.current && Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 10) {
+      isPointerDown.current = false;
+      setIsInteracting(false);
+      setIsDraggingActive(false);
+      setDragOffset(0);
+      return;
+    }
+
+    if (Math.abs(diffX) > 8) {
+      hasDraggedFar.current = true;
+      setIsDraggingActive(true);
+      setDragOffset(diffX);
+    }
+  };
+
+  const handlePointerUpOrCancel = () => {
+    if (!isPointerDown.current) return;
+
+    isPointerDown.current = false;
+    setIsDraggingActive(false);
+    const finalDiff = dragOffset;
+    setDragOffset(0);
+
+    // Movement threshold (35–55px per V1.1 specification)
+    const threshold = 40;
+    if (Math.abs(finalDiff) >= threshold) {
+      if (finalDiff < 0) {
+        // Dragged left -> advance to next slide
         setActiveIndex((prev) => (prev + 1) % slides.length);
       } else {
+        // Dragged right -> go to previous slide
         setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
       }
     }
-    touchStartX.current = null;
+
+    // Brief timeout so click event on link can check hasDraggedFar before resetting
+    setTimeout(() => {
+      hasDraggedFar.current = false;
+      setIsInteracting(false);
+    }, 150);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev - 1 + slides.length) % slides.length);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      setActiveIndex((prev) => (prev + 1) % slides.length);
+    }
   };
 
   return (
     <div
-      className="w-full relative select-none"
+      ref={containerRef}
+      className={`w-full relative select-none touch-pan-y ${
+        isDraggingActive ? 'cursor-grabbing' : 'cursor-grab'
+      }`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUpOrCancel}
+      onPointerCancel={handlePointerUpOrCancel}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
       role="region"
       aria-roledescription="carousel"
-      aria-label="Promotional Banners"
+      aria-label="Promotional Banners (Use Left/Right arrow keys or drag horizontally to change slides)"
     >
       <div className="w-full rounded-none md:rounded-xl overflow-hidden shadow-md relative bg-slate-100">
-        {/* GPU-composited slide track (zero forced reflow) */}
+        {/* GPU-composited slide track with smooth drag feedback */}
         <div
-          className="flex transition-transform duration-500 ease-out will-change-transform"
-          style={{ transform: `translate3d(-${activeIndex * 100}%, 0, 0)` }}
+          className={`flex will-change-transform ${
+            isDraggingActive ? 'transition-none' : 'transition-transform duration-500 ease-out'
+          }`}
+          style={{
+            transform: isDraggingActive
+              ? `translate3d(calc(-${activeIndex * 100}% + ${dragOffset}px), 0, 0)`
+              : `translate3d(-${activeIndex * 100}%, 0, 0)`,
+          }}
         >
           {slides.map((slide, index) => {
             const isCurrent = index === activeIndex;
@@ -120,6 +193,13 @@ const HeroCarousel = () => {
                   to={slide.link}
                   tabIndex={isCurrent ? 0 : -1}
                   aria-label={slide.alt}
+                  onClick={(e) => {
+                    // Prevent navigation if the user was dragging the slide
+                    if (hasDraggedFar.current) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }}
                   className="block w-full relative overflow-hidden"
                 >
                   <img
@@ -129,10 +209,12 @@ const HeroCarousel = () => {
                     alt={slide.alt}
                     width="3264"
                     height="1312"
+                    draggable={false}
+                    onDragStart={(e) => e.preventDefault()}
                     fetchPriority={index === 0 ? 'high' : 'auto'}
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding={index === 0 ? 'sync' : 'async'}
-                    className="w-full h-auto aspect-[3264/1312] object-cover transition-transform duration-500"
+                    className="w-full h-auto aspect-[3264/1312] object-cover transition-transform duration-500 pointer-events-none"
                   />
                 </Link>
               </div>

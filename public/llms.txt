@@ -17,5 +17,5 @@ Sarail 1 to 99 Plus Shop provides affordable retail and wholesale household prod
 - [Track Order](https://sarail1to99plusshop-sarail1to99plus.vercel.app/track-order): Track Cash on Delivery shipment status using invoice number and phone number.
 - [Pre-Order & Wholesale Request](https://sarail1to99plusshop-sarail1to99plus.vercel.app/pre-order): Request custom dinner sets, wedding gifts, or bulk wholesale lots.
 - [About Us](https://sarail1to99plusshop-sarail1to99plus.vercel.app/about): Learn about Sarail 1 to 99 Plus Shop in Sarail, Brahmanbaria, Bangladesh.
-- [Contact Us](https://sarail1to99plusshop-sarail1to99plus.vercel.app/contact): Customer support phone (01970-605584), email (support@sarail1to99plus.com), and store location.
+- [Contact Us](https://sarail1to99plusshop-sarail1to99plus.vercel.app/contact): Customer support phone (+880 1998-789157), email (sarail1to99plusshop@gmail.com), and store location.
 
