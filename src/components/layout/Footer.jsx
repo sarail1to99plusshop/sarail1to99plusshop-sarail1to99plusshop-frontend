@@ -354,7 +354,7 @@ const Footer = () => {
               <img
                 src={heroStackLogo}
                 alt="HeroStack"
-                className="h-6 sm:h-7 w-auto object-contain"
+                className="h-6 sm:h-7 md:h-8 lg:h-9 w-auto object-contain"
                 loading="lazy"
                 decoding="async"
               />

@@ -1,9 +1,17 @@
-export const API_BASE_URL =
-  import.meta.env.VITE_API_URL || 'http://localhost:5000';
+// In development mode on localhost, use empty base URL so requests go to the same origin (http://localhost:5173/api/...)
+// and are proxied by Vite dev server directly to the backend. This eliminates CORS preflight issues entirely.
+const isDev = import.meta.env.DEV;
+export const API_BASE_URL = isDev
+  ? ''
+  : (import.meta.env.VITE_API_URL || 'https://store-backend-taupe-six.vercel.app');
 
 const buildUrl = (path, params) => {
-  const base = API_BASE_URL.replace(/\/+$/, '');
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const base = API_BASE_URL
+    ? API_BASE_URL.replace(/\/+$/, '')
+    : (typeof window !== 'undefined' && window.location?.origin
+        ? window.location.origin
+        : 'http://localhost:5173');
   const url = new URL(`${base}${cleanPath}`);
 
   if (params && typeof params === 'object') {
@@ -23,7 +31,11 @@ const request = async (method, path, { params, data } = {}) => {
   };
 
   try {
-    const token = localStorage.getItem('token');
+    const isAdminPath = path.startsWith('/api/admin');
+    const adminToken = localStorage.getItem('admin_token');
+    const userToken = localStorage.getItem('token');
+    const token = isAdminPath ? (adminToken || userToken) : (userToken || adminToken);
+
     if (token) {
       headers.Authorization = `Bearer ${token}`;
     }
@@ -42,7 +54,11 @@ const request = async (method, path, { params, data } = {}) => {
   if (!response.ok) {
     if (response.status === 401) {
       try {
-        localStorage.removeItem('token');
+        if (path.startsWith('/api/admin')) {
+          localStorage.removeItem('admin_token');
+        } else {
+          localStorage.removeItem('token');
+        }
       } catch {
         // ignore
       }
@@ -63,6 +79,7 @@ const request = async (method, path, { params, data } = {}) => {
 const api = {
   get: (path, config = {}) => request('GET', path, config),
   post: (path, data, config = {}) => request('POST', path, { ...config, data }),
+  put: (path, data, config = {}) => request('PUT', path, { ...config, data }),
   patch: (path, data, config = {}) =>
     request('PATCH', path, { ...config, data }),
   delete: (path, config = {}) => request('DELETE', path, config),
@@ -212,6 +229,121 @@ export const cancelOrderInDB = async (invoiceNumber) => {
 export const createPreOrderInDB = async (preOrderPayload) => {
   const res = await api.post('/api/pre-orders', preOrderPayload);
   return res.data.preOrder;
+};
+
+// ---------------------------------------------------------------------------
+// 5. ADMIN PANEL API METHODS (MongoDB & Real-time Operations)
+// ---------------------------------------------------------------------------
+export const adminLoginAPI = async ({ email, password }) => {
+  const res = await api.post('/api/admin/login', { email, password });
+  if (res.data?.token) {
+    try {
+      localStorage.setItem('admin_token', res.data.token);
+      localStorage.setItem('admin_user', JSON.stringify(res.data.admin));
+    } catch {
+      // ignore
+    }
+  }
+  return res.data;
+};
+
+export const fetchSystemStatusAPI = async () => {
+  const res = await api.get('/api/admin/system-status');
+  return res.data;
+};
+
+export const fetchAdminProductsAPI = async ({
+  search = '',
+  category = 'all',
+  stockFilter = 'all',
+} = {}) => {
+  const res = await api.get('/api/admin/products', {
+    params: { search, category, stockFilter },
+  });
+  return res.data.products || [];
+};
+
+export const createAdminProductAPI = async (productData) => {
+  const res = await api.post('/api/admin/products', productData);
+  return res.data.product;
+};
+
+export const updateAdminProductAPI = async (id, productData) => {
+  const res = await api.put(`/api/admin/products/${id}`, productData);
+  return res.data.product;
+};
+
+export const updateAdminProductStockAPI = async (id, { stock, delta }) => {
+  const res = await api.patch(`/api/admin/products/${id}/stock`, {
+    stock,
+    delta,
+  });
+  return res.data.product;
+};
+
+export const deleteAdminProductAPI = async (id) => {
+  const res = await api.delete(`/api/admin/products/${id}`);
+  return res.data;
+};
+
+export const fetchAdminOrdersAPI = async ({
+  status = 'all',
+  paymentStatus = 'all',
+  search = '',
+  page = 1,
+  limit = 50,
+} = {}) => {
+  const res = await api.get('/api/admin/orders', {
+    params: { status, paymentStatus, search, page, limit },
+  });
+  return res.data;
+};
+
+export const shipOrderSteadfastAPI = async (
+  invoiceNumber,
+  { consignmentId, trackingCode, note } = {}
+) => {
+  const res = await api.post(
+    `/api/admin/orders/${encodeURIComponent(invoiceNumber)}/ship-steadfast`,
+    { consignmentId, trackingCode, note }
+  );
+  return res.data;
+};
+
+export const updateOrderStatusAPI = async (invoiceNumber, orderStatus) => {
+  const res = await api.patch(
+    `/api/admin/orders/${encodeURIComponent(invoiceNumber)}/status`,
+    { orderStatus }
+  );
+  return res.data;
+};
+
+export const updateOrderPaymentStatusAPI = async (
+  invoiceNumber,
+  { paymentStatus, verificationNote }
+) => {
+  const res = await api.patch(
+    `/api/admin/orders/${encodeURIComponent(invoiceNumber)}/payment-status`,
+    { paymentStatus, verificationNote }
+  );
+  return res.data;
+};
+
+export const fetchMonthlyDeliveredReportAPI = async ({
+  year = '',
+  month = '',
+} = {}) => {
+  const res = await api.get('/api/admin/reports/monthly', {
+    params: { year, month },
+  });
+  return res.data;
+};
+
+export const pollRecentOrdersAPI = async (sinceTimestamp) => {
+  const res = await api.get('/api/admin/orders/poll', {
+    params: { since: sinceTimestamp },
+  });
+  return res.data;
 };
 
 export default api;

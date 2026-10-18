@@ -1,10 +1,32 @@
 import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 
 // https://vite.dev/config/
-export default defineConfig({
-  plugins: [react()],
-  build: {
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const backendTarget =
+    env.VITE_BACKEND_TARGET ||
+    env.VITE_API_URL ||
+    'https://store-backend-taupe-six.vercel.app';
+
+  return {
+    plugins: [react()],
+    server: {
+      port: 5173,
+      proxy: {
+        '/api': {
+          target: backendTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+        '/uploads': {
+          target: backendTarget,
+          changeOrigin: true,
+          secure: false,
+        },
+      },
+    },
+    build: {
     target: 'es2020',
     cssCodeSplit: true,
     rollupOptions: {
@@ -32,5 +54,6 @@ export default defineConfig({
       },
     },
   },
-})
+};
+});
 

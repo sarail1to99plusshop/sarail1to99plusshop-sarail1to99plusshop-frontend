@@ -140,10 +140,11 @@ const ProductDetailsPage = () => {
     product?.variants?.[0] ||
     null;
 
-  // 3 Photos for active variant
+  // Photos for active variant (support all uploaded variant photos)
   const variantImages =
-    activeVariant?.images?.slice(0, 3) ||
-    [product?.thumbnail, product?.thumbnail, product?.thumbnail].filter(Boolean);
+    (activeVariant?.images && activeVariant.images.length > 0
+      ? activeVariant.images
+      : [product?.thumbnail].filter(Boolean));
 
   // Active main preview image
   const mainPreviewImage =
