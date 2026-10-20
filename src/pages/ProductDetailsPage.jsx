@@ -42,6 +42,37 @@ const formatReviewDate = (dateStr) => {
   });
 };
 
+export const formatVideoEmbedUrl = (rawUrl) => {
+  if (!rawUrl || typeof rawUrl !== 'string') return '';
+  const url = rawUrl.trim();
+  if (!url) return '';
+
+  // Extract src if full iframe tag was provided
+  const iframeSrcMatch = url.match(/src=["']([^"']+)["']/i);
+  const targetUrl = iframeSrcMatch ? iframeSrcMatch[1] : url;
+
+  // YouTube match: watch?v=, youtu.be/, shorts/, embed/
+  const ytMatch = targetUrl.match(
+    /(?:youtu\.be\/|youtube(?:-nocookie)?\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([\w-]{11})/i
+  );
+  if (ytMatch && ytMatch[1]) {
+    return `https://www.youtube-nocookie.com/embed/${ytMatch[1]}?autoplay=1&rel=0`;
+  }
+
+  // Vimeo match
+  const vimeoMatch = targetUrl.match(/vimeo\.com\/(?:video\/)?(\d+)/i);
+  if (vimeoMatch && vimeoMatch[1]) {
+    return `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`;
+  }
+
+  // Standard safe HTTPS embed URL fallback
+  if (/^https?:\/\//i.test(targetUrl)) {
+    return targetUrl;
+  }
+
+  return '';
+};
+
 const ProductDetailsPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -152,6 +183,9 @@ const ProductDetailsPage = () => {
     variantImages[0] ||
     product?.thumbnail ||
     'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=800&auto=format&fit=crop&q=80';
+
+  // Embeddable video URL (YouTube, Vimeo, etc.)
+  const videoEmbedUrl = formatVideoEmbedUrl(product?.videoUrl);
 
   // Navigation handlers for next/prev product dynamically
   const currentIndex = allProducts.findIndex((p) => p.id === product?.id);
@@ -384,16 +418,18 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* Watch Video Button at Bottom Center */}
-            <div className="flex justify-center mt-4">
-              <button
-                type="button"
-                onClick={() => setIsVideoModalOpen(true)}
-                className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-50 hover:bg-red-100 text-[#DE111E] text-xs font-semibold transition-colors border border-red-100 shadow-2xs active:scale-95"
-              >
-                <Play className="w-3.5 h-3.5 fill-[#DE111E] text-[#DE111E]" />
-                <span>Watch video</span>
-              </button>
-            </div>
+            {videoEmbedUrl && (
+              <div className="flex justify-center mt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsVideoModalOpen(true)}
+                  className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-red-50 hover:bg-red-100 text-[#DE111E] text-xs font-semibold transition-colors border border-red-100 shadow-2xs active:scale-95 cursor-pointer"
+                >
+                  <Play className="w-3.5 h-3.5 fill-[#DE111E] text-[#DE111E]" />
+                  <span>Watch video</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* RIGHT CARD: Product Details, Color Swatches, Quantity & Dual CTAs */}
@@ -971,17 +1007,23 @@ const ProductDetailsPage = () => {
       </div>
 
       {/* Watch Video Modal */}
-      {isVideoModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fadeIn">
-          <div className="relative bg-white rounded-2xl max-w-2xl w-full p-4 overflow-hidden shadow-2xl">
+      {isVideoModalOpen && videoEmbedUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs animate-fadeIn"
+          onClick={() => setIsVideoModalOpen(false)}
+        >
+          <div
+            className="relative bg-white rounded-2xl max-w-2xl w-full p-4 overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <h4 className="font-bold text-sm text-[#0F172A]">
+              <h4 className="font-bold text-sm text-[#0F172A] truncate pr-4">
                 {product.name} - Product Showcase Video
               </h4>
               <button
                 type="button"
                 onClick={() => setIsVideoModalOpen(false)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+                className="p-1 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="w-5 h-5" />
@@ -990,8 +1032,8 @@ const ProductDetailsPage = () => {
             <div className="aspect-video w-full rounded-xl overflow-hidden mt-3 bg-black">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ?autoplay=1"
-                title="Product video preview"
+                src={videoEmbedUrl}
+                title={`${product.name} - Product Showcase Video`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />
