@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { BsCart3, BsTrash, BsCheckCircleFill } from 'react-icons/bs';
-import { FiArrowRight, FiPlus, FiMinus, FiTruck, FiUser, FiLock, FiMail, FiRefreshCw } from 'react-icons/fi';
+import { FiArrowRight, FiPlus, FiMinus, FiTruck, FiUser, FiLock, FiMail, FiRefreshCw, FiMapPin } from 'react-icons/fi';
 import { useShop } from '../context/ShopContext';
 import { useAuth } from '../context/AuthContext';
+import { validateDetailedAddress, validateBdPhone, BANGLADESH_DISTRICTS } from '../utils/addressValidation';
 
 const Cart = () => {
   const {
@@ -21,6 +22,10 @@ const Cart = () => {
   const customerEmail = currentUser?.email || 'Please sign in to order';
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
+  const [division, setDivision] = useState('');
+  const [district, setDistrict] = useState('');
+  const [thana, setThana] = useState('');
+  const [streetAddress, setStreetAddress] = useState('');
   const [address, setAddress] = useState('');
   const [note, setNote] = useState('');
   const [paymentMethod, setPaymentMethod] = useState('COD');
@@ -29,6 +34,10 @@ const Cart = () => {
   const [senderPhone, setSenderPhone] = useState('');
   const [copiedNumber, setCopiedNumber] = useState(false);
   const [paymentError, setPaymentError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const [districtError, setDistrictError] = useState('');
+  const [thanaError, setThanaError] = useState('');
+  const [addressError, setAddressError] = useState('');
   const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
   const [placedOrder, setPlacedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -116,7 +125,63 @@ const Cart = () => {
       setVerificationStatus('Your account email must be verified before placing an order.');
       return;
     }
-    if (!activeName || !phone || !address) return;
+    if (!activeName) {
+      const el = document.getElementById('customer-name-field');
+      if (el) el.focus();
+      return;
+    }
+
+    const cleanPhone = phone.trim();
+    const phoneValidationErr = validateBdPhone(cleanPhone);
+    if (phoneValidationErr) {
+      setPhoneError(phoneValidationErr);
+      const el = document.getElementById('customer-phone-field');
+      if (el) el.focus();
+      return;
+    }
+    setPhoneError('');
+
+    if (!district.trim()) {
+      setDistrictError('অনুগ্রহ করে জেলা (District) নির্বাচন করুন।');
+      const el = document.getElementById('customer-district-field');
+      if (el) el.focus();
+      return;
+    }
+    setDistrictError('');
+
+    if (!thana.trim()) {
+      setThanaError('অনুগ্রহ করে থানা বা উপজেলা (Thana/Upazila) লিখুন।');
+      const el = document.getElementById('customer-thana-field');
+      if (el) el.focus();
+      return;
+    }
+    setThanaError('');
+
+    const cleanStreet = (streetAddress || address).trim();
+    if (!cleanStreet) {
+      setAddressError('অনুগ্রহ করে বাড়ি নং / রোড নং / গ্রাম বা বিস্তারিত ঠিকানা লিখুন।');
+      const el = document.getElementById('customer-address-field');
+      if (el) el.focus();
+      return;
+    }
+    if (cleanStreet.length < 6) {
+      setAddressError('বিস্তারিত ঠিকানা অত্যন্ত সংক্ষিপ্ত (কমপক্ষে ৬ অক্ষর আবশ্যক, যেমন: বাড়ি বা রোডের বিবরণ দিন)।');
+      const el = document.getElementById('customer-address-field');
+      if (el) el.focus();
+      return;
+    }
+
+    // Construct courier-compliant hierarchical recipient address: [Street / Village] + [Thana] + [District]
+    const fullAddress = `${cleanStreet}, ${thana.trim()}, ${district.trim()}`;
+
+    const addressValidationErr = validateDetailedAddress(fullAddress);
+    if (addressValidationErr) {
+      setAddressError(addressValidationErr);
+      const el = document.getElementById('customer-address-field');
+      if (el) el.focus();
+      return;
+    }
+    setAddressError('');
 
     if (paymentMethod === 'bKash') {
       if (bKashPaymentMode === 'delivery' && deliveryFee <= 0) {
@@ -141,9 +206,14 @@ const Cart = () => {
       customerDetails: {
         name: activeName,
         email: customerEmail,
-        phone,
-        address,
-        note,
+        phone: cleanPhone,
+        district: district.trim(),
+        thana: thana.trim(),
+        streetAddress: cleanStreet,
+        fullAddress,
+        address: fullAddress, // Backwards compatible alias
+        division: division.trim(),
+        note: note.trim(),
         deliveryLocation: activeDelivery.location,
       },
       deliveryFee,
@@ -574,33 +644,159 @@ const Cart = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="customer-phone-field" className="block text-xs font-bold text-charcoal mb-1">
-                    Contact Phone Number *
+                  <label htmlFor="customer-phone-field" className="block text-xs font-bold text-charcoal mb-1 flex items-center justify-between">
+                    <span>Contact Phone Number (মোবাইল নম্বর) *</span>
+                    <span className="text-[11px] text-slate-500 font-normal">১১ ডিজিট (যেমন: 01712345678)</span>
                   </label>
                   <input
                     id="customer-phone-field"
                     type="tel"
                     required
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="018XXXXXXXX"
-                    className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2.5 rounded-md outline-none focus:border-primary"
+                    onChange={(e) => {
+                      setPhone(e.target.value);
+                      if (phoneError) setPhoneError('');
+                    }}
+                    placeholder="01XXXXXXXXX"
+                    className={`w-full bg-gray-50 border text-xs px-3.5 py-2.5 rounded-lg outline-none transition-colors ${
+                      phoneError
+                        ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500'
+                        : 'border-gray-200 focus:border-primary focus:bg-white'
+                    }`}
                   />
+                  {phoneError && (
+                    <p className="text-[11px] font-bold text-rose-600 mt-1 flex items-center gap-1 animate-shake">
+                      <span>⚠️</span>
+                      <span>{phoneError}</span>
+                    </p>
+                  )}
                 </div>
 
+                {/* Structured Division, District & Thana/Upazila inputs */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label htmlFor="customer-division-field" className="block text-xs font-bold text-charcoal mb-1">
+                      Division (বিভাগ)
+                    </label>
+                    <select
+                      id="customer-division-field"
+                      value={division}
+                      onChange={(e) => setDivision(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-200 text-xs px-3 py-2.5 rounded-lg outline-none focus:border-primary focus:bg-white transition-colors cursor-pointer"
+                    >
+                      <option value="">নির্বাচন করুন (Select)</option>
+                      <option value="Dhaka">Dhaka (ঢাকা)</option>
+                      <option value="Chattogram">Chattogram (চট্টগ্রাম)</option>
+                      <option value="Rajshahi">Rajshahi (রাজশাহী)</option>
+                      <option value="Khulna">Khulna (খুলনা)</option>
+                      <option value="Barishal">Barishal (বরিশাল)</option>
+                      <option value="Sylhet">Sylhet (সিলেট)</option>
+                      <option value="Rangpur">Rangpur (রংপুর)</option>
+                      <option value="Mymensingh">Mymensingh (ময়মনসিংহ)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="customer-district-field" className="block text-xs font-bold text-charcoal mb-1">
+                      District (জেলা) *
+                    </label>
+                    <select
+                      id="customer-district-field"
+                      required
+                      value={district}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setDistrict(val);
+                        if (districtError) setDistrictError('');
+                        const matched = BANGLADESH_DISTRICTS.find((d) => d.name === val);
+                        if (matched && matched.division && !division) {
+                          setDivision(matched.division);
+                        }
+                      }}
+                      className={`w-full bg-gray-50 border text-xs px-3 py-2.5 rounded-lg outline-none transition-colors cursor-pointer ${
+                        districtError
+                          ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500'
+                          : 'border-gray-200 focus:border-primary focus:bg-white'
+                      }`}
+                    >
+                      <option value="">জেলা নির্বাচন করুন (Select)</option>
+                      {BANGLADESH_DISTRICTS.filter((d) => !division || d.division === division).map((d) => (
+                        <option key={d.name} value={d.name}>
+                          {d.name} ({d.bn})
+                        </option>
+                      ))}
+                    </select>
+                    {districtError && (
+                      <p className="text-[11px] font-bold text-rose-600 mt-1 flex items-center gap-1 animate-shake">
+                        <span>⚠️</span>
+                        <span>{districtError}</span>
+                      </p>
+                    )}
+                  </div>
+                  <div>
+                    <label htmlFor="customer-thana-field" className="block text-xs font-bold text-charcoal mb-1">
+                      Thana / Upazila (থানা বা উপজেলা) *
+                    </label>
+                    <input
+                      id="customer-thana-field"
+                      type="text"
+                      required
+                      value={thana}
+                      onChange={(e) => {
+                        setThana(e.target.value);
+                        if (thanaError) setThanaError('');
+                      }}
+                      placeholder="যেমন: সরাইল, মিরপুর, রায়পুরা"
+                      className={`w-full bg-gray-50 border text-xs px-3.5 py-2.5 rounded-lg outline-none transition-colors ${
+                        thanaError
+                          ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500'
+                          : 'border-gray-200 focus:border-primary focus:bg-white'
+                      }`}
+                    />
+                    {thanaError && (
+                      <p className="text-[11px] font-bold text-rose-600 mt-1 flex items-center gap-1 animate-shake">
+                        <span>⚠️</span>
+                        <span>{thanaError}</span>
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Detailed Street / Village Address */}
                 <div>
-                  <label htmlFor="customer-address-field" className="block text-xs font-bold text-charcoal mb-1">
-                    Full Delivery Address *
+                  <label htmlFor="customer-address-field" className="block text-xs font-bold text-charcoal mb-1 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <FiMapPin className="text-primary w-3.5 h-3.5" />
+                      Detailed Street / Village Address (বাড়ি বা রাস্তার নাম, গ্রাম, ল্যান্ডমার্ক) *
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-normal">কমপক্ষে ৬ অক্ষর</span>
                   </label>
                   <textarea
                     id="customer-address-field"
-                    rows={2}
+                    rows={3}
                     required
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder="e.g. Dhaka, Narsingdi"
-                    className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2 rounded-md outline-none focus:border-primary"
+                    value={streetAddress || address}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setStreetAddress(val);
+                      setAddress(val);
+                      if (addressError) setAddressError('');
+                    }}
+                    placeholder="বাড়ি নং / রোড নং / গ্রাম, পোস্ট অফিস, পরিচিত ল্যান্ডমার্ক (যেমন: বাজারের উত্তর পাশে)"
+                    className={`w-full bg-gray-50 border text-xs px-3.5 py-2.5 rounded-lg outline-none transition-colors leading-relaxed ${
+                      addressError
+                        ? 'border-rose-400 bg-rose-50/30 focus:border-rose-500'
+                        : 'border-gray-200 focus:border-primary focus:bg-white'
+                    }`}
                   />
+                  <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                    <span className="font-semibold text-slate-700">কুরিয়ার ডেলিভারি ম্যানের সুবিধার জন্য বিস্তারিত সঠিক ঠিকানা দিন।</span>
+                  </p>
+                  {addressError && (
+                    <p className="text-[11px] font-bold text-rose-600 mt-1.5 flex items-center gap-1 animate-shake">
+                      <span>⚠️</span>
+                      <span>{addressError}</span>
+                    </p>
+                  )}
                 </div>
 
                 {/* Delivery Area Selection */}

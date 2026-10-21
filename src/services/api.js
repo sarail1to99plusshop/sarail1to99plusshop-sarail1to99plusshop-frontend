@@ -301,11 +301,11 @@ export const fetchAdminOrdersAPI = async ({
 
 export const shipOrderSteadfastAPI = async (
   invoiceNumber,
-  { consignmentId, trackingCode, note } = {}
+  { consignmentId, trackingCode, codAmount, note, forceReship } = {}
 ) => {
   const res = await api.post(
     `/api/admin/orders/${encodeURIComponent(invoiceNumber)}/ship-steadfast`,
-    { consignmentId, trackingCode, note }
+    { consignmentId, trackingCode, codAmount, note, forceReship }
   );
   return res.data;
 };

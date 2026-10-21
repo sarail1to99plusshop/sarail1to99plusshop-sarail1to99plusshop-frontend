@@ -253,7 +253,20 @@ export const ShopProvider = ({ children }) => {
         name: customerDetails.name,
         email: customerDetails.email || '',
         phone: customerDetails.phone,
-        address: customerDetails.address,
+        district: customerDetails.district || '',
+        thana: customerDetails.thana || '',
+        streetAddress: customerDetails.streetAddress || customerDetails.address || '',
+        fullAddress:
+          customerDetails.fullAddress ||
+          (customerDetails.streetAddress && customerDetails.thana && customerDetails.district
+            ? `${customerDetails.streetAddress.trim()}, ${customerDetails.thana.trim()}, ${customerDetails.district.trim()}`
+            : customerDetails.address || ''),
+        address:
+          customerDetails.fullAddress ||
+          (customerDetails.streetAddress && customerDetails.thana && customerDetails.district
+            ? `${customerDetails.streetAddress.trim()}, ${customerDetails.thana.trim()}, ${customerDetails.district.trim()}`
+            : customerDetails.address || ''),
+        division: customerDetails.division || '',
         note: customerDetails.note || '',
         deliveryLocation:
           customerDetails.deliveryLocation ||
