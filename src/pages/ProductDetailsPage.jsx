@@ -30,6 +30,7 @@ import {
   optimizeImageUrl,
   handleOptimizedImageError,
 } from '../utils/imageOptimizer';
+import { trackViewContent } from '../utils/pixel';
 
 const formatReviewDate = (dateStr) => {
   if (!dateStr) return 'Recently';
@@ -129,6 +130,9 @@ const ProductDetailsPage = () => {
   // Update document title and Open Graph meta tags dynamically
   useEffect(() => {
     if (!product?.name) return;
+
+    // Track Meta Pixel ViewContent
+    trackViewContent(product);
 
     const pageTitle = `${product.name} - ৳${product.price} | Sarail 1 to 99 Plus Shop`;
     document.title = pageTitle;
