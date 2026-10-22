@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useShop } from '../../context/ShopContext';
 import { useAuth } from '../../context/AuthContext';
 import { validateDetailedAddress, validateBdPhone, BANGLADESH_DISTRICTS } from '../../utils/addressValidation';
+import { trackPurchase } from '../../utils/pixel';
 import {
   optimizeImageUrl,
   handleOptimizedImageError,
@@ -257,8 +258,39 @@ const QuickOrderModal = () => {
       },
     });
 
-    setLoading(false);
-    setPlacedOrder(order);
+    // 1. Safe Meta Pixel Integration ('window.fbq') & 2. Correct Purchase Payload Format
+    const finalAmount = Number(order?.totalAmount || order?.total || (product.price * orderQuantity + deliveryFee) || 0);
+    const contentIds = [String(product._id?.$oid || product.id || product._id || '')].filter(Boolean);
+
+    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+      try {
+        const purchasePayload = {
+          content_type: 'product',
+          content_ids: contentIds,
+          value: Number(finalAmount), // Must be a valid Number, not a string or undefined
+          currency: 'BDT',             // Must be uppercase 'BDT'
+          num_items: 1,
+        };
+        window.fbq('track', 'Purchase', purchasePayload);
+        // 4. Debug Logging
+        console.log('[Meta Pixel] QuickOrder Purchase event dispatched successfully:', purchasePayload);
+      } catch (pixelErr) {
+        console.warn('[Meta Pixel] Error dispatching QuickOrder Purchase event:', pixelErr);
+      }
+    } else {
+      console.log('[Meta Pixel] window.fbq not available (adblocker or dev environment).');
+    }
+
+    // Also notify modular pixel helper for deduplication cache
+    trackPurchase(order);
+
+    // 3. Async Race Condition Prevention (The 400ms Delay Trick):
+    // Wrap success confirmation inside a 400ms setTimeout to allow beacon network transmission.
+    setTimeout(() => {
+      setLoading(false);
+      setPlacedOrder(order);
+      console.log('[QuickOrder] 400ms beacon window completed. Order confirmation rendered.');
+    }, 400);
   };
 
   const handleClose = () => {

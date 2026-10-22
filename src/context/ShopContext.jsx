@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { createOrderInDB, cancelOrderInDB } from '../services/api';
 import { useDeliveryCharges } from '../hooks/useQueries';
+import { trackAddToCart, trackPurchase } from '../utils/pixel';
 
 const ShopContext = createContext();
 
@@ -73,6 +74,10 @@ export const ShopProvider = ({ children }) => {
   // Add product to cart with variant support and exact MongoDB structure
   const addToCart = (product, variant = null, quantity = 1) => {
     const qtyToAdd = Math.max(1, Number(quantity) || 1);
+    
+    // Track Meta Pixel AddToCart event
+    trackAddToCart(product, qtyToAdd);
+
     const productId = product._id?.$oid || product.id?.toString() || generateMongoId();
     const chosenVariant = variant || product.variants?.[0] || null;
     const itemImage =
@@ -321,11 +326,13 @@ export const ShopProvider = ({ children }) => {
 
     // Asynchronously persist order to MongoDB backend and refresh Order History query
     createOrderInDB(newOrder)
-      .then(() => {
+      .then((savedOrder) => {
         queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+        trackPurchase(savedOrder || newOrder);
       })
       .catch((err) => {
         console.warn('Could not sync order to backend:', err);
+        trackPurchase(newOrder);
       });
 
     return newOrder;

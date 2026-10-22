@@ -5,6 +5,7 @@ import { FiArrowRight, FiPlus, FiMinus, FiTruck, FiUser, FiLock, FiMail, FiRefre
 import { useShop } from '../context/ShopContext';
 import { useAuth } from '../context/AuthContext';
 import { validateDetailedAddress, validateBdPhone, BANGLADESH_DISTRICTS } from '../utils/addressValidation';
+import { trackPurchase } from '../utils/pixel';
 
 const Cart = () => {
   const {
@@ -115,7 +116,7 @@ const Cart = () => {
   const bKashPayNow = bKashPaymentMode === 'delivery' ? deliveryFee : total;
   const remainingOnDelivery = total - bKashPayNow;
 
-  const handleCheckoutSubmit = (e) => {
+  const handlePlaceOrder = (e) => {
     e.preventDefault();
     if (!currentUser) {
       navigate('/account');
@@ -226,10 +227,47 @@ const Cart = () => {
       },
     });
 
-    setLoading(false);
-    setPlacedOrder(order);
-    clearCart();
+    // 1. Safe Meta Pixel Integration ('window.fbq') & 2. Correct Purchase Payload Format
+    const finalAmount = Number(order?.totalAmount || order?.total || total || 0);
+    const contentIds = cartItems
+      .map((item) => String(item.id || item.productId || item._id || item.product?._id || item.product || ''))
+      .filter(Boolean);
+
+    if (typeof window !== 'undefined' && typeof window.fbq === 'function') {
+      try {
+        const purchasePayload = {
+          content_type: 'product',
+          content_ids: contentIds,
+          value: Number(finalAmount), // Must be a valid Number, not a string or undefined
+          currency: 'BDT',             // Must be uppercase 'BDT'
+          num_items: cartItems.length,
+        };
+        window.fbq('track', 'Purchase', purchasePayload);
+        // 4. Debug Logging
+        console.log('[Meta Pixel] Purchase event dispatched successfully:', purchasePayload);
+      } catch (pixelErr) {
+        console.warn('[Meta Pixel] Error dispatching Purchase event:', pixelErr);
+      }
+    } else {
+      console.log('[Meta Pixel] window.fbq not available (adblocker or dev environment).');
+    }
+
+    // Also notify modular pixel helper for deduplication cache
+    trackPurchase(order);
+
+    // 3. Async Race Condition Prevention (The 400ms Delay Trick):
+    // Wrap the success state transition, UI confirmation, and cart clearing inside a 400ms setTimeout.
+    // This gives the browser networking thread sufficient time to transmit the Meta Pixel beacon
+    // before the page unloads, redirects, or tears down the active context.
+    setTimeout(() => {
+      setLoading(false);
+      setPlacedOrder(order);
+      clearCart();
+      console.log('[Checkout] 400ms beacon window completed. Cart cleared and confirmation rendered.');
+    }, 400);
   };
+
+  const handleCheckoutSubmit = handlePlaceOrder;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
