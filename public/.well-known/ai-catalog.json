@@ -1,0 +1,87 @@
+{
+  "$schema": "https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ai-catalog.schema.json",
+  "specVersion": "1.0",
+  "host": {
+    "displayName": "Sarail 1 to 99 Plus Shop",
+    "documentationUrl": "https://sarail1to99plus-shop.com/about",
+    "logoUrl": "https://sarail1to99plus-shop.com/logo.png"
+  },
+  "entries": [
+    {
+      "identifier": "urn:air:sarail1to99plus-shop.com:catalog:products",
+      "displayName": "Sarail 1 to 99 Plus Shop Product Catalog",
+      "description": "Comprehensive e-commerce catalog for Sarail 1 to 99 Plus Shop containing premium household goods, kitchenware, melamine crockery, baby care, and daily home essentials with nationwide cash on delivery across Bangladesh.",
+      "type": "application/json",
+      "url": "https://sarail1to99plus-shop.com/shop",
+      "version": "1.0.0",
+      "updatedAt": "2026-10-24T00:00:00Z",
+      "tags": [
+        "ecommerce",
+        "shopping",
+        "household",
+        "kitchen",
+        "bangladesh"
+      ],
+      "capabilities": [
+        "search-products",
+        "filter-category",
+        "view-inventory"
+      ],
+      "representativeQueries": [
+        "Buy kitchen tap water filter in Bangladesh",
+        "Shop melamine crockery dinner set",
+        "Household cleaning supplies online",
+        "Baby care and kids toys cash on delivery"
+      ]
+    },
+    {
+      "identifier": "urn:air:sarail1to99plus-shop.com:services:order-tracking",
+      "displayName": "Order Tracking Service",
+      "description": "Real-time delivery and courier tracking tool for customer orders via invoice number and mobile number with Steadfast Courier integration.",
+      "type": "text/html",
+      "url": "https://sarail1to99plus-shop.com/track-order",
+      "version": "1.0.0",
+      "updatedAt": "2026-10-24T00:00:00Z",
+      "tags": [
+        "tracking",
+        "order",
+        "delivery",
+        "steadfast-courier"
+      ],
+      "capabilities": [
+        "track-order",
+        "check-shipment-status"
+      ],
+      "representativeQueries": [
+        "Track my order status",
+        "Check parcel delivery status",
+        "Track shipment by invoice number"
+      ]
+    },
+    {
+      "identifier": "urn:air:sarail1to99plus-shop.com:services:pre-order",
+      "displayName": "Pre-Order and Wholesale Service",
+      "description": "Custom pre-orders, gift sets, and wholesale inquiries for melamine dinner sets and household products.",
+      "type": "text/html",
+      "url": "https://sarail1to99plus-shop.com/pre-order",
+      "version": "1.0.0",
+      "updatedAt": "2026-10-24T00:00:00Z",
+      "tags": [
+        "pre-order",
+        "wholesale",
+        "bulk-purchase",
+        "custom-request"
+      ],
+      "capabilities": [
+        "request-bulk-quote",
+        "submit-preorder"
+      ],
+      "representativeQueries": [
+        "Pre-order custom dinner set",
+        "Wholesale household products order",
+        "Request bulk quote for wedding gifts"
+      ]
+    }
+  ]
+}
+

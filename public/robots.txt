@@ -2,3 +2,6 @@ User-agent: *
 Allow: /
 
 Sitemap: https://sarail1to99plus-shop.com/sitemap.xml
+Agentmap: https://sarail1to99plus-shop.com/.well-known/ai-catalog.json
+Agentmap: https://sarail1to99plus-shop.com/.well-known/ai-catalog.json
+

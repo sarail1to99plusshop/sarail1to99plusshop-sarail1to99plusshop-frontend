@@ -10,10 +10,17 @@
 # Prevent directory listing (browsing folder contents)
 Options -Indexes
 
-# Block access to hidden files and directories (dotfiles like .env, .git)
-<FilesMatch "^\.">
+# Block access to hidden files and directories (dotfiles like .env, .git) except .well-known
+<FilesMatch "^\.(?!well-known)">
   Order allow,deny
   Deny from all
+</FilesMatch>
+
+# Allow public CORS access to AI agent discovery files (Agentic Browsing)
+<FilesMatch "(ai-catalog\.json|ard\.json|llms\.txt)$">
+  <IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+  </IfModule>
 </FilesMatch>
 
 # Security Headers
