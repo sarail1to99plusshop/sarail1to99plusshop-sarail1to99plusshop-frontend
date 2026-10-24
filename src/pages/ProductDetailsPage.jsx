@@ -152,7 +152,7 @@ const ProductDetailsPage = () => {
     const imageUrl =
       product.thumbnail ||
       product.variants?.[0]?.images?.[0] ||
-      'https://i.ibb.co.com/q3kcHV8G/Gemini-Generated-Image-yw9arcyw9arcyw9a.png';
+      '/Without-BG-logo.png';
     const description =
       product.description ||
       `Buy ${product.name} for ৳${product.price} at Sarail 1 to 99 Plus Shop. Fast Cash on Delivery across Bangladesh.`;
@@ -187,7 +187,7 @@ const ProductDetailsPage = () => {
     variantImages[selectedImageIndex] ||
     variantImages[0] ||
     product?.thumbnail ||
-    'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=800&auto=format&fit=crop&q=80';
+    '/Without-BG-logo.png';
 
   // Embeddable video URL (YouTube, Vimeo, etc.)
   const videoEmbedUrl = formatVideoEmbedUrl(product?.videoUrl);
@@ -966,7 +966,7 @@ const ProductDetailsPage = () => {
               const relImage =
                 relProd.thumbnail ||
                 relProd.variants?.[0]?.images?.[0] ||
-                'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80';
+                '/Without-BG-logo.png';
               const optimizedRelImg = optimizeImageUrl(relImage, { width: 260, quality: 76 });
 
               return (

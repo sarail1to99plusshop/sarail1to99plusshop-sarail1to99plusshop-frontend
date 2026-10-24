@@ -204,10 +204,11 @@ export const createOrderInDB = async (orderPayload) => {
 export const fetchUserOrdersFromDB = async ({
   email = '',
   userId = '',
+  phone = '',
 } = {}) => {
-  if (!email && !userId) return [];
+  if (!email && !userId && !phone) return [];
   const res = await api.get('/api/orders', {
-    params: { email, userId },
+    params: { email, userId, phone },
   });
   return res.data.orders || [];
 };

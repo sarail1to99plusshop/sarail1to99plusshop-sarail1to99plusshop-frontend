@@ -113,6 +113,7 @@ const MainHeader = () => {
           {/* Pre-Order / Order Today */}
           <Link
             to="/pre-order"
+            aria-label="Pre-Order custom dinner sets and wholesale products"
             className="hidden md:flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 group transition-colors"
           >
             <BsBoxSeam className="text-2xl text-primary group-hover:text-[#B80D18] group-hover:scale-105 transition-all" aria-hidden="true" />
@@ -130,6 +131,7 @@ const MainHeader = () => {
           {/* Account / Register or Login */}
           <Link
             to="/account"
+            aria-label={currentUser?.displayName ? `Account profile for ${currentUser.displayName}` : 'User Account, Login or Register'}
             className="hidden md:flex items-center gap-2.5 p-2 rounded-lg hover:bg-slate-50 group transition-colors"
           >
             <FiUser className="text-2xl text-primary group-hover:text-[#B80D18] group-hover:scale-105 transition-all" aria-hidden="true" />

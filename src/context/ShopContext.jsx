@@ -38,8 +38,13 @@ export const ShopProvider = ({ children }) => {
     }
   }, [cartItems]);
 
-  // Sync cart across browser tabs if changed in another window/tab
+  // Purge any legacy orders from localStorage on mount and sync cart across tabs
   useEffect(() => {
+    try {
+      localStorage.removeItem('sarail_orders');
+      localStorage.removeItem('orders');
+    } catch (_) {}
+
     const handleStorageChange = (e) => {
       if (e.key === 'sarail_cart') {
         try {
@@ -54,15 +59,8 @@ export const ShopProvider = ({ children }) => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
-  // Lazy initialize orders from localStorage to avoid calling setState in effect
-  const [orders, setOrders] = useState(() => {
-    try {
-      const savedOrders = localStorage.getItem('sarail_orders');
-      return savedOrders ? JSON.parse(savedOrders) : [];
-    } catch {
-      return [];
-    }
-  });
+  // Orders are strictly maintained in memory for active session; never stored in localStorage
+  const [orders, setOrders] = useState([]);
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -168,7 +166,15 @@ export const ShopProvider = ({ children }) => {
     setIsQuickOrderOpen(true);
   };
 
-  // Create order matching backend schema, persist directly in MongoDB, and synchronize with local cache
+  // Keep order in active component state for confirmation screen (zero localStorage persistence)
+  const saveOrderLocally = (order) => {
+    if (!order || !order.invoiceNumber) return;
+    setOrders((prev) => {
+      const filtered = prev.filter((o) => o.invoiceNumber !== order.invoiceNumber);
+      return [order, ...filtered];
+    });
+  };
+
   const createOrder = async ({
     userId = '',
     customerDetails,
@@ -303,26 +309,29 @@ export const ShopProvider = ({ children }) => {
       },
     };
 
-    // Persist order directly into MongoDB via backend API
-    const savedOrder = await createOrderInDB(orderPayload);
-    const finalOrder = savedOrder || {
+    // Maintain provisional order in active session state (zero localStorage persistence)
+    const provisionalOrder = {
       ...orderPayload,
       _id: `ord_${Date.now()}`,
       orderStatus: 'Pending',
       createdAt: new Date().toISOString(),
     };
+    saveOrderLocally(provisionalOrder);
 
-    // Update state and localStorage with the confirmed database order
-    setOrders((prev) => {
-      const filtered = prev.filter((o) => o.invoiceNumber !== finalOrder.invoiceNumber);
-      const updated = [finalOrder, ...filtered];
-      try {
-        localStorage.setItem('sarail_orders', JSON.stringify(updated));
-      } catch (e) {
-        console.error('Error saving order to localStorage:', e);
-      }
-      return updated;
-    });
+    // Persist order directly into MongoDB via backend API
+    let finalOrder;
+    try {
+      const savedOrder = await createOrderInDB(orderPayload);
+      finalOrder = savedOrder || provisionalOrder;
+    } catch (dbErr) {
+      console.warn('Backend DB error during createOrder, fallback to in-memory order:', dbErr);
+      // Keep provisional order in active memory
+      finalOrder = provisionalOrder;
+      throw dbErr;
+    } finally {
+      // Ensure in-memory state reflects the confirmed order for confirmation display
+      saveOrderLocally(finalOrder || provisionalOrder);
+    }
 
     queryClient.invalidateQueries({ queryKey: ['userOrders'] });
     trackPurchase(finalOrder);
@@ -366,7 +375,7 @@ export const ShopProvider = ({ children }) => {
       }
     }
 
-    // Update local orders state & localStorage
+    // Update local orders in-memory state
     const updatedOrders = orders.map((o) =>
       o.invoiceNumber?.toLowerCase() === cleanInvoice.toLowerCase()
         ? {
@@ -377,14 +386,17 @@ export const ShopProvider = ({ children }) => {
         : o
     );
     setOrders(updatedOrders);
-    try {
-      localStorage.setItem('sarail_orders', JSON.stringify(updatedOrders));
-    } catch (e) {
-      console.error('Error updating cancelled order in localStorage:', e);
-    }
 
     queryClient.invalidateQueries({ queryKey: ['userOrders'] });
     return backendOrder || { ...(localMatch || {}), orderStatus: 'Cancelled' };
+  };
+
+  const clearLocalOrders = () => {
+    setOrders([]);
+    try {
+      localStorage.removeItem('sarail_orders');
+      localStorage.removeItem('orders');
+    } catch (_) {}
   };
 
   return (
@@ -398,7 +410,9 @@ export const ShopProvider = ({ children }) => {
         clearCart,
         buyNow,
         createOrder,
+        saveOrderLocally,
         cancelOrder,
+        clearLocalOrders,
         orders,
         deliveryCharges,
         defaultDeliveryCharge:

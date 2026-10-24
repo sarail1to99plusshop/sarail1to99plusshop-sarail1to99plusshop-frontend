@@ -15,7 +15,7 @@ const TopBar = () => {
             href={STORE_CONTACT.facebookUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Official Facebook Page"
+            aria-label="Official Facebook Page (opens in a new tab)"
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#1558B0] text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaFacebookF className="text-[12px] sm:text-[13px]" aria-hidden="true" />
@@ -24,7 +24,7 @@ const TopBar = () => {
             href={STORE_CONTACT.tiktokUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Official TikTok Profile"
+            aria-label="Official TikTok Profile (opens in a new tab)"
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaTiktok className="text-[12px] sm:text-[13px]" aria-hidden="true" />
@@ -33,7 +33,7 @@ const TopBar = () => {
             href={STORE_CONTACT.whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Chat on WhatsApp"
+            aria-label="Chat on WhatsApp (opens in a new tab)"
             className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#0F7A52] text-white flex items-center justify-center hover:opacity-90 transition-all hover:scale-105 shadow-2xs"
           >
             <FaWhatsapp className="text-[13px] sm:text-[15px]" aria-hidden="true" />
@@ -71,6 +71,7 @@ const TopBar = () => {
 
           <a
             href={STORE_CONTACT.emailMailto}
+            aria-label={`Email us at ${STORE_CONTACT.email}`}
             className="hidden md:inline-flex items-center gap-1.5 py-1 px-1 min-h-[28px] hover:text-primary transition-colors font-semibold"
           >
             <HiOutlineMail className="text-primary text-sm" aria-hidden="true" />

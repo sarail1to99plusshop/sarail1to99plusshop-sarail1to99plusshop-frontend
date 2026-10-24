@@ -16,13 +16,14 @@ const QuickOrderModal = () => {
     setIsQuickOrderOpen,
     quickOrderProduct,
     createOrder,
+    saveOrderLocally,
     deliveryCharges,
   } = useShop();
   const { currentUser, sendVerificationEmail, reloadUser } = useAuth();
   const navigate = useNavigate();
 
   const isVerified = Boolean(currentUser?.emailVerified);
-  const customerEmail = currentUser?.email || 'Please sign in to order';
+  const customerEmail = currentUser?.email || '';
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [division, setDivision] = useState('');
@@ -105,7 +106,12 @@ const QuickOrderModal = () => {
 
   const product = quickOrderProduct.product;
   const currentVariant = selectedVariant || quickOrderProduct.selectedVariant || product.variants?.[0];
-  const activeImage = currentVariant?.images?.[0] || product.variants?.[0]?.images?.[0] || product.image;
+  const activeImage =
+    currentVariant?.images?.[0] ||
+    product.variants?.[0]?.images?.[0] ||
+    product.thumbnail ||
+    product.image ||
+    '';
 
   const orderQuantity = quickOrderProduct.quantity || 1;
 
@@ -271,6 +277,10 @@ const QuickOrderModal = () => {
       return;
     }
 
+    if (order) {
+      saveOrderLocally(order);
+    }
+
     // 1. Safe Meta Pixel Integration ('window.fbq') & 2. Correct Purchase Payload Format
     const finalAmount = Number(order?.totalAmount || order?.total || (product.price * orderQuantity + deliveryFee) || 0);
     const contentIds = [String(product._id?.$oid || product.id || product._id || '')].filter(Boolean);
@@ -423,7 +433,7 @@ const QuickOrderModal = () => {
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Email:</span>
-                <span className="font-semibold text-slate-700">{placedOrder.customerDetails.email || customerEmail}</span>
+                <span className="font-semibold text-slate-700">{placedOrder.customerDetails.email || 'None (Cash on Delivery)'}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Courier Tracking:</span>
@@ -697,7 +707,7 @@ const QuickOrderModal = () => {
                 <input
                   type="email"
                   readOnly
-                  value={customerEmail}
+                  value={customerEmail || (currentUser ? '' : 'Cash on Delivery (No sign-in required)')}
                   className={`w-full border text-xs px-3.5 py-2.5 rounded-md outline-none cursor-not-allowed select-none font-medium ${
                     currentUser
                       ? isVerified

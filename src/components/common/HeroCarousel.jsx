@@ -223,7 +223,7 @@ const HeroCarousel = () => {
         </div>
 
         {/* Subtle, non-intrusive safe-zone pagination dots */}
-        <div
+        <nav
           className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-xs pointer-events-auto"
           aria-label="Carousel slide navigation"
         >
@@ -233,7 +233,7 @@ const HeroCarousel = () => {
               <button
                 key={slide.id}
                 type="button"
-                aria-current={isActive ? 'true' : 'false'}
+                aria-current={isActive ? 'true' : undefined}
                 aria-label={`Slide ${idx + 1}${isActive ? ' (Current)' : ''}`}
                 onClick={(e) => handleGoToSlide(idx, e)}
                 className="min-w-[36px] min-h-[36px] p-2 flex items-center justify-center cursor-pointer focus:outline-none"
@@ -248,7 +248,7 @@ const HeroCarousel = () => {
               </button>
             );
           })}
-        </div>
+        </nav>
       </div>
     </div>
   );

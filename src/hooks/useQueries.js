@@ -140,11 +140,11 @@ export const useUserProfile = (uidOrEmail) => {
 };
 
 // 9. User Order History Hook (fetches all orders for the logged-in user from MongoDB)
-export const useUserOrders = ({ email = '', userId = '' } = {}) => {
+export const useUserOrders = ({ email = '', userId = '', phone = '' } = {}) => {
   return useQuery({
-    queryKey: ['userOrders', email?.toLowerCase() || '', userId || ''],
-    queryFn: () => fetchUserOrdersFromDB({ email, userId }),
-    enabled: Boolean(email || userId),
+    queryKey: ['userOrders', email?.toLowerCase() || '', userId || '', phone || ''],
+    queryFn: () => fetchUserOrdersFromDB({ email, userId, phone }),
+    enabled: Boolean(email || userId || phone),
     staleTime: 1000 * 10,
   });
 };

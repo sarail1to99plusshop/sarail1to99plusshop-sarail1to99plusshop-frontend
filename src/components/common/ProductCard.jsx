@@ -19,7 +19,7 @@ const ProductCard = ({ product, priority = false }) => {
   const rawDisplayImage =
     product.thumbnail ||
     product.variants?.[0]?.images?.[0] ||
-    'https://images.unsplash.com/photo-1590794056226-79ef3a8147e1?w=600&auto=format&fit=crop&q=80';
+    '/Without-BG-logo.png';
 
   const displayImage = optimizeImageUrl(rawDisplayImage, {
     width: 220,
@@ -32,7 +32,7 @@ const ProductCard = ({ product, priority = false }) => {
     72
   );
 
-  const productLink = `/product/${product.id}`;
+  const productLink = `/product/${product.id ?? product._id}`;
   const defaultVariant = product.variants?.[0] || null;
 
   const handleAddToCart = (e) => {
@@ -130,6 +130,7 @@ const ProductCard = ({ product, priority = false }) => {
             const ratingValue = reviewCount > 0 ? Number(product.rating || 0) : 0;
             return (
               <div
+                role="img"
                 className="flex items-center gap-1 sm:gap-1.5 mt-1 sm:mt-2"
                 aria-label={`Rated ${ratingValue.toFixed(1)} out of 5 stars based on ${reviewCount} reviews`}
               >

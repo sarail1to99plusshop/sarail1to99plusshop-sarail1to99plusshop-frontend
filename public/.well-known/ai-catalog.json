@@ -1,5 +1,4 @@
 {
-  "$schema": "https://raw.githubusercontent.com/ards-project/ard-spec/main/spec/schemas/ai-catalog.schema.json",
   "specVersion": "1.0",
   "host": {
     "displayName": "Sarail 1 to 99 Plus Shop",
@@ -84,4 +83,3 @@
     }
   ]
 }
-

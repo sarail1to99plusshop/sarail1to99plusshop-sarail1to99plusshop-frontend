@@ -49,6 +49,7 @@ const BottomNav = () => {
             className="bg-primary hover:bg-primary-dark text-white font-bold text-xs tracking-wider uppercase px-4 py-2.5 rounded-t-md flex items-center gap-2.5 cursor-pointer transition-all select-none shadow-2xs hover:shadow-xs focus:outline-none"
             aria-expanded={dropdownOpen}
             aria-haspopup="true"
+            aria-controls="categories-dropdown-menu"
           >
             <FiMenu className="text-sm text-white stroke-[2.5]" aria-hidden="true" />
             <span className="tracking-wider">CATEGORIES</span>
@@ -63,6 +64,8 @@ const BottomNav = () => {
           {/* Interactive Dropdown Menu */}
           {dropdownOpen && (
             <div
+              id="categories-dropdown-menu"
+              role="menu"
               onMouseLeave={() => setDropdownOpen(false)}
               className="absolute left-0 top-full w-64 bg-white border border-slate-200 shadow-xl rounded-b-lg py-2 z-50 animate-fadeIn divide-y divide-slate-100"
             >
@@ -73,6 +76,7 @@ const BottomNav = () => {
                 <Link
                   key={idx}
                   to={cat.path}
+                  role="menuitem"
                   onClick={() => setDropdownOpen(false)}
                   className="block px-4 py-2.5 text-xs text-charcoal hover:bg-slate-50 hover:text-[#B80D18] transition-colors font-semibold"
                 >

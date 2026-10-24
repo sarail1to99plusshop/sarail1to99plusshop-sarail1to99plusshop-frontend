@@ -147,7 +147,6 @@ const GlobalSupportWidget = () => {
           {/* Subtle Periodic Message Tooltip (Section 15) */}
           {showTooltip && !isOpen && (
             <div
-              role="status"
               aria-hidden="true"
               className="absolute right-[62px] top-1/2 -translate-y-1/2 whitespace-nowrap bg-white text-slate-800 font-bold text-xs py-1.5 px-3 rounded-full shadow-lg border border-slate-200 pointer-events-none transition-all duration-300 animate-fadeIn flex items-center gap-1.5"
             >

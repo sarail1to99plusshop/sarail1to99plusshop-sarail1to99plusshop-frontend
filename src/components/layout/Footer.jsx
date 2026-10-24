@@ -80,7 +80,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Column 1: Brand Info */}
           <div className="lg:col-span-2 space-y-4">
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" aria-label="Sarail 1 to 99 Plus Shop Home" className="flex items-center gap-2">
               <img
                 src={logoImg}
                 alt="Sarail 1 to 99 Plus Shop Logo"
@@ -106,6 +106,7 @@ const Footer = () => {
               <div className="flex items-start gap-2.5">
                 <Link
                   to={STORE_CONTACT.addressRoute}
+                  aria-label="Store Location in Munshi Market, Sarail"
                   onClick={() => {
                     const el = document.getElementById('store-location');
                     if (el) {
@@ -120,13 +121,13 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-2.5">
                 <HiOutlinePhone className="text-[#FF6B74] text-base shrink-0" aria-hidden="true" />
-                <a href={STORE_CONTACT.phoneHref} className="hover:text-white transition-colors">
+                <a href={STORE_CONTACT.phoneHref} aria-label={`Call us at ${STORE_CONTACT.phoneDisplay}`} className="hover:text-white transition-colors">
                   {STORE_CONTACT.phoneDisplay}
                 </a>
               </div>
               <div className="flex items-center gap-2.5">
                 <HiOutlineMail className="text-[#FF6B74] text-base shrink-0" aria-hidden="true" />
-                <a href={STORE_CONTACT.emailHref} className="hover:text-white transition-colors">
+                <a href={STORE_CONTACT.emailHref} aria-label={`Email us at ${STORE_CONTACT.email}`} className="hover:text-white transition-colors">
                   {STORE_CONTACT.email}
                 </a>
               </div>
@@ -138,7 +139,7 @@ const Footer = () => {
                 href={STORE_CONTACT.facebookUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Follow us on Facebook"
+                aria-label="Follow us on Facebook (opens in a new tab)"
                 className="w-11 h-11 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaFacebookF className="text-sm" aria-hidden="true" />
@@ -147,7 +148,7 @@ const Footer = () => {
                 href={STORE_CONTACT.tiktokUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Follow us on TikTok"
+                aria-label="Follow us on TikTok (opens in a new tab)"
                 className="w-11 h-11 rounded-full bg-black border border-gray-700 text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaTiktok className="text-sm" aria-hidden="true" />
@@ -156,7 +157,7 @@ const Footer = () => {
                 href={STORE_CONTACT.whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Chat on WhatsApp"
+                aria-label="Chat on WhatsApp (opens in a new tab)"
                 className="w-11 h-11 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaWhatsapp className="text-base" aria-hidden="true" />
@@ -186,42 +187,42 @@ const Footer = () => {
             <ul className="space-y-1 text-xs text-slate-300">
               <li>
                 <Link to="/shop?category=kitchen" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Kitchen &amp; Dining
+                  Kitchen & Dining
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=cleaning" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Cleaning &amp; Hygiene
+                  Cleaning & Hygiene
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=baby-kids" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Baby &amp; Kids
+                  Baby & Kids
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=beauty" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Beauty &amp; Personal Care
+                  Beauty & Personal Care
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=melamine-crockery" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Melamine &amp; Crockery
+                  Melamine & Crockery
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=toys" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Toys &amp; Games
+                  Toys & Games
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=home-household" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Home &amp; Household
+                  Home & Household
                 </Link>
               </li>
               <li>
                 <Link to="/shop?category=womens-fashion" className="inline-block py-1.5 hover:text-white transition-colors">
-                  Women&apos;s Fashion &amp; Accessories
+                  Women&apos;s Fashion & Accessories
                 </Link>
               </li>
             </ul>
@@ -348,7 +349,7 @@ const Footer = () => {
           </p>
 
           <div className="flex items-center justify-center md:justify-end gap-2.5 text-slate-400">
-            <span>Designed &amp; Developed by</span>
+            <span>Designed & Developed by</span>
             <a
               href={STORE_CONTACT.agencyFacebookUrl}
               className="inline-flex items-center hover:opacity-90 transition-opacity"

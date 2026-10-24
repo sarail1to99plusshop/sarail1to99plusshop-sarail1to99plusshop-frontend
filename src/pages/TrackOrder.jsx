@@ -6,7 +6,7 @@ import { useShop } from '../context/ShopContext';
 import { trackOrderInDB } from '../services/api';
 
 const TrackOrder = () => {
-  const { orders, cancelOrder } = useShop();
+  const { orders, cancelOrder, saveOrderLocally } = useShop();
   const [searchParams] = useSearchParams();
   const initialInvoice = searchParams.get('invoice') || '';
   const [orderId, setOrderId] = useState(initialInvoice);
@@ -28,6 +28,7 @@ const TrackOrder = () => {
       .then((dbOrder) => {
         if (cancelled) return;
         if (dbOrder) {
+          saveOrderLocally?.(dbOrder);
           setTrackingResult(dbOrder);
           setNotFoundError('');
           return;
@@ -86,6 +87,7 @@ const TrackOrder = () => {
       });
 
       if (dbOrder) {
+        saveOrderLocally?.(dbOrder);
         setTrackingResult(dbOrder);
         return;
       }

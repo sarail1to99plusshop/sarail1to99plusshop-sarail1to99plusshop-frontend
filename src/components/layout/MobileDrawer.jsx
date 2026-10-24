@@ -269,17 +269,22 @@ const MobileDrawer = () => {
         <div className="p-4 bg-gray-50 border-t border-gray-200 text-xs text-gray-600 space-y-3">
           <div>
             <div className="font-semibold text-charcoal mb-1">Customer Support</div>
-            <a href={STORE_CONTACT.phoneHref} className="flex items-center gap-2 mb-1 hover:text-primary font-medium">
-              <FiPhoneCall className="text-primary" />
+            <a
+              href={STORE_CONTACT.phoneHref}
+              aria-label={`Call customer support at ${STORE_CONTACT.phoneDisplay}`}
+              className="flex items-center gap-2 mb-1 hover:text-primary font-medium"
+            >
+              <FiPhoneCall className="text-primary" aria-hidden="true" />
               <span>{STORE_CONTACT.phoneDisplay}</span>
             </a>
             <a
               href={STORE_CONTACT.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="Chat with customer support on WhatsApp (opens in a new tab)"
               className="flex items-center gap-2 text-emerald-600 font-semibold"
             >
-              <FaWhatsapp className="text-base" />
+              <FaWhatsapp className="text-base" aria-hidden="true" />
               <span>WhatsApp Chat</span>
             </a>
           </div>

@@ -45,7 +45,7 @@ const Account = () => {
     logOut,
   } = useAuth();
 
-  const { orders: sessionOrders, cancelOrder } = useShop();
+  const { orders: sessionOrders, cancelOrder, clearLocalOrders } = useShop();
 
   const { data: queriedUser } = useUserProfile(currentUser?.uid);
   const activeDbUser = dbUser || queriedUser;
@@ -58,11 +58,11 @@ const Account = () => {
   } = useUserOrders({
     email: currentUser?.email,
     userId: currentUser?.uid,
+    phone: currentUser?.phoneNumber || activeDbUser?.phone || '',
   });
 
-  // Merge MongoDB orders with any session orders belonging to the user
+  // Merge MongoDB orders with active in-memory session orders (zero localStorage)
   const userOrders = useMemo(() => {
-    if (!currentUser) return [];
     const map = new Map();
 
     dbOrders.forEach((order) => {
@@ -72,12 +72,7 @@ const Account = () => {
     });
 
     sessionOrders.forEach((order) => {
-      const matchesUser =
-        (order?.userId && order.userId === currentUser.uid) ||
-        (order?.customerDetails?.email &&
-          currentUser.email &&
-          order.customerDetails.email.toLowerCase() === currentUser.email.toLowerCase());
-      if (matchesUser && order?.invoiceNumber) {
+      if (order?.invoiceNumber) {
         if (!map.has(order.invoiceNumber)) {
           map.set(order.invoiceNumber, order);
         } else if (order.orderStatus === 'Cancelled') {
@@ -94,7 +89,7 @@ const Account = () => {
         new Date(b.createdAt?.$date || b.createdAt || 0) -
         new Date(a.createdAt?.$date || a.createdAt || 0)
     );
-  }, [currentUser, dbOrders, sessionOrders]);
+  }, [dbOrders, sessionOrders]);
 
   const [orderStatusFilter, setOrderStatusFilter] = useState('All');
   const [cancellingInvoice, setCancellingInvoice] = useState('');
@@ -1199,6 +1194,38 @@ const Account = () => {
 
           </div>
         </div>
+
+        {/* Recent Orders Stored on this Device (Local Storage) */}
+        {sessionOrders.length > 0 && (
+          <div className="mt-6 bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6 space-y-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-[#003D73]" />
+                <h3 className="font-extrabold text-sm text-[#0F172A]">
+                  Track Guest Order
+                </h3>
+              </div>
+              <Link
+                to="/track-order"
+                className="text-xs font-bold text-[#003D73] hover:text-[#DE111E] transition-colors"
+              >
+                Track by Invoice →
+              </Link>
+            </div>
+
+            <p className="text-xs text-slate-500">
+              Placed an order without an account? Enter your Invoice ID and Mobile Number on our tracking page to check real-time courier delivery progress.
+            </p>
+
+            <Link
+              to="/track-order"
+              className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-[#003D73] hover:bg-[#002b52] text-white text-xs font-bold rounded-xl transition-all shadow-xs"
+            >
+              <span>Go to Order Tracking</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );

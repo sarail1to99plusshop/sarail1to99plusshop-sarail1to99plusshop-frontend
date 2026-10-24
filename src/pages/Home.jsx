@@ -85,7 +85,7 @@ const Home = () => {
   return (
     <div className="w-full pb-16 space-y-12">
       <h1 className="sr-only">
-        Sarail 1 to 99 Plus Shop - Best Household, Kitchen &amp; Daily Deals in Bangladesh
+        Sarail 1 to 99 Plus Shop - Best Household, Kitchen & Daily Deals in Bangladesh
       </h1>
 
       {/* 1. Hero Swiper Carousel Banner */}
@@ -185,10 +185,10 @@ const Home = () => {
             </div>
             <div>
               <h2 className="text-xl md:text-2xl font-black text-white flex items-center gap-2">
-                FLASH SALE &amp; HOT DEALS
+                FLASH SALE & HOT DEALS
               </h2>
               <p className="text-xs text-white/95">
-                Special limited-time discounts on kitchen appliances, melamine &amp; household organizers
+                Special limited-time discounts on kitchen appliances, melamine & household organizers
               </p>
             </div>
           </div>
