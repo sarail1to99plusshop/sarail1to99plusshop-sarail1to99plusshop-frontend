@@ -85,11 +85,11 @@
           if(s&&s.parentNode){s.parentNode.insertBefore(t,s);}else{b.head.appendChild(t);}
         }
         if('requestIdleCallback' in f){
-          f.requestIdleCallback(function(){ setTimeout(loadPixel, 1000); }, {timeout: 2500});
+          f.requestIdleCallback(function(){ setTimeout(loadPixel, 1800); }, {timeout: 4000});
         } else {
-          f.addEventListener('load', function(){ setTimeout(loadPixel, 1000); });
+          f.addEventListener('load', function(){ setTimeout(loadPixel, 1800); });
         }
-        setTimeout(loadPixel, 3000);
+        setTimeout(loadPixel, 4000);
       }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '4096200450685804');
       fbq('track', 'PageView');

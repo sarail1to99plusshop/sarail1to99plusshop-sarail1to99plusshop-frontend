@@ -157,7 +157,7 @@ const Home = () => {
                       {cat.name}
                     </h3>
                     {/* Description hidden on mobile per Section 21.2 */}
-                    <p className="hidden sm:block text-xs text-slate-500 leading-relaxed line-clamp-3">
+                    <p className="hidden sm:block text-xs text-slate-600 leading-relaxed line-clamp-3">
                       {meta.desc}
                     </p>
                   </div>
@@ -266,7 +266,7 @@ const Home = () => {
             href="https://wa.me/8801998789157?text=Hello%2C%20I%27m%20looking%20for%20a%20product%20and%20would%20like%20some%20assistance."
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs uppercase px-6 py-3 min-h-[44px] rounded-lg shadow-md transition-all flex items-center justify-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-white"
+            className="bg-[#0F7A52] hover:bg-[#0D6B47] text-white font-bold text-xs uppercase px-6 py-3 min-h-[44px] rounded-lg shadow-md transition-all flex items-center justify-center gap-2 shrink-0 focus:outline-none focus:ring-2 focus:ring-white"
           >
             <FaWhatsapp className="text-base" aria-hidden="true" />
             <span>Contact Us</span>

@@ -314,7 +314,12 @@ const Footer = () => {
               <label htmlFor="newsletter-email-input" className="block text-white font-bold text-xs mb-2">
                 Subscribe for Discounts
               </label>
-              <form onSubmit={(e) => e.preventDefault()} className="flex items-center">
+              <form
+                toolname="subscribe_newsletter"
+                tooldescription="Subscribe customer email address for store promotions and discount updates."
+                onSubmit={(e) => e.preventDefault()}
+                className="flex items-center"
+              >
                 <input
                   id="newsletter-email-input"
                   type="email"

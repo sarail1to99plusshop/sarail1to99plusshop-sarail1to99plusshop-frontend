@@ -55,6 +55,8 @@ const MainHeader = () => {
         <div className="hidden md:flex flex-1 max-w-xl mx-2 lg:mx-4">
           <form
             role="search"
+            toolname="search_products"
+            tooldescription="Search product catalog for kitchenware, cleaning supplies, melamine dinner sets, and daily household essentials."
             onSubmit={handleSearchSubmit}
             className="relative w-full flex items-center border-2 border-slate-200 hover:border-primary/50 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 rounded-lg overflow-hidden bg-white shadow-2xs transition-all"
           >
@@ -149,6 +151,8 @@ const MainHeader = () => {
       <div className="mt-2.5 md:hidden">
         <form
           role="search"
+          toolname="mobile_search_products"
+          tooldescription="Search products on mobile across all household and lifestyle categories."
           onSubmit={handleSearchSubmit}
           className="relative w-full flex items-center border border-slate-300 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 rounded-lg overflow-hidden bg-white shadow-2xs"
         >

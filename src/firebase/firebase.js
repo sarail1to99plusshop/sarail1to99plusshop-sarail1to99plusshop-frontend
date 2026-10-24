@@ -12,20 +12,22 @@ import {
 const firebaseConfig = {
   apiKey:
     import.meta.env.VITE_FIREBASE_API_KEY ||
-    'AIzaSyBVAEDAlpAIXj0kgNLnr7eIz-ASJcIcgLU',
+    'AIzaSyBCTCz6ZzzKcahfaEACb5YeMWTxXorLxC4',
   authDomain:
     import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ||
-    'sarail-1-to-99-plus-shop.firebaseapp.com',
+    'sarail1to99plus-shop.firebaseapp.com',
   projectId:
-    import.meta.env.VITE_FIREBASE_PROJECT_ID || 'sarail-1-to-99-plus-shop',
+    import.meta.env.VITE_FIREBASE_PROJECT_ID || 'sarail1to99plus-shop',
   storageBucket:
     import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ||
-    'sarail-1-to-99-plus-shop.firebasestorage.app',
+    'sarail1to99plus-shop.firebasestorage.app',
   messagingSenderId:
-    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '185125632621',
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '272021851635',
   appId:
     import.meta.env.VITE_FIREBASE_APP_ID ||
-    '1:185125632621:web:2d4aaeed902829788edd64',
+    '1:272021851635:web:d3273b28cbe60c763e5686',
+  measurementId:
+    import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || 'G-G7L0B7Y2X4',
 };
 
 // Initialize Firebase app singleton

@@ -225,8 +225,7 @@ const HeroCarousel = () => {
         {/* Subtle, non-intrusive safe-zone pagination dots */}
         <div
           className="absolute bottom-1 sm:bottom-2 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-black/20 backdrop-blur-xs pointer-events-auto"
-          role="tablist"
-          aria-label="Banner slide indicators"
+          aria-label="Carousel slide navigation"
         >
           {slides.map((slide, idx) => {
             const isActive = idx === activeIndex;
@@ -234,9 +233,8 @@ const HeroCarousel = () => {
               <button
                 key={slide.id}
                 type="button"
-                role="tab"
-                aria-selected={isActive}
-                aria-label={`Go to slide ${idx + 1}`}
+                aria-current={isActive ? 'true' : 'false'}
+                aria-label={`Slide ${idx + 1}${isActive ? ' (Current)' : ''}`}
                 onClick={(e) => handleGoToSlide(idx, e)}
                 className="min-w-[36px] min-h-[36px] p-2 flex items-center justify-center cursor-pointer focus:outline-none"
               >

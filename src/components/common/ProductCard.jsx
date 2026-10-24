@@ -55,8 +55,7 @@ const ProductCard = ({ product, priority = false }) => {
       <div className="relative aspect-square w-full bg-white flex items-center justify-center p-2.5 sm:p-3 overflow-hidden border-b border-slate-100">
         <Link
           to={productLink}
-          tabIndex={-1}
-          aria-hidden="true"
+          aria-label={product.name}
           className="w-full h-full flex items-center justify-center"
         >
           <img
@@ -119,7 +118,7 @@ const ProductCard = ({ product, priority = false }) => {
       <div className="p-2.5 sm:p-4 flex flex-col flex-1 justify-between gap-2.5 sm:gap-3">
         <div>
           {/* Title */}
-          <Link to={productLink} className="block py-0.5">
+          <Link to={productLink} aria-label={product.name} className="block py-0.5">
             <h3 className="font-bold text-xs sm:text-sm text-charcoal line-clamp-2 min-h-[2rem] sm:min-h-[2.5rem] group-hover:text-[#B80D18] transition-colors leading-snug">
               {product.name}
             </h3>
