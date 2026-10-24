@@ -373,6 +373,9 @@ const TrackOrder = () => {
                       <img
                         src={item.image}
                         alt={item.title}
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
                         className="w-11 h-11 object-cover rounded-md border border-gray-100 bg-gray-50 shrink-0"
                       />
                     )}

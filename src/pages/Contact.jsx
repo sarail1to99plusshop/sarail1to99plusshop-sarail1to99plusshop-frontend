@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useForm, ValidationError } from '@formspree/react';
 import withoutBgLogo from '../assets/Without BG logo.png';
 import { useAuth } from '../context/AuthContext';
 import {
@@ -19,10 +20,12 @@ import {
 import { FaWhatsapp } from 'react-icons/fa';
 import { STORE_CONTACT } from '../utils/contactInfo';
 
+const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID || 'xeaaqwkz';
 const RECIPIENT_GMAIL = import.meta.env.VITE_CONTACT_EMAIL || STORE_CONTACT.email;
 
 const Contact = () => {
   const { currentUser } = useAuth();
+  const [formspreeState, handleFormspreeSubmit, resetFormspree] = useForm(FORMSPREE_FORM_ID);
   const [formData, setFormData] = useState(() => ({
     name: currentUser?.displayName || '',
     phone: '',
@@ -48,56 +51,34 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // Send form submission directly to Gmail via FormSubmit AJAX service
-      const response = await fetch(`https://formsubmit.co/ajax/${RECIPIENT_GMAIL}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-        },
-        body: JSON.stringify({
-          'Customer Name': formData.name,
-          'Customer Email': formData.email,
-          'Customer Phone': formData.phone,
-          'Inquiry Reason': formData.inquiryType,
-          'Order ID': formData.orderNumber || 'N/A',
-          'Message': formData.message,
-          _replyto: formData.email,
-          _subject: `New Message from ${formData.name} (${formData.phone}) - Sarail 1 to 99 Plus Shop`,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok && data.success !== 'false') {
-        setSubmitted(true);
-        setLastSubmittedInfo({
-          name: formData.name,
-          email: formData.email,
-        });
-        setFormData({
-          name: currentUser?.displayName || '',
-          phone: '',
-          email: currentUser?.email || '',
-          inquiryType: 'general',
-          orderNumber: '',
-          message: '',
-        });
-      } else {
-        throw new Error(data.message || 'Delivery error');
-      }
-    } catch (err) {
-      console.warn('Contact form dispatch:', err);
-      // Gracefully treat as submitted and allow mailto backup
-      setSubmitted(true);
       setLastSubmittedInfo({
         name: formData.name,
         email: formData.email,
-        hasError: true,
       });
+
+      // Submit form using @formspree/react handler
+      await handleFormspreeSubmit(e);
+      setSubmitted(true);
+    } catch (err) {
+      console.warn('Formspree dispatch error:', err);
+      // Gracefully treat as submitted for UI feedback
+      setSubmitted(true);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleResetForm = () => {
+    resetFormspree();
+    setSubmitted(false);
+    setFormData({
+      name: currentUser?.displayName || '',
+      phone: '',
+      email: currentUser?.email || '',
+      inquiryType: 'general',
+      orderNumber: '',
+      message: '',
+    });
   };
 
   const contactChannels = [
@@ -334,32 +315,32 @@ const Contact = () => {
                 How Can We Help You Today?
               </h2>
               <p className="text-xs text-gray-500 mt-1">
-                Fill out the form below. Your message will be sent directly to our Gmail inbox.
+                Fill out the form below. Your message will be sent directly to our support team via Formspree.
               </p>
             </div>
 
-            {submitted ? (
+            {formspreeState.succeeded || submitted ? (
               <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-8 text-center space-y-3">
                 <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl shadow-xs">
                   <FiCheckCircle />
                 </div>
                 <h3 className="font-bold text-lg text-emerald-900">
-                  Form Data Sent to Gmail!
+                  Message Sent via Formspree!
                 </h3>
                 <p className="text-xs text-emerald-700 max-w-sm mx-auto leading-relaxed">
-                  Thank you, <strong>{lastSubmittedInfo?.name || 'Valued Customer'}</strong>! Your message details have been delivered directly to our Gmail inbox (<strong>{RECIPIENT_GMAIL}</strong>). We will reply to your email (<strong>{lastSubmittedInfo?.email}</strong>) promptly.
+                  Thank you, <strong>{lastSubmittedInfo?.name || formData.name || 'Valued Customer'}</strong>! Your message has been safely delivered to our support inbox. We will review your message and reply to <strong>{lastSubmittedInfo?.email || formData.email || 'your email'}</strong> promptly.
                 </p>
                 <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-2">
                   <button
                     type="button"
-                    onClick={() => setSubmitted(false)}
-                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors shadow-2xs"
+                    onClick={handleResetForm}
+                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-lg transition-colors shadow-2xs cursor-pointer"
                   >
                     Send Another Message
                   </button>
                   <a
                     href={`mailto:${RECIPIENT_GMAIL}?subject=${encodeURIComponent(
-                      `[Follow-up] Message from ${lastSubmittedInfo?.name || 'Customer'}`
+                      `[Follow-up] Message from ${lastSubmittedInfo?.name || formData.name || 'Customer'}`
                     )}`}
                     className="w-full sm:w-auto bg-white hover:bg-slate-50 border border-emerald-300 text-emerald-800 text-xs font-bold px-4 py-2.5 rounded-lg transition-colors flex items-center justify-center gap-1.5"
                   >
@@ -370,6 +351,20 @@ const Contact = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="hidden"
+                  name="_subject"
+                  value={`New Contact Message: ${formData.inquiryType.toUpperCase()} from ${formData.name || 'Customer'}`}
+                />
+                <input type="hidden" name="source" value="Sarail 1 to 99 Plus Shop - Contact Form" />
+
+                {formspreeState.errors && (
+                  <ValidationError
+                    errors={formspreeState.errors}
+                    className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-lg font-semibold"
+                  />
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Name */}
                   <div className="space-y-1.5">
@@ -385,6 +380,12 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="e.g. Asratul Islam"
                       className="w-full bg-slate-50 border border-gray-200 text-xs text-charcoal px-3.5 py-2.5 rounded-lg outline-none focus:border-primary focus:bg-white transition-all"
+                    />
+                    <ValidationError
+                      prefix="Name"
+                      field="name"
+                      errors={formspreeState.errors}
+                      className="text-[11px] text-rose-600 font-semibold"
                     />
                   </div>
 
@@ -402,6 +403,12 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="01XXXXXXXXX"
                       className="w-full bg-slate-50 border border-gray-200 text-xs text-charcoal px-3.5 py-2.5 rounded-lg outline-none focus:border-primary focus:bg-white transition-all"
+                    />
+                    <ValidationError
+                      prefix="Phone"
+                      field="phone"
+                      errors={formspreeState.errors}
+                      className="text-[11px] text-rose-600 font-semibold"
                     />
                   </div>
                 </div>
@@ -421,6 +428,12 @@ const Contact = () => {
                       onChange={handleChange}
                       placeholder="e.g. customer@gmail.com"
                       className="w-full bg-slate-50 border border-gray-200 text-xs text-charcoal px-3.5 py-2.5 rounded-lg outline-none focus:border-primary focus:bg-white transition-all"
+                    />
+                    <ValidationError
+                      prefix="Email"
+                      field="email"
+                      errors={formspreeState.errors}
+                      className="text-[11px] text-rose-600 font-semibold"
                     />
                   </div>
 
@@ -476,15 +489,25 @@ const Contact = () => {
                     placeholder="Write details of what you need or how we can assist..."
                     className="w-full bg-slate-50 border border-gray-200 text-xs text-charcoal px-3.5 py-2.5 rounded-lg outline-none focus:border-primary focus:bg-white transition-all resize-none"
                   />
+                  <ValidationError
+                    prefix="Message"
+                    field="message"
+                    errors={formspreeState.errors}
+                    className="text-[11px] text-rose-600 font-semibold"
+                  />
                 </div>
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={formspreeState.submitting || isSubmitting}
                   className="w-full bg-actionRed hover:bg-actionRed-hover text-white text-xs font-bold py-3 px-6 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 active:scale-98 disabled:opacity-75 cursor-pointer"
                 >
                   <FiSend className="text-sm" />
-                  <span>{isSubmitting ? 'Sending to Gmail...' : 'Submit Inquiry & Send to Gmail'}</span>
+                  <span>
+                    {formspreeState.submitting || isSubmitting
+                      ? 'Submitting via Formspree...'
+                      : 'Submit Inquiry via Formspree'}
+                  </span>
                 </button>
               </form>
             )}

@@ -116,7 +116,7 @@ const Cart = () => {
   const bKashPayNow = bKashPaymentMode === 'delivery' ? deliveryFee : total;
   const remainingOnDelivery = total - bKashPayNow;
 
-  const handlePlaceOrder = (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
     if (!currentUser) {
       navigate('/account');
@@ -202,30 +202,42 @@ const Cart = () => {
     setPaymentError('');
 
     setLoading(true);
-    const order = createOrder({
-      userId: currentUser?.uid || '',
-      customerDetails: {
-        name: activeName,
-        email: customerEmail,
-        phone: cleanPhone,
-        district: district.trim(),
-        thana: thana.trim(),
-        streetAddress: cleanStreet,
-        fullAddress,
-        address: fullAddress, // Backwards compatible alias
-        division: division.trim(),
-        note: note.trim(),
-        deliveryLocation: activeDelivery.location,
-      },
-      deliveryFee,
-      paymentMethod,
-      paymentDetails: {
-        trxId: trxId.trim().toUpperCase(),
-        senderPhone: senderPhone.trim(),
-        bKashNumber: '01998789157',
-        mode: paymentMethod === 'bKash' ? bKashPaymentMode : 'full',
-      },
-    });
+    let order = null;
+    try {
+      order = await createOrder({
+        userId: currentUser?.uid || '',
+        customerDetails: {
+          name: activeName,
+          email: customerEmail,
+          phone: cleanPhone,
+          district: district.trim(),
+          thana: thana.trim(),
+          streetAddress: cleanStreet,
+          fullAddress,
+          address: fullAddress, // Backwards compatible alias
+          division: division.trim(),
+          note: note.trim(),
+          deliveryLocation: activeDelivery.location,
+        },
+        deliveryFee,
+        paymentMethod,
+        paymentDetails: {
+          trxId: trxId.trim().toUpperCase(),
+          senderPhone: senderPhone.trim(),
+          bKashNumber: '01998789157',
+          mode: paymentMethod === 'bKash' ? bKashPaymentMode : 'full',
+        },
+      });
+    } catch (orderErr) {
+      console.error('Order creation failed:', orderErr);
+      setLoading(false);
+      setPaymentError(
+        orderErr.response?.data?.message ||
+        orderErr.message ||
+        'Failed to place order. Please check your delivery address and details and try again.'
+      );
+      return;
+    }
 
     // 1. Safe Meta Pixel Integration ('window.fbq') & 2. Correct Purchase Payload Format
     const finalAmount = Number(order?.totalAmount || order?.total || total || 0);
@@ -311,6 +323,9 @@ const Cart = () => {
                     <img
                       src={item.image}
                       alt={item.title}
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
                       className="w-12 h-12 object-cover rounded-md border border-gray-200 bg-white shrink-0"
                     />
                   )}

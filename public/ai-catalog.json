@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json.schemastore.org/feed.json",
+  "version": "https://jsonfeed.org/version/1.1",
+  "title": "Sarail 1 to 99 Plus Shop - AI Product Catalog",
+  "home_page_url": "https://sarail1to99plus-shop.com/",
+  "feed_url": "https://sarail1to99plus-shop.com/ai-catalog.json",
+  "description": "Comprehensive AI-readable catalog for Sarail 1 to 99 Plus Shop containing premium household goods, kitchenware, melamine crockery, baby care, and daily home essentials with nationwide cash on delivery across Bangladesh.",
+  "@context": "https://schema.org",
+  "@type": "DataFeed",
+  "name": "Sarail 1 to 99 Plus Shop Product Catalog",
+  "url": "https://sarail1to99plus-shop.com/ai-catalog.json",
+  "dataFeedElement": [
+    {
+      "@type": "Product",
+      "sku": "SAR-001",
+      "name": "ট্যাপ ওয়াটার ফিল্টার - 360° রোটেটিং কিচেন কল ফিল্টার",
+      "description": "সহজেই কিচেনের যেকোনো পানির কলে সেট করা যায়। পানি পরিষ্কার ও ব্যাকটেরিয়ামুক্ত রাখতে কার্যকর।",
+      "image": "https://images.unsplash.com/photo-1584992236310-6edddc08acff?w=600&auto=format&fit=crop&q=80",
+      "url": "https://sarail1to99plus-shop.com/product/1",
+      "offers": {
+        "@type": "Offer",
+        "price": "150",
+        "priceCurrency": "BDT",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
+      "sku": "SAR-002",
+      "name": "ফ্রিজ ম্যাট ৪ পিস সেট - অ্যান্টি-ব্যাকটেরিয়াল ও ওয়াশেবল",
+      "description": "উন্নত মানের ওয়াটারপ্রুফ এবং ইজি-টু-ক্লিন ফ্রিজ ম্যাট সেট।",
+      "image": "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=600&auto=format&fit=crop&q=80",
+      "url": "https://sarail1to99plus-shop.com/product/2",
+      "offers": {
+        "@type": "Offer",
+        "price": "180",
+        "priceCurrency": "BDT",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
+      "sku": "SAR-003",
+      "name": "হেভি ডিউটি কিচেন ক্লিনার স্প্রে - অয়েল ও গ্রীস রিমুভার",
+      "description": "চর্বি, তেল ও পোড়া দাগ নিমেষেই পরিষ্কার করতে শক্তিশালী কিচেন ক্লিনার স্প্রে।",
+      "image": "https://images.unsplash.com/photo-1585421514284-efb74c2b69ba?w=600&auto=format&fit=crop&q=80",
+      "url": "https://sarail1to99plus-shop.com/product/3",
+      "offers": {
+        "@type": "Offer",
+        "price": "280",
+        "priceCurrency": "BDT",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
+      "sku": "SAR-004",
+      "name": "টয়লেট ফ্লাশ ক্লিনার ট্যাবলেট - ডিওডোরাইজার ও ডিসইনফেক্টেন্ট",
+      "description": "টয়লেট কমোড পরিষ্কার ও দুর্গন্ধমুক্ত রাখতে দীর্ঘস্থায়ী ব্লু বাবল ক্লিনার ট্যাবলেট।",
+      "image": "https://images.unsplash.com/photo-1584813470613-5b1c1cad3d69?w=600&auto=format&fit=crop&q=80",
+      "url": "https://sarail1to99plus-shop.com/product/4",
+      "offers": {
+        "@type": "Offer",
+        "price": "120",
+        "priceCurrency": "BDT",
+        "availability": "https://schema.org/InStock"
+      }
+    },
+    {
+      "@type": "Product",
+      "sku": "SAR-005",
+      "name": "প্রিমিয়াম মেলামাইন জগ (২.২ লিটার রাউন্ড শেপ)",
+      "description": "উন্নত মানের ফুড-গ্রেড মেলামাইন ওয়াটার জগ। গরম ও ঠান্ডা পানি বা জুস পরিবেশনের জন্য নিখুঁত।",
+      "image": "https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=600&auto=format&fit=crop&q=80",
+      "url": "https://sarail1to99plus-shop.com/product/5",
+      "offers": {
+        "@type": "Offer",
+        "price": "350",
+        "priceCurrency": "BDT",
+        "availability": "https://schema.org/InStock"
+      }
+    }
+  ],
+  "items": [
+    {
+      "id": "1",
+      "url": "https://sarail1to99plus-shop.com/product/1",
+      "title": "ট্যাপ ওয়াটার ফিল্টার - 360° রোটেটিং কিচেন কল ফিল্টার",
+      "content_text": "সহজেই কিচেনের যেকোনো পানির কলে সেট করা যায়। পানি পরিষ্কার ও ব্যাকটেরিয়ামুক্ত রাখতে কার্যকর।",
+      "summary": "360 Rotating Tap Water Filter"
+    },
+    {
+      "id": "2",
+      "url": "https://sarail1to99plus-shop.com/product/2",
+      "title": "ফ্রিজ ম্যাট ৪ পিস সেট - অ্যান্টি-ব্যাকটেরিয়াল ও ওয়াশেবল",
+      "content_text": "উন্নত মানের ওয়াটারপ্রুফ এবং ইজি-টু-ক্লিন ফ্রিজ ম্যাট সেট।",
+      "summary": "Fridge Mat 4 Piece Set"
+    },
+    {
+      "id": "3",
+      "url": "https://sarail1to99plus-shop.com/product/3",
+      "title": "হেভি ডিউটি কিচেন ক্লিনার স্প্রে - অয়েল ও গ্রীস রিমুভার",
+      "content_text": "চর্বি, তেল ও পোড়া দাগ নিমেষেই পরিষ্কার করতে শক্তিশালী কিচেন ক্লিনার স্প্রে।",
+      "summary": "Heavy Duty Kitchen Cleaner Spray"
+    },
+    {
+      "id": "4",
+      "url": "https://sarail1to99plus-shop.com/product/4",
+      "title": "টয়লেট ফ্লাশ ক্লিনার ট্যাবলেট - ডিওডোরাইজার ও ডিসইনফেক্টেন্ট",
+      "content_text": "টয়লেট কমোড পরিষ্কার ও দুর্গন্ধমুক্ত রাখতে দীর্ঘস্থায়ী ব্লু বাবল ক্লিনার ট্যাবলেট।",
+      "summary": "Toilet Flush Cleaner Tablet"
+    },
+    {
+      "id": "5",
+      "url": "https://sarail1to99plus-shop.com/product/5",
+      "title": "প্রিমিয়াম মেলামাইন জগ (২.২ লিটার রাউন্ড শেপ)",
+      "content_text": "উন্নত মানের ফুড-গ্রেড মেলামাইন ওয়াটার জগ। গরম ও ঠান্ডা পানি বা জুস পরিবেশনের জন্য নিখুঁত।",
+      "summary": "Premium Melamine Jug 2.2L"
+    }
+  ]
+}
+

@@ -117,7 +117,7 @@ const fallbackProducts = [
 const BACKEND_URL =
   (typeof process !== 'undefined' && process.env?.VITE_API_URL) ||
   'https://store-backend-taupe-six.vercel.app';
-const SITE_URL = 'https://sarail1to99plusshop-sarail1to99plus.vercel.app';
+const SITE_URL = 'https://sarail1to99plus-shop.com';
 
 // Normalize image URLs for optimal social scraper compatibility (FB, WhatsApp, Twitter, Telegram)
 const formatImageUrl = (url) => {

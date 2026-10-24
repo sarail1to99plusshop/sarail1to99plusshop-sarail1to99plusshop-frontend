@@ -168,8 +168,8 @@ export const ShopProvider = ({ children }) => {
     setIsQuickOrderOpen(true);
   };
 
-  // Create order matching the exact schema requested by user with product color, image and essential metadata
-  const createOrder = ({
+  // Create order matching backend schema, persist directly in MongoDB, and synchronize with local cache
+  const createOrder = async ({
     userId = '',
     customerDetails,
     itemsList = null,
@@ -178,7 +178,9 @@ export const ShopProvider = ({ children }) => {
     paymentDetails = {},
   }) => {
     const rawItems = itemsList || cartItems;
-    if (!rawItems || rawItems.length === 0) return null;
+    if (!rawItems || rawItems.length === 0) {
+      throw new Error('Your cart is empty. Please add items before placing an order.');
+    }
 
     const formattedItems = rawItems.map((item) => {
       const color =
@@ -204,19 +206,19 @@ export const ShopProvider = ({ children }) => {
       const unitPrice = Number(item.price) || 0;
       const quantity = Math.max(1, Number(item.quantity) || 1);
 
+      const pid =
+        item.productId ||
+        item.id ||
+        (typeof item.product === 'object'
+          ? item.product?._id || item.product?.id || item.product?.$oid
+          : item.product) ||
+        (typeof item._id === 'object' ? item._id?.$oid : item._id);
+
       return {
-        _id: {
-          $oid: item._id?.$oid || generateMongoId(),
-        },
-        product: {
-          $oid:
-            item.product?.$oid ||
-            item.productId ||
-            item.product?.toString() ||
-            item._id?.$oid ||
-            generateMongoId(),
-        },
-        title: item.title || item.name,
+        id: pid,
+        productId: Number(item.productId || item.id) || undefined,
+        product: pid,
+        title: item.title || item.name || 'Product',
         price: unitPrice,
         quantity,
         color,
@@ -237,10 +239,9 @@ export const ShopProvider = ({ children }) => {
     );
     const totalAmount = itemsSubtotal + deliveryFee;
 
-    const invoiceNumber = `SAR-${new Date()
-      .toISOString()
-      .slice(2, 10)
-      .replace(/-/g, '')}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const datePart = new Date().toISOString().slice(2, 10).replace(/-/g, '');
+    const randPart = Math.floor(1000 + Math.random() * 9000);
+    const invoiceNumber = `SAR-${datePart}-${randPart}`;
 
     const consignmentId = Math.floor(500000 + Math.random() * 90000);
     const trackingCode = `SF${Math.floor(10000000 + Math.random() * 90000000)}`;
@@ -248,31 +249,29 @@ export const ShopProvider = ({ children }) => {
     const isBkash = paymentMethod === 'bKash';
     const submittedTrx = (paymentDetails.trxId || '').trim().toUpperCase();
 
-    const newOrder = {
-      _id: {
-        $oid: generateMongoId(),
-      },
+    const rawStreet = (customerDetails.streetAddress || customerDetails.address || '').trim();
+    const rawThana = (customerDetails.thana || '').trim();
+    const rawDistrict = (customerDetails.district || '').trim();
+    const fullAddress =
+      customerDetails.fullAddress ||
+      (rawStreet && rawThana && rawDistrict
+        ? `${rawStreet}, ${rawThana}, ${rawDistrict}`
+        : rawStreet);
+
+    const orderPayload = {
       invoiceNumber,
-      userId,
+      userId: String(userId || '').trim(),
       customerDetails: {
-        name: customerDetails.name,
-        email: customerDetails.email || '',
-        phone: customerDetails.phone,
-        district: customerDetails.district || '',
-        thana: customerDetails.thana || '',
-        streetAddress: customerDetails.streetAddress || customerDetails.address || '',
-        fullAddress:
-          customerDetails.fullAddress ||
-          (customerDetails.streetAddress && customerDetails.thana && customerDetails.district
-            ? `${customerDetails.streetAddress.trim()}, ${customerDetails.thana.trim()}, ${customerDetails.district.trim()}`
-            : customerDetails.address || ''),
-        address:
-          customerDetails.fullAddress ||
-          (customerDetails.streetAddress && customerDetails.thana && customerDetails.district
-            ? `${customerDetails.streetAddress.trim()}, ${customerDetails.thana.trim()}, ${customerDetails.district.trim()}`
-            : customerDetails.address || ''),
-        division: customerDetails.division || '',
-        note: customerDetails.note || '',
+        name: (customerDetails.name || '').trim(),
+        email: (customerDetails.email || '').trim().toLowerCase(),
+        phone: (customerDetails.phone || '').trim(),
+        district: rawDistrict,
+        thana: rawThana,
+        streetAddress: rawStreet,
+        fullAddress,
+        address: fullAddress,
+        division: (customerDetails.division || '').trim(),
+        note: (customerDetails.note || '').trim(),
         deliveryLocation:
           customerDetails.deliveryLocation ||
           (deliveryFee === 120 ? 'Outside Dhaka' : 'Inside Dhaka'),
@@ -288,54 +287,47 @@ export const ShopProvider = ({ children }) => {
         mode: paymentDetails.mode || 'full',
         bKashNumber: '01998789157',
         trxId: submittedTrx,
-        senderPhone: paymentDetails.senderPhone || '',
+        senderPhone: (paymentDetails.senderPhone || '').trim(),
         expectedAmount:
           isBkash && paymentDetails.mode === 'delivery'
             ? deliveryFee
             : isBkash
             ? totalAmount
             : 0,
-        submittedAt: new Date().toISOString(),
       },
-      orderStatus: 'Pending',
       courierData: {
         provider: 'Steadfast',
         consignmentId,
         trackingCode,
         trackingUrl: `https://steadfast.com.bd/t/${trackingCode}`,
-        shippedAt: {
-          $date: new Date().toISOString(),
-        },
-      },
-      createdAt: {
-        $date: new Date().toISOString(),
-      },
-      updatedAt: {
-        $date: new Date().toISOString(),
       },
     };
 
-    // Save to state and localStorage
-    const updatedOrders = [newOrder, ...orders];
-    setOrders(updatedOrders);
-    try {
-      localStorage.setItem('sarail_orders', JSON.stringify(updatedOrders));
-    } catch (e) {
-      console.error('Error saving order:', e);
-    }
+    // Persist order directly into MongoDB via backend API
+    const savedOrder = await createOrderInDB(orderPayload);
+    const finalOrder = savedOrder || {
+      ...orderPayload,
+      _id: `ord_${Date.now()}`,
+      orderStatus: 'Pending',
+      createdAt: new Date().toISOString(),
+    };
 
-    // Asynchronously persist order to MongoDB backend and refresh Order History query
-    createOrderInDB(newOrder)
-      .then((savedOrder) => {
-        queryClient.invalidateQueries({ queryKey: ['userOrders'] });
-        trackPurchase(savedOrder || newOrder);
-      })
-      .catch((err) => {
-        console.warn('Could not sync order to backend:', err);
-        trackPurchase(newOrder);
-      });
+    // Update state and localStorage with the confirmed database order
+    setOrders((prev) => {
+      const filtered = prev.filter((o) => o.invoiceNumber !== finalOrder.invoiceNumber);
+      const updated = [finalOrder, ...filtered];
+      try {
+        localStorage.setItem('sarail_orders', JSON.stringify(updated));
+      } catch (e) {
+        console.error('Error saving order to localStorage:', e);
+      }
+      return updated;
+    });
 
-    return newOrder;
+    queryClient.invalidateQueries({ queryKey: ['userOrders'] });
+    trackPurchase(finalOrder);
+
+    return finalOrder;
   };
 
   // Cancel an order if its status is not Shipped or Delivered

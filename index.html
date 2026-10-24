@@ -8,20 +8,24 @@
     <meta name="description" content="Shop premium melamine crockery, non-stick cookware, cleaning tools, baby care &amp; toys with Cash on Delivery across Bangladesh." />
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#003D73" />
-    <link rel="canonical" href="https://sarail1to99plusshop-sarail1to99plus.vercel.app/" />
+    <link rel="canonical" href="https://sarail1to99plus-shop.com/" />
 
-    <!-- Preconnect to active API & WebP Image Proxy origins (no unused preconnects) -->
+    <!-- Preconnect to active API & image CDN origins -->
     <link rel="preconnect" href="https://store-backend-taupe-six.vercel.app" crossorigin />
-    <link rel="preconnect" href="https://wsrv.nl" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+    <link rel="preconnect" href="https://i.ibb.co" crossorigin />
+    <link rel="preconnect" href="https://i.ibb.co.com" crossorigin />
     <link rel="dns-prefetch" href="https://store-backend-taupe-six.vercel.app" />
-    <link rel="dns-prefetch" href="https://wsrv.nl" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+    <link rel="dns-prefetch" href="https://i.ibb.co" />
+    <link rel="dns-prefetch" href="https://i.ibb.co.com" />
 
     <!-- Preload Primary LCP Hero Banner Image with Responsive SrcSet (matches Slide 1: carusel3) -->
     <link
       rel="preload"
       as="image"
-      href="/banners/carusel3-1024.webp"
-      imagesrcset="/banners/carusel3-640.webp 640w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1920.webp 1920w"
+      href="/banners/carusel3-768.webp"
+      imagesrcset="/banners/carusel3-640.webp 640w, /banners/carusel3-768.webp 768w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1920.webp 1920w"
       imagesizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
       fetchpriority="high"
     />
@@ -31,18 +35,18 @@
     <meta property="og:site_name" content="Sarail 1 to 99 Plus Shop" />
     <meta property="og:title" content="Sarail 1 to 99 Plus Shop - Best Household, Kitchen &amp; Daily Deals" />
     <meta property="og:description" content="Shop premium melamine crockery, non-stick cookware, cleaning tools, baby care &amp; toys with Cash on Delivery across Bangladesh." />
-    <meta property="og:image" content="https://sarail1to99plusshop-sarail1to99plus.vercel.app/Without-BG-logo.png" />
-    <meta property="og:image:secure_url" content="https://sarail1to99plusshop-sarail1to99plus.vercel.app/Without-BG-logo.png" />
+    <meta property="og:image" content="https://sarail1to99plus-shop.com/Without-BG-logo.png" />
+    <meta property="og:image:secure_url" content="https://sarail1to99plus-shop.com/Without-BG-logo.png" />
     <meta property="og:image:width" content="600" />
     <meta property="og:image:height" content="600" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:url" content="https://sarail1to99plusshop-sarail1to99plus.vercel.app/" />
+    <meta property="og:url" content="https://sarail1to99plus-shop.com/" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sarail 1 to 99 Plus Shop - Best Household, Kitchen &amp; Daily Deals" />
     <meta name="twitter:description" content="Shop premium melamine crockery, non-stick cookware, cleaning tools, baby care &amp; toys with Cash on Delivery across Bangladesh." />
-    <meta name="twitter:image" content="https://sarail1to99plusshop-sarail1to99plus.vercel.app/Without-BG-logo.png" />
+    <meta name="twitter:image" content="https://sarail1to99plus-shop.com/Without-BG-logo.png" />
 
     <!-- Structured Data (JSON-LD) for Store & WebSite -->
     <script type="application/ld+json">
@@ -50,8 +54,8 @@
         "@context": "https://schema.org",
         "@type": "Store",
         "name": "Sarail 1 to 99 Plus Shop",
-        "url": "https://sarail1to99plusshop-sarail1to99plus.vercel.app/",
-        "logo": "https://sarail1to99plusshop-sarail1to99plus.vercel.app/logo.png",
+        "url": "https://sarail1to99plus-shop.com/",
+        "logo": "https://sarail1to99plus-shop.com/logo.png",
         "description": "Shop premium melamine crockery, non-stick cookware, cleaning tools, baby care & toys with Cash on Delivery across Bangladesh.",
         "telephone": "+8801998789157",
         "priceRange": "৳99 - ৳2500",
@@ -64,17 +68,28 @@
       }
     </script>
 
-    <!-- Meta Pixel Code -->
+    <!-- Meta Pixel Code (Non-blocking deferred loader for 100% Performance & zero TBT) -->
     <script>
-      !function(f,b,e,v,n,t,s)
-      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-      n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t,s)}(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
+      !function(f,b,e,v,n,t,s){
+        if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];
+        var loaded=false;
+        function loadPixel(){
+          if(loaded)return;loaded=true;
+          t=b.createElement(e);t.async=!0;t.src=v;
+          s=b.getElementsByTagName(e)[0];
+          if(s&&s.parentNode){s.parentNode.insertBefore(t,s);}else{b.head.appendChild(t);}
+        }
+        if('requestIdleCallback' in f){
+          f.requestIdleCallback(function(){ setTimeout(loadPixel, 1000); }, {timeout: 2500});
+        } else {
+          f.addEventListener('load', function(){ setTimeout(loadPixel, 1000); });
+        }
+        setTimeout(loadPixel, 3000);
+      }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '4096200450685804');
+      fbq('track', 'PageView');
     </script>
     <!-- End Meta Pixel Code -->
   </head>

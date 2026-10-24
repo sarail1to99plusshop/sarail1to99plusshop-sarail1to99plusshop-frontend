@@ -6,6 +6,7 @@ import {
   optimizeImageUrl,
   getOptimizedImageSrcSet,
   handleOptimizedImageError,
+  handleOptimizedImageLoad,
 } from '../../utils/imageOptimizer';
 
 const ProductCard = ({ product, priority = false }) => {
@@ -54,7 +55,8 @@ const ProductCard = ({ product, priority = false }) => {
       <div className="relative aspect-square w-full bg-white flex items-center justify-center p-2.5 sm:p-3 overflow-hidden border-b border-slate-100">
         <Link
           to={productLink}
-          aria-label={`View details for ${product.name}`}
+          tabIndex={-1}
+          aria-hidden="true"
           className="w-full h-full flex items-center justify-center"
         >
           <img
@@ -66,6 +68,8 @@ const ProductCard = ({ product, priority = false }) => {
             height="220"
             loading={priority ? 'eager' : 'lazy'}
             decoding="async"
+            referrerPolicy="no-referrer"
+            onLoad={handleOptimizedImageLoad}
             onError={(e) => handleOptimizedImageError(e, rawDisplayImage)}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300 ease-out"
           />

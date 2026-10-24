@@ -1,0 +1,137 @@
+# ==============================================================================
+# Sarail 1 to 99 Plus Shop - Production Apache (.htaccess) Configuration
+# Optimized for cPanel File Manager (public_html) & React SPA Router
+# Canonical Domain: https://sarail1to99plus-shop.com/
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. SECURITY & DIRECTORY HARDENING
+# ------------------------------------------------------------------------------
+# Prevent directory listing (browsing folder contents)
+Options -Indexes
+
+# Block access to hidden files and directories (dotfiles like .env, .git)
+<FilesMatch "^\.">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Security Headers
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" env=HTTPS
+  Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 2. MIME TYPE DEFINITIONS
+# ------------------------------------------------------------------------------
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType image/webp .webp
+  AddType image/svg+xml .svg .svgz
+  AddType application/json .json
+  AddType application/xml .xml
+  AddType font/woff2 .woff2
+  AddType font/woff .woff
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 3. GZIP / DEFLATE COMPRESSION (Speed up mobile & desktop load times)
+# ------------------------------------------------------------------------------
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE font/woff
+  AddOutputFilterByType DEFLATE font/woff2
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 4. BROWSER CACHING (Fast Repeat Visits & Instant App Updates)
+# ------------------------------------------------------------------------------
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 month"
+
+  # HTML documents: Never cache so users always get the latest JS bundle hashes
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType application/json "access plus 0 seconds"
+  ExpiresByType application/xml "access plus 0 seconds"
+
+  # Static assets with hash in filename (Vite /assets/): 1 Year cache
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+
+  # Media & Images: 1 Year cache
+  ExpiresByType image/webp "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType image/x-icon "access plus 1 year"
+
+  # Web Fonts: 1 Year cache
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType font/woff "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Ensure index.html and root are revalidated immediately on every release
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+  </FilesMatch>
+
+  # Cache-busting static assets are immutable for 1 year
+  <FilesMatch "\.(css|js|webp|png|jpg|jpeg|svg|woff2)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# ------------------------------------------------------------------------------
+# 5. URL REWRITES & SPA ROUTING (React Router on cPanel)
+# ------------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # A. Force HTTPS (Redirect http:// to https:// with 301 Permanent Redirect)
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # B. Canonical Domain (Redirect www.sarail1to99plus-shop.com to sarail1to99plus-shop.com)
+  RewriteCond %{HTTP_HOST} ^www\.sarail1to99plus-shop\.com$ [NC]
+  RewriteRule ^(.*)$ https://sarail1to99plus-shop.com/$1 [L,R=301]
+
+  # C. Serve real existing files and folders directly (images, js, css, robots.txt, sitemap.xml)
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # D. Single Page Application (SPA) Fallback:
+  # Route all clean URLs to index.html so React Router handles:
+  # - /shop, /products
+  # - /product/:id, /products/:id, /product-details/:id
+  # - /best-selling, /new-arrivals, /popular-items, /hot-offers
+  # - /cart, /checkout
+  # - /track-order, /pre-order
+  # - /account, /login, /register, /profile
+  # - /about, /contact, /privacy-policy, /return-policy
+  RewriteRule ^ index.html [L]
+</IfModule>
+

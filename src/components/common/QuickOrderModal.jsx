@@ -122,7 +122,7 @@ const QuickOrderModal = () => {
   const bKashPayNow = bKashPaymentMode === 'delivery' ? deliveryFee : totalAmount;
   const remainingOnDelivery = totalAmount - bKashPayNow;
 
-  const handleOrderSubmit = (e) => {
+  const handleOrderSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) {
       handleClose();
@@ -213,11 +213,12 @@ const QuickOrderModal = () => {
     const chosenColorName = currentVariant?.colorName || 'Standard';
     const chosenColorCode = currentVariant?.colorCode || '';
 
+    const rawPid = product._id?.$oid || product._id || product.id || product.productId;
     const singleItem = [
       {
-        product: {
-          $oid: product._id?.$oid || product.id?.toString(),
-        },
+        id: rawPid,
+        productId: Number(product.id || product.productId) || undefined,
+        product: rawPid,
         title: product.name,
         price: product.price,
         quantity: orderQuantity,
@@ -232,31 +233,43 @@ const QuickOrderModal = () => {
       },
     ];
 
-    const order = createOrder({
-      userId: currentUser?.uid || '',
-      customerDetails: {
-        name: activeName,
-        email: customerEmail,
-        phone: cleanPhone,
-        district: district.trim(),
-        thana: thana.trim(),
-        streetAddress: cleanStreet,
-        fullAddress,
-        address: fullAddress, // Backwards compatible alias
-        division: division.trim(),
-        note: note.trim(),
-        deliveryLocation: activeDelivery.location,
-      },
-      itemsList: singleItem,
-      deliveryFee,
-      paymentMethod,
-      paymentDetails: {
-        trxId: trxId.trim().toUpperCase(),
-        senderPhone: senderPhone.trim(),
-        bKashNumber: '01998789157',
-        mode: paymentMethod === 'bKash' ? bKashPaymentMode : 'full',
-      },
-    });
+    let order = null;
+    try {
+      order = await createOrder({
+        userId: currentUser?.uid || '',
+        customerDetails: {
+          name: activeName,
+          email: customerEmail,
+          phone: cleanPhone,
+          district: district.trim(),
+          thana: thana.trim(),
+          streetAddress: cleanStreet,
+          fullAddress,
+          address: fullAddress, // Backwards compatible alias
+          division: division.trim(),
+          note: note.trim(),
+          deliveryLocation: activeDelivery.location,
+        },
+        itemsList: singleItem,
+        deliveryFee,
+        paymentMethod,
+        paymentDetails: {
+          trxId: trxId.trim().toUpperCase(),
+          senderPhone: senderPhone.trim(),
+          bKashNumber: '01998789157',
+          mode: paymentMethod === 'bKash' ? bKashPaymentMode : 'full',
+        },
+      });
+    } catch (orderErr) {
+      console.error('QuickOrder creation failed:', orderErr);
+      setLoading(false);
+      setPaymentError(
+        orderErr.response?.data?.message ||
+        orderErr.message ||
+        'Failed to place order. Please check your delivery address and details and try again.'
+      );
+      return;
+    }
 
     // 1. Safe Meta Pixel Integration ('window.fbq') & 2. Correct Purchase Payload Format
     const finalAmount = Number(order?.totalAmount || order?.total || (product.price * orderQuantity + deliveryFee) || 0);

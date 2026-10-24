@@ -29,6 +29,7 @@ import {
 import {
   optimizeImageUrl,
   handleOptimizedImageError,
+  handleOptimizedImageLoad,
 } from '../utils/imageOptimizer';
 import { trackViewContent } from '../utils/pixel';
 
@@ -399,6 +400,8 @@ const ProductDetailsPage = () => {
                         className="w-full h-full object-contain"
                         loading="lazy"
                         decoding="async"
+                        referrerPolicy="no-referrer"
+                        onLoad={handleOptimizedImageLoad}
                         onError={(e) => handleOptimizedImageError(e, imgUrl)}
                       />
                     </button>
@@ -415,6 +418,8 @@ const ProductDetailsPage = () => {
                   height="600"
                   fetchPriority="high"
                   decoding="async"
+                  referrerPolicy="no-referrer"
+                  onLoad={handleOptimizedImageLoad}
                   onError={(e) => handleOptimizedImageError(e, mainPreviewImage)}
                   className="max-h-[340px] w-auto max-w-full object-contain transition-transform duration-300 hover:scale-105 select-none"
                 />
@@ -979,6 +984,8 @@ const ProductDetailsPage = () => {
                       className="absolute inset-0 w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
                       loading="lazy"
                       decoding="async"
+                      referrerPolicy="no-referrer"
+                      onLoad={handleOptimizedImageLoad}
                       onError={(e) => handleOptimizedImageError(e, relImage)}
                     />
                     {relProd.discount && (

@@ -702,6 +702,9 @@ const Account = () => {
                                   <img
                                     src={item.image}
                                     alt={item.title}
+                                    onError={(e) => {
+                                      e.currentTarget.style.display = 'none';
+                                    }}
                                     className="w-12 h-12 rounded-lg object-cover border border-slate-200 bg-slate-50 shrink-0"
                                   />
                                 ) : (

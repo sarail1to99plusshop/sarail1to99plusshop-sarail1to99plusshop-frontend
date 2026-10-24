@@ -1,8 +1,12 @@
 import { useState } from 'react';
+import { useForm, ValidationError } from '@formspree/react';
 import { BsBoxSeam, BsCheckCircle } from 'react-icons/bs';
 import { createPreOrderInDB } from '../services/api';
 
+const FORMSPREE_FORM_ID = import.meta.env.VITE_FORMSPREE_FORM_ID || 'xeaaqwkz';
+
 const PreOrder = () => {
+  const [formspreeState, handleFormspreeSubmit, resetFormspree] = useForm(FORMSPREE_FORM_ID);
   const [productName, setProductName] = useState('');
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
@@ -11,6 +15,8 @@ const PreOrder = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 1. Persist pre-order in MongoDB for Admin Dashboard
     try {
       await createPreOrderInDB({
         productName: productName.trim(),
@@ -21,7 +27,24 @@ const PreOrder = () => {
     } catch (err) {
       console.warn('Could not sync pre-order to backend:', err);
     }
+
+    // 2. Dispatch to Formspree for instant email alerting
+    try {
+      await handleFormspreeSubmit(e);
+    } catch (err) {
+      console.warn('Formspree dispatch error:', err);
+    }
+
     setSubmitted(true);
+  };
+
+  const handleReset = () => {
+    resetFormspree();
+    setSubmitted(false);
+    setProductName('');
+    setCustomerName('');
+    setPhone('');
+    setNotes('');
   };
 
   return (
@@ -39,22 +62,36 @@ const PreOrder = () => {
       </div>
 
       <div className="bg-white p-6 sm:p-8 rounded-xl border border-gray-200 shadow-sm">
-        {submitted ? (
+        {formspreeState.succeeded || submitted ? (
           <div className="text-center py-8 space-y-3">
             <BsCheckCircle className="text-5xl text-emerald-500 mx-auto" />
             <h3 className="text-lg font-bold text-charcoal">Pre-Order Request Received!</h3>
             <p className="text-xs text-gray-500 max-w-md mx-auto">
-              Our sourcing team will contact you at <strong>{phone}</strong> within 2 hours with pricing, availability, and delivery estimate.
+              Our sourcing team has received your request and will contact you at <strong>{phone}</strong> within 2 hours with pricing, availability, and delivery estimate.
             </p>
             <button
-              onClick={() => setSubmitted(false)}
-              className="mt-4 bg-primary text-white text-xs px-4 py-2 rounded-md font-semibold"
+              onClick={handleReset}
+              className="mt-4 bg-primary text-white text-xs px-4 py-2 rounded-md font-semibold cursor-pointer"
             >
               Submit Another Request
             </button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="hidden"
+              name="_subject"
+              value={`New Pre-Order Request: ${productName || 'Custom Product'} (${phone || 'No Phone'})`}
+            />
+            <input type="hidden" name="source" value="Sarail 1 to 99 Plus Shop Pre-Order" />
+
+            {formspreeState.errors && (
+              <ValidationError
+                errors={formspreeState.errors}
+                className="text-xs text-rose-600 bg-rose-50 border border-rose-200 p-2.5 rounded-lg font-semibold"
+              />
+            )}
+
             <div>
               <label htmlFor="preorder-product-name-input" className="block text-xs font-bold text-charcoal mb-1">
                 Requested Item / Product Name *
@@ -62,11 +99,18 @@ const PreOrder = () => {
               <input
                 id="preorder-product-name-input"
                 type="text"
+                name="productName"
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
                 placeholder="e.g. Sharif 32pc Melamine Set / Kiam 7pc Cookware / Electric Vegetable Chopper"
                 required
                 className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2.5 rounded-md outline-none focus:border-primary"
+              />
+              <ValidationError
+                prefix="Product Name"
+                field="productName"
+                errors={formspreeState.errors}
+                className="text-[11px] text-rose-600 font-semibold mt-1"
               />
             </div>
 
@@ -78,11 +122,18 @@ const PreOrder = () => {
                 <input
                   id="preorder-full-name-input"
                   type="text"
+                  name="customerName"
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="e.g. Rahat Ahmed"
                   required
                   className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2.5 rounded-md outline-none focus:border-primary"
+                />
+                <ValidationError
+                  prefix="Customer Name"
+                  field="customerName"
+                  errors={formspreeState.errors}
+                  className="text-[11px] text-rose-600 font-semibold mt-1"
                 />
               </div>
 
@@ -93,11 +144,18 @@ const PreOrder = () => {
                 <input
                   id="preorder-mobile-number-input"
                   type="tel"
+                  name="phone"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="01XXXXXXXXX"
                   required
                   className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2.5 rounded-md outline-none focus:border-primary"
+                />
+                <ValidationError
+                  prefix="Phone"
+                  field="phone"
+                  errors={formspreeState.errors}
+                  className="text-[11px] text-rose-600 font-semibold mt-1"
                 />
               </div>
             </div>
@@ -108,19 +166,27 @@ const PreOrder = () => {
               </label>
               <textarea
                 id="preorder-additional-notes-input"
+                name="notes"
                 rows={3}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Mention desired color or storage model..."
                 className="w-full bg-gray-50 border border-gray-200 text-xs px-3.5 py-2.5 rounded-md outline-none focus:border-primary"
               />
+              <ValidationError
+                prefix="Notes"
+                field="notes"
+                errors={formspreeState.errors}
+                className="text-[11px] text-rose-600 font-semibold mt-1"
+              />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-actionRed hover:bg-actionRed-hover text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-sm"
+              disabled={formspreeState.submitting}
+              className="w-full bg-actionRed hover:bg-actionRed-hover text-white font-bold text-xs uppercase py-3 rounded-md transition-colors shadow-sm disabled:opacity-75 cursor-pointer"
             >
-              Submit Pre-Order Request
+              {formspreeState.submitting ? 'Submitting Pre-Order via Formspree...' : 'Submit Pre-Order Request'}
             </button>
           </form>
         )}

@@ -12,7 +12,7 @@ import {
 } from 'react-icons/fa';
 import { HiOutlineMail, HiOutlinePhone } from 'react-icons/hi';
 import logoImg from '../../assets/Without BG logo.webp';
-import heroStackLogo from '../../assets/herostack-logo.png';
+import heroStackLogo from '../../assets/herostack-logo.webp';
 import { STORE_CONTACT } from '../../utils/contactInfo';
 
 const Footer = () => {
@@ -139,7 +139,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on Facebook"
-                className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-11 h-11 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaFacebookF className="text-sm" aria-hidden="true" />
               </a>
@@ -148,7 +148,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Follow us on TikTok"
-                className="w-10 h-10 rounded-full bg-black border border-gray-700 text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-11 h-11 rounded-full bg-black border border-gray-700 text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaTiktok className="text-sm" aria-hidden="true" />
               </a>
@@ -157,7 +157,7 @@ const Footer = () => {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Chat on WhatsApp"
-                className="w-10 h-10 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-11 h-11 rounded-full bg-[#25D366] text-white flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaWhatsapp className="text-base" aria-hidden="true" />
               </a>
@@ -171,7 +171,7 @@ const Footer = () => {
                 }}
                 aria-label="Find our Store Location on Google Maps"
                 title="Store Location"
-                className="w-10 h-10 rounded-full bg-[#112b45] border border-slate-700 text-[#FF6B74] flex items-center justify-center hover:scale-110 transition-transform"
+                className="w-11 h-11 rounded-full bg-[#112b45] border border-slate-700 text-[#FF6B74] flex items-center justify-center hover:scale-110 transition-transform"
               >
                 <FaMapMarkerAlt className="text-sm" aria-hidden="true" />
               </Link>
@@ -354,6 +354,8 @@ const Footer = () => {
               <img
                 src={heroStackLogo}
                 alt="HeroStack"
+                width="108"
+                height="36"
                 className="h-6 sm:h-7 md:h-8 lg:h-9 w-auto object-contain"
                 loading="lazy"
                 decoding="async"
