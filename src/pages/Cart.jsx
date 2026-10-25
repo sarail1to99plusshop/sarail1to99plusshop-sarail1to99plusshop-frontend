@@ -117,7 +117,7 @@ const Cart = () => {
   const activeDelivery =
     (candidateDelivery && isZoneApplicableForDistrict(candidateDelivery, district, deliveryCharges))
       ? candidateDelivery
-      : getBestMatchingDeliveryZone(deliveryCharges, district) ||
+      : getBestMatchingDeliveryZone(deliveryCharges, district, thana) ||
         deliveryCharges?.[0] || {
           id: 'inside-brahmanbaria',
           location: 'Inside Brahmanbaria City',
@@ -814,7 +814,7 @@ const Cart = () => {
                         }
                         // Automatically select the geographically valid delivery zone
                         if (val) {
-                          const best = getBestMatchingDeliveryZone(deliveryCharges, val);
+                          const best = getBestMatchingDeliveryZone(deliveryCharges, val, thana);
                           if (best) setSelectedDeliveryId(best.id);
                         }
                       }}
@@ -863,8 +863,13 @@ const Cart = () => {
                       required
                       value={thana}
                       onChange={(e) => {
-                        setThana(e.target.value);
+                        const val = e.target.value;
+                        setThana(val);
                         if (thanaError) setThanaError('');
+                        if (district) {
+                          const best = getBestMatchingDeliveryZone(deliveryCharges, district, val);
+                          if (best) setSelectedDeliveryId(best.id);
+                        }
                       }}
                       placeholder="যেমন: সরাইল, মিরপুর, রায়পুরা"
                       className={`w-full bg-gray-50 border text-xs px-3.5 py-2.5 rounded-lg outline-none transition-colors ${
@@ -928,11 +933,24 @@ const Cart = () => {
                       {district ? `জেলা: ${district}` : 'Choose delivery zone'}
                     </span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     {(deliveryCharges || []).map((option) => {
                       const isSelected = selectedDeliveryId === option.id;
                       const isApplicable = isZoneApplicableForDistrict(option, district, deliveryCharges);
                       const targetDistrict = getTargetDistrictForZone(option);
+
+                      // Helper text for distinct user clarity
+                      const isInsideBrahmanbaria = option.id === 'inside-brahmanbaria' || (option.charge === 60 && option.location.toLowerCase().includes('brahmanbaria'));
+                      const isWithoutBrahmanbaria = option.id === 'without-brahmanbaria-city' || option.charge === 130;
+                      const isInsideDhaka = option.id === 'inside-dhaka' || (option.charge === 120 && option.location.toLowerCase().includes('dhaka'));
+
+                      const areaHint = isInsideBrahmanbaria
+                        ? 'সদর / সিটি এলাকা'
+                        : isWithoutBrahmanbaria
+                        ? 'সরাইল, কসবা ও সারাদেশ'
+                        : isInsideDhaka
+                        ? 'ঢাকা সিটি এলাকা'
+                        : null;
 
                       return (
                         <button
@@ -943,7 +961,7 @@ const Cart = () => {
                             if (!isApplicable) return;
                             setSelectedDeliveryId(option.id);
                           }}
-                          className={`p-2.5 rounded-lg border text-left transition-all relative ${
+                          className={`p-2.5 rounded-lg border text-left transition-all relative flex flex-col justify-between ${
                             !isApplicable
                               ? 'opacity-40 bg-slate-50 border-slate-200 cursor-not-allowed select-none'
                               : isSelected
@@ -958,39 +976,50 @@ const Cart = () => {
                               : option.location
                           }
                         >
-                          <div className="flex items-center justify-between">
-                            <span
-                              className={`text-xs font-bold ${
-                                !isApplicable
-                                  ? 'text-slate-400 line-through'
-                                  : isSelected
-                                  ? 'text-primary'
-                                  : 'text-charcoal'
-                              }`}
-                            >
-                              {option.location}
-                            </span>
-                            <span
-                              className={`text-xs font-black ${
-                                !isApplicable
-                                  ? 'text-slate-400'
-                                  : isSelected
-                                  ? 'text-actionRed'
-                                  : 'text-slate-700'
-                              }`}
-                            >
-                              ৳{option.charge}
-                            </span>
+                          <div>
+                            <div className="flex items-center justify-between gap-1">
+                              <span
+                                className={`text-xs font-bold ${
+                                  !isApplicable
+                                    ? 'text-slate-400 line-through'
+                                    : isSelected
+                                    ? 'text-primary'
+                                    : 'text-charcoal'
+                                }`}
+                              >
+                                {option.location}
+                              </span>
+                              <span
+                                className={`text-xs font-black shrink-0 ${
+                                  !isApplicable
+                                    ? 'text-slate-400'
+                                    : isSelected
+                                    ? 'text-actionRed'
+                                    : 'text-slate-700'
+                                }`}
+                              >
+                                ৳{option.charge}
+                              </span>
+                            </div>
+                            {areaHint && (
+                              <p className="text-[10px] text-slate-500 font-medium mt-0.5">
+                                {areaHint}
+                              </p>
+                            )}
                           </div>
-                          <div className="flex items-center justify-between mt-0.5">
+                          <div className="flex items-center justify-between mt-1 pt-1 border-t border-slate-100">
                             <span className="text-[10px] text-gray-500 block">
                               {option.estimatedDays}
                             </span>
-                            {!isApplicable && (
+                            {!isApplicable ? (
                               <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded">
                                 {targetDistrict ? `শুধু ${targetDistrict}` : 'অনুপযুক্ত'}
                               </span>
-                            )}
+                            ) : isSelected ? (
+                              <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">
+                                নির্বাচিত
+                              </span>
+                            ) : null}
                           </div>
                         </button>
                       );
