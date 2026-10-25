@@ -130,7 +130,12 @@ Options -Indexes
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
 
-  # D. Single Page Application (SPA) Fallback:
+  # D. Social Media Open Graph Crawler Interception (Facebook, WhatsApp, Twitter/X, Telegram, LinkedIn, Discord, etc.)
+  # When a social media bot scrapes a product link, serve dynamic Open Graph tags with the real product image!
+  RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|Twitterbot|TelegramBot|Discordbot|LinkedInBot|Pinterest|SkypeUriPreview|Applebot) [NC]
+  RewriteRule ^product/([0-9a-zA-Z_-]+)/?$ og.php?id=$1 [L,QSA]
+
+  # E. Single Page Application (SPA) Fallback:
   # Route all clean URLs to index.html so React Router handles:
   # - /shop, /products
   # - /product/:id, /products/:id, /product-details/:id

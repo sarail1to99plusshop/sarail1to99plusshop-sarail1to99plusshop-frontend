@@ -2,8 +2,26 @@
  * High-performance image optimization & fallback utility for Sarail 1 to 99 Plus Shop.
  * - Passes through all database and CDN image URLs faithfully.
  * - Normalizes alias hosts (e.g. i.ibb.co.com -> i.ibb.co).
- * - Natively optimizes Unsplash CDN images only if an Unsplash image is explicitly supplied.
+ * - Detects and filters out store logos / placeholder graphics from being mistakenly used as product images.
+ * - Guarantees that product cards always display the true uploaded ImgBB photo, never the website logo.
  */
+
+export const isInvalidProductImage = (url) => {
+  if (!url || typeof url !== 'string') return true;
+  const lower = url.trim().toLowerCase();
+  return (
+    lower === '' ||
+    lower === 'undefined' ||
+    lower === 'null' ||
+    lower.includes('without-bg') ||
+    lower.includes('without bg') ||
+    lower.includes('/logo.png') ||
+    lower.endsWith('logo.png') ||
+    lower.endsWith('logo.webp') ||
+    lower.includes('website logo') ||
+    lower.includes('product-placeholder')
+  );
+};
 
 export const normalizeExternalHost = (rawUrl) => {
   if (!rawUrl || typeof rawUrl !== 'string') return '';
@@ -13,12 +31,56 @@ export const normalizeExternalHost = (rawUrl) => {
   return trimmed.replace('://i.ibb.co.com/', '://i.ibb.co/');
 };
 
+/**
+ * Extracts a clean, valid product image URL from a product object.
+ * Checks thumbnail, variant images, and product.images array.
+ * Rejects any store logo or invalid placeholder so products never display the site logo.
+ */
+export const getCleanProductImageUrl = (
+  product,
+  fallback = '/product-placeholder.svg'
+) => {
+  if (!product) return fallback;
+
+  // 1. Check product.thumbnail
+  if (product.thumbnail && !isInvalidProductImage(product.thumbnail)) {
+    return normalizeExternalHost(product.thumbnail);
+  }
+
+  // 2. Check variants
+  if (Array.isArray(product.variants)) {
+    for (const v of product.variants) {
+      if (Array.isArray(v?.images)) {
+        const found = v.images.find((img) => !isInvalidProductImage(img));
+        if (found) return normalizeExternalHost(found);
+      }
+    }
+  }
+
+  // 3. Check product.images array
+  if (Array.isArray(product.images)) {
+    const found = product.images.find((img) => !isInvalidProductImage(img));
+    if (found) return normalizeExternalHost(found);
+  }
+
+  // 4. Check product.image
+  if (product.image && !isInvalidProductImage(product.image)) {
+    return normalizeExternalHost(product.image);
+  }
+
+  return fallback;
+};
+
 export const optimizeImageUrl = (
   rawUrl,
   { width = 240, height = 240, quality = 75 } = {}
 ) => {
   if (!rawUrl || typeof rawUrl !== 'string') return '';
   const trimmed = rawUrl.trim();
+
+  if (isInvalidProductImage(trimmed)) {
+    return '/product-placeholder.svg';
+  }
 
   if (
     trimmed.startsWith('data:') ||
@@ -46,6 +108,8 @@ export const getOptimizedImageSrcSet = (
   quality = 75
 ) => {
   if (!rawUrl || typeof rawUrl !== 'string') return undefined;
+  if (isInvalidProductImage(rawUrl)) return undefined;
+
   const normalized = normalizeExternalHost(rawUrl.trim());
 
   // Only Unsplash supports dynamic Imgix width-based srcSets reliably without proxy traps
@@ -77,8 +141,19 @@ export const handleOptimizedImageError = (
   const img = e.currentTarget;
   if (!img) return;
 
+  // Ensure fallback is NEVER a site logo
+  const safeFallback = isInvalidProductImage(fallbackUrl)
+    ? '/product-placeholder.svg'
+    : fallbackUrl;
+
   const normalized = normalizeExternalHost(originalUrl);
-  if (normalized && normalized !== originalUrl && img.src !== normalized && !img.dataset.triedNormalized) {
+  if (
+    normalized &&
+    normalized !== originalUrl &&
+    img.src !== normalized &&
+    !isInvalidProductImage(normalized) &&
+    !img.dataset.triedNormalized
+  ) {
     img.dataset.triedNormalized = 'true';
     img.removeAttribute('srcset');
     img.src = normalized;
@@ -88,6 +163,6 @@ export const handleOptimizedImageError = (
   if (!img.dataset.triedFallback) {
     img.dataset.triedFallback = 'true';
     img.removeAttribute('srcset');
-    img.src = fallbackUrl;
+    img.src = safeFallback;
   }
 };

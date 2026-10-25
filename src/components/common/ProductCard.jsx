@@ -7,6 +7,7 @@ import {
   getOptimizedImageSrcSet,
   handleOptimizedImageError,
   handleOptimizedImageLoad,
+  getCleanProductImageUrl,
 } from '../../utils/imageOptimizer';
 
 const ProductCard = ({ product, priority = false }) => {
@@ -15,11 +16,8 @@ const ProductCard = ({ product, priority = false }) => {
 
   if (!product) return null;
 
-  // Raw image and responsive WebP image sized to actual card display dimensions
-  const rawDisplayImage =
-    product.thumbnail ||
-    product.variants?.[0]?.images?.[0] ||
-    '/product-placeholder.svg';
+  // Extract clean product photo (ImgBB/CDN) and reject any store logo fallback
+  const rawDisplayImage = getCleanProductImageUrl(product, '/product-placeholder.svg');
 
   const displayImage = optimizeImageUrl(rawDisplayImage, {
     width: 220,

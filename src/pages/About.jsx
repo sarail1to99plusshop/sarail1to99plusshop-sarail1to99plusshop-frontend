@@ -503,7 +503,7 @@ const About = () => {
         <div className="bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-xs">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
             <div>
-              <span className="text-[11px] font-bold text-[#e96542] uppercase tracking-wider block mb-1">
+              <span className="text-[11px] font-bold text-[#C2410C] uppercase tracking-wider block mb-1">
                 Store Location
               </span>
               <h2 className="text-2xl md:text-3xl font-black text-charcoal">

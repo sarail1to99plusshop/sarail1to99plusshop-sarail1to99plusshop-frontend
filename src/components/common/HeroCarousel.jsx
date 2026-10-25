@@ -11,7 +11,7 @@ const slides = [
     id: 'carousel-slide-1',
     image: carusel3,
     srcSet:
-      '/banners/carusel3-640.webp 640w, /banners/carusel3-768.webp 768w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1920.webp 1920w',
+      '/banners/carusel3-640.webp 640w, /banners/carusel3-768.webp 768w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1280.webp 1280w, /banners/carusel3-1920.webp 1920w',
     alt: 'দৈনন্দিন জিনিস, পছন্দসই দামে - Sarail 1 to 99 Plus Shop',
     link: '/shop?banner=daily-deals',
   },
@@ -19,7 +19,7 @@ const slides = [
     id: 'carousel-slide-2',
     image: carusel4,
     srcSet:
-      '/banners/carusel4-640.webp 640w, /banners/carusel4-768.webp 768w, /banners/carusel4-1024.webp 1024w, /banners/carusel4-1920.webp 1920w',
+      '/banners/carusel4-640.webp 640w, /banners/carusel4-768.webp 768w, /banners/carusel4-1024.webp 1024w, /banners/carusel4-1280.webp 1280w, /banners/carusel4-1920.webp 1920w',
     alt: 'যা দরকার, সবই এখন এক শপে - Sarail 1 to 99 Plus Shop',
     link: '/shop?banner=all-in-one',
   },
@@ -27,7 +27,7 @@ const slides = [
     id: 'carousel-slide-3',
     image: carusel1,
     srcSet:
-      '/banners/carusel1-640.webp 640w, /banners/carusel1-768.webp 768w, /banners/carusel1-1024.webp 1024w, /banners/carusel1-1920.webp 1920w',
+      '/banners/carusel1-640.webp 640w, /banners/carusel1-768.webp 768w, /banners/carusel1-1024.webp 1024w, /banners/carusel1-1280.webp 1280w, /banners/carusel1-1920.webp 1920w',
     alt: 'স্বাগতম প্রয়োজনীয় পণ্যের সেরা ঠিকানায়! - Sarail 1 to 99 Plus Shop',
     link: '/shop?banner=welcome',
   },
@@ -35,7 +35,7 @@ const slides = [
     id: 'carousel-slide-4',
     image: carusel2,
     srcSet:
-      '/banners/carusel2-640.webp 640w, /banners/carusel2-768.webp 768w, /banners/carusel2-1024.webp 1024w, /banners/carusel2-1920.webp 1920w',
+      '/banners/carusel2-640.webp 640w, /banners/carusel2-768.webp 768w, /banners/carusel2-1024.webp 1024w, /banners/carusel2-1280.webp 1280w, /banners/carusel2-1920.webp 1920w',
     alt: 'দেশজুড়ে সহজ অর্ডার, নির্ভরযোগ্য ডেলিভারি - Sarail 1 to 99 Plus Shop',
     link: '/shop?banner=delivery',
   },
@@ -205,7 +205,7 @@ const HeroCarousel = () => {
                   <img
                     src={slide.image}
                     srcSet={slide.srcSet}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, (max-width: 1280px) 100vw, 1280px"
                     alt={slide.alt}
                     width="3264"
                     height="1312"
@@ -241,7 +241,7 @@ const HeroCarousel = () => {
                 <span
                   className={`block h-1.5 rounded-full transition-all duration-300 pointer-events-none ${
                     isActive
-                      ? 'w-4 bg-[#e96542]'
+                      ? 'w-4 bg-[#C2410C]'
                       : 'w-1.5 bg-white/70 hover:bg-white'
                   }`}
                 />

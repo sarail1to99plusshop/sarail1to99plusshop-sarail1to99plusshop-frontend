@@ -97,7 +97,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4" aria-label="Featured Categories">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
           <div>
-            <span className="text-[11px] font-bold text-[#e96542] uppercase tracking-wider block mb-1">
+            <span className="text-[11px] font-bold text-[#C2410C] uppercase tracking-wider block mb-1">
               Shop by category
             </span>
             <h2 className="text-xl md:text-2xl font-black text-charcoal">
@@ -149,7 +149,7 @@ const Home = () => {
                 >
                   <div className="space-y-1 sm:space-y-2">
                     {/* Number hidden on mobile per Section 21.2 */}
-                    <div className="hidden sm:block text-2xl font-black text-[#e96542]">
+                    <div className="hidden sm:block text-2xl font-black text-[#C2410C]">
                       {meta.number}
                     </div>
                     {/* Multiline title on mobile with appropriate text scaling and wrapping */}
@@ -251,7 +251,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 cv-auto" aria-label="Custom Product Assistance">
         <div className="bg-[#102338] text-white rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border border-slate-700 shadow-md">
           <div className="space-y-2 max-w-xl text-center md:text-left">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-[#e96542] block">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#FF947A] block">
               Need something else?
             </span>
             <h2 className="text-2xl font-bold text-white">

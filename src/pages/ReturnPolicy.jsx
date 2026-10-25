@@ -40,7 +40,7 @@ const ReturnPolicy = () => {
 
         {/* Section 1 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১. অর্ডার ও ডেলিভারি সংক্রান্ত নিয়ম
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -54,7 +54,7 @@ const ReturnPolicy = () => {
 
         {/* Section 2 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ২. ডেলিভারির সময় পণ্য পরীক্ষা
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -71,7 +71,7 @@ const ReturnPolicy = () => {
 
         {/* Section 3 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৩. রিটার্ন আবেদনের সময়সীমা
           </h2>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -81,7 +81,7 @@ const ReturnPolicy = () => {
 
         {/* Section 4 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৪. কোন কোন কারণে পণ্য রিটার্ন করা যাবে?
           </h2>
           <ol className="list-decimal pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -99,7 +99,7 @@ const ReturnPolicy = () => {
 
         {/* Section 5 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৫. রিটার্ন গ্রহণের সাধারণ শর্ত
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -116,7 +116,7 @@ const ReturnPolicy = () => {
 
         {/* Section 6 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৬. পণ্যের ধরন অনুযায়ী রিটার্নের শর্ত
           </h2>
           <div className="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -130,7 +130,7 @@ const ReturnPolicy = () => {
 
         {/* Section 7 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৭. কোন পরিস্থিতিতে সাধারণ রিটার্ন গ্রহণযোগ্য নাও হতে পারে?
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -144,7 +144,7 @@ const ReturnPolicy = () => {
 
         {/* Section 8 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৮. রিটার্নের আবেদন কীভাবে করবেন?
           </h2>
           <ol className="list-decimal pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -160,7 +160,7 @@ const ReturnPolicy = () => {
 
         {/* Section 9 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ৯. রিটার্ন ও অভিযোগ যাচাই
           </h2>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -170,7 +170,7 @@ const ReturnPolicy = () => {
 
         {/* Section 10 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১০. রিফান্ড বা টাকা ফেরতের নিয়ম
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -184,7 +184,7 @@ const ReturnPolicy = () => {
 
         {/* Section 11 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১১. রিটার্ন ডেলিভারি চার্জ
           </h2>
           <ul className="list-disc pl-5 space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -196,7 +196,7 @@ const ReturnPolicy = () => {
 
         {/* Section 12 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১২. অর্ডার বাতিলের নিয়ম (Order Cancellation)
           </h2>
           <div className="space-y-2 text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -208,7 +208,7 @@ const ReturnPolicy = () => {
 
         {/* Section 13 */}
         <section className="space-y-3">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১৩. কুরিয়ার সংক্রান্ত গুরুত্বপূর্ণ তথ্য
           </h2>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
@@ -218,7 +218,7 @@ const ReturnPolicy = () => {
 
         {/* Section 14 */}
         <section className="space-y-4 pt-2 border-t border-gray-200">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১৪. অভিযোগ ও গ্রাহক সহায়তা
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs sm:text-sm">
@@ -267,7 +267,7 @@ const ReturnPolicy = () => {
 
         {/* Section 15 */}
         <section className="space-y-3 pt-4 border-t border-gray-200">
-          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#e96542] pl-3">
+          <h2 className="text-lg sm:text-xl font-bold text-[#102338] border-l-4 border-[#C2410C] pl-3">
             ১৫. নীতিমালা পরিবর্তন ও আইনগত অধিকার
           </h2>
           <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">

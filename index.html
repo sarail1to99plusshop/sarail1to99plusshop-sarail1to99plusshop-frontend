@@ -24,8 +24,8 @@
       rel="preload"
       as="image"
       href="/banners/carusel3-768.webp"
-      imagesrcset="/banners/carusel3-640.webp 640w, /banners/carusel3-768.webp 768w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1920.webp 1920w"
-      imagesizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, 1280px"
+      imagesrcset="/banners/carusel3-640.webp 640w, /banners/carusel3-768.webp 768w, /banners/carusel3-1024.webp 1024w, /banners/carusel3-1280.webp 1280w, /banners/carusel3-1920.webp 1920w"
+      imagesizes="(max-width: 640px) 100vw, (max-width: 1024px) 100vw, (max-width: 1280px) 100vw, 1280px"
       fetchpriority="high"
     />
 
@@ -76,16 +76,21 @@
         var loaded=false;
         function loadPixel(){
           if(loaded)return;loaded=true;
+          ['scroll','mousemove','touchstart','pointerdown'].forEach(function(evt){
+            f.removeEventListener(evt, loadPixel, {passive:true});
+          });
           t=b.createElement(e);t.async=!0;t.src=v;
           s=b.getElementsByTagName(e)[0];
           if(s&&s.parentNode){s.parentNode.insertBefore(t,s);}else{b.head.appendChild(t);}
         }
+        ['scroll','mousemove','touchstart','pointerdown'].forEach(function(evt){
+          f.addEventListener(evt, loadPixel, {passive:true, once:true});
+        });
         if('requestIdleCallback' in f){
-          f.requestIdleCallback(function(){ setTimeout(loadPixel, 1800); }, {timeout: 4000});
+          f.requestIdleCallback(function(){ setTimeout(loadPixel, 4000); }, {timeout: 8000});
         } else {
-          f.addEventListener('load', function(){ setTimeout(loadPixel, 1800); });
+          f.addEventListener('load', function(){ setTimeout(loadPixel, 4000); });
         }
-        setTimeout(loadPixel, 4000);
       }(window, document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '4096200450685804');
       fbq('track', 'PageView');

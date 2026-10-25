@@ -1,116 +1,39 @@
-// Fallback product catalog for immediate (<15ms) response when backend is sleeping
+// Real active products in Sarail 1 to 99 Plus Shop with authentic ImgBB images
 const fallbackProducts = [
   {
-    id: 1,
+    id: 101,
     name: 'ট্যাপ ওয়াটার ফিল্টার - 360° রোটেটিং কিচেন কল ফিল্টার',
-    price: 150,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
+    price: 110,
+    thumbnail: 'https://i.ibb.co/KzjmL6Jt/image.webp',
     description: 'সহজেই কিচেনের যেকোনো পানির কলে সেট করা যায়। পানি পরিষ্কার ও ব্যাকটেরিয়ামুক্ত রাখতে কার্যকর এবং পানির অপচয় রোধ করে।',
   },
   {
-    id: 2,
+    id: 102,
     name: 'ফ্রিজ ম্যাট ৪ পিস সেট - অ্যান্টি-ব্যাকটেরিয়াল ও ওয়াশেবল',
     price: 180,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'উন্নত মানের ওয়াটারপ্রুফ এবং ইজি-টু-ক্লিন ফ্রিজ ম্যাট সেট। ফ্রিজের তাকে দাগ ও ময়লা পড়া থেকে রক্ষা করে।',
+    thumbnail: 'https://i.ibb.co/ZRRcM2W8/image-1.webp',
+    description: 'উন্নত মানের ওয়াটারপ্রুফ এবং ইজি-টু-ক্লিন ফ্রিজ ম্যাট সেট। ফ্রিজের তাকে দাগ ও ময়লা পড়া থেকে রক্ষা করে এবং পরিষ্কার রাখা সহজ করে।',
   },
   {
-    id: 3,
+    id: 103,
     name: 'হেভি ডিউটি কিচেন ক্লিনার স্প্রে - অয়েল ও গ্রীস রিমুভার',
     price: 280,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'রান্নাঘরের তেলচিটে ও জেদি ময়লা নিমিষেই পরিষ্কার করতে অত্যন্ত কার্যকরী পাওয়ারফুল ক্লিনার।',
+    thumbnail: 'https://i.ibb.co/bg1ZgJ6n/image-2.webp',
+    description: 'রান্নাঘরের তেলচিটে ও জেদি ময়লা নিমিষেই পরিষ্কার করতে অত্যন্ত কার্যকরী পাওয়ারফুল ক্লিনার। চুলা, সিঙ্ক ও কিচেন টাইলসের জন্য উপযুক্ত।',
   },
   {
-    id: 4,
+    id: 104,
     name: 'টয়লেট ফ্লাশ ক্লিনার ট্যাবলেট - ডিওডোরাইজার ও ডিসইনফেক্টেন্ট',
     price: 180,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'কমোডে সুগন্ধি ও দীর্ঘস্থায়ী পরিচ্ছন্নতা বজায় রাখে। প্রতিটি ফ্লাশে জীবাণু ধ্বংস করে।',
+    thumbnail: 'https://i.ibb.co/NdBm30LW/image-3.webp',
+    description: 'কমোডে সুগন্ধি ও দীর্ঘস্থায়ী পরিচ্ছন্নতা বজায় রাখে। প্রতিটি ফ্লাশে জীবাণু ধ্বংস করে এবং দুর্গন্ধ দূর করতে সাহায্য করে।',
   },
   {
-    id: 5,
+    id: 105,
     name: 'প্রিমিয়াম মেলামাইন জগ (২.২ লিটার রাউন্ড শেপ)',
-    price: 320,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
+    price: 315,
+    thumbnail: 'https://i.ibb.co/0y1DhhGR/Gemini-Generated-Image.webp',
     description: 'টেকসই ও আকর্ষণীয় ডিজাইনের ২.২ লিটার ফুড-গ্রেড মেলামাইন পানির জগ। দৈনন্দিন ব্যবহার ও মেহমানদারির জন্য উপযুক্ত।',
-  },
-  {
-    id: 6,
-    name: 'Smart Scalp Massager - ইলেকট্রিক হেড ম্যাসাজার',
-    price: 580,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'মাথার রক্ত সঞ্চালন বৃদ্ধি ও মানসিক ক্লান্তি দূর করতে স্মার্ট স্কাল্প ম্যাসাজার। আরামদায়ক ঘুমের জন্য সহায়ক।',
-  },
-  {
-    id: 7,
-    name: 'আইস ফেইস রোলার - স্কিন গ্লো অ্যান্ড পাফিনেস রিমুভার',
-    price: 150,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'মুখের ফোলাভাব দূর করতে এবং ত্বক টানটান ও উজ্জ্বল রাখতে সিলিকন আইস ফেস রোলার।',
-  },
-  {
-    id: 8,
-    name: 'মেলামাইন ৯ ইঞ্চি স্যুপ প্লেট - ব্রেক রেজিস্ট্যান্ট',
-    price: 90,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'উচ্চমানের ফুড-গ্রেড মেলামাইন দিয়ে তৈরি ৯ ইঞ্চি ডীপ স্যুপ প্লেট। দীর্ঘস্থায়ী ও সহজে ভাঙে না।',
-  },
-  {
-    id: 9,
-    name: 'বাচ্চাদের অ্যান্টি-স্লিপ হাঁটুর মোজা (নি-প্যাড প্রোটেক্টর)',
-    price: 120,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'বাচ্চারা যখন হাঁটু গেড়ে হামাগুড়ি দেয় তখন হাঁটুকে মেঝেতে ঘষা ও আঘাত থেকে বাঁচাতে সফট অ্যান্টি-স্লিপ নি-প্যাড মোজা।',
-  },
-  {
-    id: 10,
-    name: 'প্রিমিয়াম মেলামাইন ডিনার প্লেট সেট (৬ পিস ফ্লোরাল ডিজাইন)',
-    price: 540,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: '১০০% ফুড-গ্রেড হেভি ওয়েট মেলামাইন ডিনার প্লেট সেট। আকর্ষণীয় ফ্লোরাল প্রিন্ট ও তাপ নিরোধক।',
-  },
-  {
-    id: 11,
-    name: 'ম্যাজিক সিলিকন ডিশ ওয়াশিং গ্লাভস (স্ক্রাবারসহ ১ জোড়া)',
-    price: 220,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'হাতের ত্বক সুরক্ষিত রেখে থালা-বাসন, ফলমূল ও কিচেন সিঙ্ক পরিষ্কার করার জন্য সিলিকন গ্লাভস।',
-  },
-  {
-    id: 12,
-    name: 'বাচ্চাদের শিক্ষণীয় কাঠের বর্ণমালা ও নম্বর পাজল বোর্ড',
-    price: 250,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'শিশুদের মেধা বিকাশ ও খেলার ছলে অক্ষর এবং সংখ্যা শেখার জন্য নিরাপদ রঙের এডুকেশনাল পাজল বোর্ড।',
-  },
-  {
-    id: 13,
-    name: 'মাল্টিফাংশনাল ওয়াল মাউন্ট স্টোরেজ র‍্যাক ও অর্গানাইজার',
-    price: 199,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'ড্রিল ছাড়াই দেয়ালে সহজে লাগানো যায় এমন শক্তিশালী অ্যাডহেসিভ স্টোরেজ র‍্যাক।',
-  },
-  {
-    id: 14,
-    name: 'কোরিয়ান স্টাইল পার্ল হেয়ার ক্লিপ ও ক্রিস্টাল ব্যান্ড সেট (৬ পিস)',
-    price: 140,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'আধুনিক ও মার্জিত ডিজাইনের মুক্তা এবং ক্রিস্টাল খচিত প্রিমিয়াম হেয়ার ক্লিপ সেট।',
-  },
-  {
-    id: 15,
-    name: 'স্টেইনলেস স্টিল অয়েল ডিসপেনসার বোতল (৫০০ মিলি লিক-প্রুফ)',
-    price: 290,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'রান্নার তেল পরিমিত ও ঝামেলাহীনভাবে ঢালার জন্য ড্রিপ-ফ্রি নজলযুক্ত প্রিমিয়াম অয়েল ডিসপেনসার বোতল।',
-  },
-  {
-    id: 16,
-    name: 'মেলামাইন কারি ও সার্ভিং বোল সেট ঢাকনাসহ (৩ পিস)',
-    price: 450,
-    thumbnail: 'https://sarail1to99plus-shop.com/Without-BG-logo.png',
-    description: 'খাবার গরম ও সতেজ রাখতে এয়ার-টাইট ঢাকনাসহ ৩টি ভিন্ন সাইজের মেলামাইন সার্ভিং বোল সেট।',
   },
 ];
 
@@ -121,7 +44,7 @@ const SITE_URL = 'https://sarail1to99plus-shop.com';
 
 // Normalize image URLs for optimal social scraper compatibility (FB, WhatsApp, Twitter, Telegram)
 const formatImageUrl = (url) => {
-  if (!url) return `${SITE_URL}/Without-BG-logo.png`;
+  if (!url) return `${SITE_URL}/logo.png`;
   let formatted = String(url).trim();
   // Normalize i.ibb.co.com alias to direct i.ibb.co for reliable CDN scraping
   formatted = formatted.replace('://i.ibb.co.com/', '://i.ibb.co/');
@@ -130,7 +53,7 @@ const formatImageUrl = (url) => {
   return formatted;
 };
 
-// Fetch product with 2-second timeout and instant fallback
+// Fetch product with 2-second timeout and instant dual fallback
 async function fetchProduct(id) {
   const numericId = Number(id);
   const fallback =
@@ -141,6 +64,7 @@ async function fetchProduct(id) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 2000);
 
+    // 1. Try fetching direct product by ID
     const res = await fetch(`${BACKEND_URL}/api/products/${encodeURIComponent(id)}`, {
       signal: controller.signal,
       headers: { Accept: 'application/json' },
@@ -154,15 +78,37 @@ async function fetchProduct(id) {
       }
     }
   } catch {
-    // If live fetch fails or times out, seamlessly use fallback
+    // try fallback
+  }
+
+  // 2. Try fetching all products list if direct fetch failed
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 2000);
+    const resAll = await fetch(`${BACKEND_URL}/api/products?all=true`, {
+      signal: controller.signal,
+      headers: { Accept: 'application/json' },
+    });
+    clearTimeout(timeout);
+    if (resAll.ok) {
+      const jsonAll = await resAll.json();
+      if (Array.isArray(jsonAll?.products)) {
+        const found = jsonAll.products.find(
+          (p) => String(p.id) === String(id) || String(p._id) === String(id)
+        );
+        if (found) return found;
+      }
+    }
+  } catch {
+    // use local fallback
   }
 
   return (
     fallback || {
-      id: id || 1,
+      id: id || 101,
       name: 'Sarail 1 to 99 Plus Shop - Best Daily Deals',
-      price: 99,
-      thumbnail: `${SITE_URL}/Without-BG-logo.png`,
+      price: 110,
+      thumbnail: `${SITE_URL}/logo.png`,
       description:
         'সেরা মানের কিচেনওয়্যার, মেলামাইন ডিনার সেট, ক্লিনিং সামগ্রী, বেবি আইটেম ও খেলনা সারা বাংলাদেশে ক্যাশ অন ডেলিভারিতে অর্ডার করুন।',
     }

@@ -156,8 +156,27 @@ export const fetchProducts = async () => {
 };
 
 export const fetchProductById = async (id) => {
-  const res = await api.get(`/api/products/${id}`);
-  return res.data.product;
+  try {
+    const res = await api.get(`/api/products/${id}`);
+    if (res.data?.product) {
+      return res.data.product;
+    }
+  } catch (err) {
+    // If single ID lookup fails (e.g., numeric ID vs ObjectId route on older backend versions),
+    // fallback gracefully to searching from all products list
+    try {
+      const allProducts = await fetchProducts();
+      const found = allProducts.find(
+        (p) => String(p.id) === String(id) || String(p._id) === String(id)
+      );
+      if (found) {
+        return found;
+      }
+    } catch {
+      // ignore fallback error
+    }
+    throw err;
+  }
 };
 
 // ---------------------------------------------------------------------------

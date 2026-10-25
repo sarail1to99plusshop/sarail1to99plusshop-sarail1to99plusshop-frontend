@@ -3,6 +3,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { createOrderInDB, cancelOrderInDB } from '../services/api';
 import { useDeliveryCharges } from '../hooks/useQueries';
 import { trackAddToCart, trackPurchase } from '../utils/pixel';
+import { getCleanProductImageUrl, isInvalidProductImage } from '../utils/imageOptimizer';
 
 const ShopContext = createContext();
 
@@ -78,11 +79,8 @@ export const ShopProvider = ({ children }) => {
 
     const productId = product._id?.$oid || product.id?.toString() || generateMongoId();
     const chosenVariant = variant || product.variants?.[0] || null;
-    const itemImage =
-      chosenVariant?.images?.[0] ||
-      product.variants?.[0]?.images?.[0] ||
-      product.thumbnail ||
-      product.image;
+    const variantImg = chosenVariant?.images?.find((img) => !isInvalidProductImage(img));
+    const itemImage = variantImg || getCleanProductImageUrl(product, '/product-placeholder.svg');
 
     const chosenColorName = chosenVariant?.colorName || 'Standard';
     const chosenColorCode = chosenVariant?.colorCode || '';

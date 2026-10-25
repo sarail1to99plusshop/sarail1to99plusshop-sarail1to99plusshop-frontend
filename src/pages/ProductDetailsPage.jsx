@@ -30,6 +30,8 @@ import {
   optimizeImageUrl,
   handleOptimizedImageError,
   handleOptimizedImageLoad,
+  getCleanProductImageUrl,
+  isInvalidProductImage,
 } from '../utils/imageOptimizer';
 import { trackViewContent } from '../utils/pixel';
 
@@ -149,10 +151,7 @@ const ProductDetailsPage = () => {
       element.setAttribute(attribute, value);
     };
 
-    const imageUrl =
-      product.thumbnail ||
-      product.variants?.[0]?.images?.[0] ||
-      '/Without-BG-logo.png';
+    const imageUrl = getCleanProductImageUrl(product, 'https://sarail1to99plus-shop.com/product-placeholder.svg');
     const description =
       product.description ||
       `Buy ${product.name} for ৳${product.price} at Sarail 1 to 99 Plus Shop. Fast Cash on Delivery across Bangladesh.`;
@@ -176,18 +175,21 @@ const ProductDetailsPage = () => {
     product?.variants?.[0] ||
     null;
 
-  // Photos for active variant (support all uploaded variant photos)
-  const variantImages =
-    (activeVariant?.images && activeVariant.images.length > 0
-      ? activeVariant.images
-      : [product?.thumbnail].filter(Boolean));
+  // Photos for active variant (strictly filter out any store logos/placeholders)
+  const rawVariantImages = (activeVariant?.images && activeVariant.images.length > 0
+    ? activeVariant.images
+    : [product?.thumbnail].filter(Boolean)
+  ).filter((img) => !isInvalidProductImage(img));
+
+  const variantImages = rawVariantImages.length > 0
+    ? rawVariantImages
+    : [getCleanProductImageUrl(product, '/product-placeholder.svg')];
 
   // Active main preview image
   const mainPreviewImage =
     variantImages[selectedImageIndex] ||
     variantImages[0] ||
-    product?.thumbnail ||
-    '/product-placeholder.svg';
+    getCleanProductImageUrl(product, '/product-placeholder.svg');
 
   // Embeddable video URL (YouTube, Vimeo, etc.)
   const videoEmbedUrl = formatVideoEmbedUrl(product?.videoUrl);

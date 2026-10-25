@@ -17,7 +17,7 @@ import { STORE_CONTACT } from '../../utils/contactInfo';
 
 const Footer = () => {
   return (
-    <footer className="w-full bg-[#050914] text-slate-300 pt-12 border-t border-gray-800 mt-auto cv-auto">
+    <footer className="w-full bg-[#050914] text-slate-200 pt-12 border-t border-gray-800 mt-auto">
       {/* 1. Value Proposition Strip (Approved Section 08 Draft Copy) */}
       <div className="max-w-7xl mx-auto px-4 pb-12 border-b border-gray-800">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
@@ -98,11 +98,11 @@ const Footer = () => {
               </span>
             </Link>
 
-            <p className="text-slate-300 text-xs leading-relaxed max-w-sm">
+            <p className="text-slate-200 text-xs leading-relaxed max-w-sm">
               <strong className="text-white">Sarail 1 to 99 Plus Shop</strong> – your trusted destination for quality kitchenware, melamine dinner sets, cleaning tools, baby items, toys, beauty products, and everyday household essentials at friendly 1 to 99+ prices.
             </p>
 
-            <div className="space-y-2 text-xs text-slate-300 pt-1">
+            <div className="space-y-2 text-xs text-slate-200 pt-1">
               <div className="flex items-start gap-2.5">
                 <Link
                   to={STORE_CONTACT.addressRoute}
@@ -184,7 +184,7 @@ const Footer = () => {
             <h2 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-[#FF6B74] pl-2.5">
               Categories
             </h2>
-            <ul className="space-y-1 text-xs text-slate-300">
+            <ul className="space-y-1 text-xs text-slate-200">
               <li>
                 <Link to="/shop?category=kitchen" className="inline-block py-1.5 hover:text-white transition-colors">
                   Kitchen & Dining
@@ -233,7 +233,7 @@ const Footer = () => {
             <h2 className="text-white font-bold text-sm uppercase tracking-wider mb-4 border-l-2 border-[#FF6B74] pl-2.5">
               Quick Links
             </h2>
-            <ul className="space-y-1 text-xs text-slate-300">
+            <ul className="space-y-1 text-xs text-slate-200">
               <li>
                 <Link to="/" className="inline-block py-1.5 hover:text-white transition-colors">
                   Home
@@ -255,7 +255,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/hot-offers" className="inline-flex items-center gap-1 py-1.5 text-[#FF6B74] hover:underline font-semibold">
+                <Link to="/hot-offers" className="inline-flex items-center gap-1 py-1.5 text-[#FF8A92] hover:underline font-semibold">
                   🔥 Hot Offers
                 </Link>
               </li>
@@ -282,7 +282,7 @@ const Footer = () => {
             <h2 className="text-white font-bold text-sm uppercase tracking-wider border-l-2 border-[#FF6B74] pl-2.5">
               Customer Help
             </h2>
-            <ul className="space-y-1 text-xs text-slate-300">
+            <ul className="space-y-1 text-xs text-slate-200">
               <li>
                 <Link to="/track-order" className="inline-block py-1.5 hover:text-white transition-colors font-medium text-white">
                   🚚 Track My Order
