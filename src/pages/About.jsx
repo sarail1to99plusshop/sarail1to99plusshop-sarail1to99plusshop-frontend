@@ -51,7 +51,7 @@ const About = () => {
     {
       icon: <FiTruck className="text-xl text-primary" />,
       title: 'Reliable Nationwide Delivery',
-      desc: 'Fast island & nationwide courier service with Cash on Delivery (COD) inside Dhaka (৳60) and outside Dhaka (৳120).',
+      desc: 'Fast nationwide courier service with Cash on Delivery (COD) inside Brahmanbaria (৳60), inside Dhaka (৳120), and all other districts across Bangladesh (৳130).',
     },
     {
       icon: <FiHeart className="text-xl text-actionRed" />,

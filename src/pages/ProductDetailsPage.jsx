@@ -187,7 +187,7 @@ const ProductDetailsPage = () => {
     variantImages[selectedImageIndex] ||
     variantImages[0] ||
     product?.thumbnail ||
-    '/Without-BG-logo.png';
+    '/product-placeholder.svg';
 
   // Embeddable video URL (YouTube, Vimeo, etc.)
   const videoEmbedUrl = formatVideoEmbedUrl(product?.videoUrl);
@@ -612,15 +612,20 @@ const ProductDetailsPage = () => {
                 <Truck className="w-4 h-4 text-[#003D73]" />
                 <span>Delivery Charges:</span>
               </div>
-              <div className="grid grid-cols-2 gap-2 text-[11px] pt-0.5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] pt-0.5">
                 <div className="bg-white p-2 rounded border border-slate-200/70 flex flex-col">
-                  <span className="font-bold text-[#0F172A]">Inside Dhaka</span>
+                  <span className="font-bold text-[#0F172A]">Inside Brahmanbaria</span>
                   <span className="text-[#DE111E] font-extrabold text-xs">৳60</span>
                   <span className="text-[10px] text-slate-400">1-2 Business Days</span>
                 </div>
                 <div className="bg-white p-2 rounded border border-slate-200/70 flex flex-col">
-                  <span className="font-bold text-[#0F172A]">Outside Dhaka</span>
+                  <span className="font-bold text-[#0F172A]">Inside Dhaka City</span>
                   <span className="text-[#DE111E] font-extrabold text-xs">৳120</span>
+                  <span className="text-[10px] text-slate-400">1-3 Business Days</span>
+                </div>
+                <div className="bg-white p-2 rounded border border-slate-200/70 flex flex-col">
+                  <span className="font-bold text-[#0F172A]">Rest of Bangladesh</span>
+                  <span className="text-[#DE111E] font-extrabold text-xs">৳130</span>
                   <span className="text-[10px] text-slate-400">2-4 Business Days</span>
                 </div>
               </div>
@@ -966,7 +971,7 @@ const ProductDetailsPage = () => {
               const relImage =
                 relProd.thumbnail ||
                 relProd.variants?.[0]?.images?.[0] ||
-                '/Without-BG-logo.png';
+                '/product-placeholder.svg';
               const optimizedRelImg = optimizeImageUrl(relImage, { width: 260, quality: 76 });
 
               return (

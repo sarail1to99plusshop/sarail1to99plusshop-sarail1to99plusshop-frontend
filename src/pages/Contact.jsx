@@ -557,7 +557,7 @@ const Contact = () => {
                     <FiTruck className="text-actionRed text-base shrink-0" />
                     <div>
                       <strong className="block text-white">Delivery Charges:</strong>
-                      <span>Inside Dhaka: ৳60 (1-2 Days) | Outside Dhaka: ৳120 (2-4 Days)</span>
+                      <span>Inside Brahmanbaria: ৳60 | Inside Dhaka City: ৳120 | Rest of Bangladesh: ৳130</span>
                     </div>
                   </div>
                 </div>

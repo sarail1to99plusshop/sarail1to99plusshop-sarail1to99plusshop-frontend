@@ -7,6 +7,8 @@ import {
   submitProductReview,
   fetchCategories,
   fetchDeliveryCharges,
+  fetchDistricts,
+  fetchDivisions,
   fetchUserProfileFromDB,
   fetchUserOrdersFromDB,
   cancelOrderInDB,
@@ -126,6 +128,24 @@ export const useDeliveryCharges = () => {
     queryKey: ['deliveryCharges'],
     queryFn: fetchDeliveryCharges,
     staleTime: 1000 * 60 * 5,
+  });
+};
+
+// 7b. Bangladesh 64 Districts Hook (from Express Backend API)
+export const useDistricts = (division = '') => {
+  return useQuery({
+    queryKey: ['districts', division],
+    queryFn: () => fetchDistricts(division),
+    staleTime: 1000 * 60 * 60, // 1 hour cache
+  });
+};
+
+// 7c. Bangladesh 8 Divisions Hook (from Express Backend API)
+export const useDivisions = () => {
+  return useQuery({
+    queryKey: ['divisions'],
+    queryFn: fetchDivisions,
+    staleTime: 1000 * 60 * 60,
   });
 };
 

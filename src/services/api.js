@@ -196,6 +196,17 @@ export const fetchDeliveryCharges = async () => {
   return res.data.deliveryCharges || [];
 };
 
+export const fetchDistricts = async (division) => {
+  const params = division ? { division } : undefined;
+  const res = await api.get('/api/locations/districts', { params });
+  return res.data.districts || [];
+};
+
+export const fetchDivisions = async () => {
+  const res = await api.get('/api/locations/divisions');
+  return res.data.divisions || [];
+};
+
 export const createOrderInDB = async (orderPayload) => {
   const res = await api.post('/api/orders', orderPayload);
   return res.data.order;

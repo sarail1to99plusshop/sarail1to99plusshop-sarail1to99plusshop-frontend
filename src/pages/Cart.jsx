@@ -4,7 +4,16 @@ import { BsCart3, BsTrash, BsCheckCircleFill } from 'react-icons/bs';
 import { FiArrowRight, FiPlus, FiMinus, FiTruck, FiUser, FiLock, FiMail, FiRefreshCw, FiMapPin } from 'react-icons/fi';
 import { useShop } from '../context/ShopContext';
 import { useAuth } from '../context/AuthContext';
-import { validateDetailedAddress, validateBdPhone, BANGLADESH_DISTRICTS } from '../utils/addressValidation';
+import {
+  validateDetailedAddress,
+  validateBdPhone,
+  BANGLADESH_DISTRICTS,
+  isZoneApplicableForDistrict,
+  getBestMatchingDeliveryZone,
+  validateDeliveryEligibility,
+  getTargetDistrictForZone,
+} from '../utils/addressValidation';
+import { useDistricts } from '../hooks/useQueries';
 import { trackPurchase } from '../utils/pixel';
 
 const Cart = () => {
@@ -22,6 +31,11 @@ const Cart = () => {
 
   const isVerified = Boolean(currentUser?.emailVerified);
   const customerEmail = currentUser?.email || '';
+
+  // 64 Bangladesh Districts dynamically loaded from Express API / MongoDB
+  const { data: dbDistricts = [] } = useDistricts();
+  const availableDistricts = dbDistricts.length > 0 ? dbDistricts : BANGLADESH_DISTRICTS;
+
   const [customerName, setCustomerName] = useState('');
   const [phone, setPhone] = useState('');
   const [division, setDivision] = useState('');
@@ -40,7 +54,7 @@ const Cart = () => {
   const [districtError, setDistrictError] = useState('');
   const [thanaError, setThanaError] = useState('');
   const [addressError, setAddressError] = useState('');
-  const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-dhaka');
+  const [selectedDeliveryId, setSelectedDeliveryId] = useState('inside-brahmanbaria');
   const [placedOrder, setPlacedOrder] = useState(null);
   const [loading, setLoading] = useState(false);
   const [verificationStatus, setVerificationStatus] = useState('');
@@ -99,14 +113,17 @@ const Cart = () => {
     }
   };
 
+  const candidateDelivery = deliveryCharges?.find((d) => d.id === selectedDeliveryId);
   const activeDelivery =
-    deliveryCharges?.find((d) => d.id === selectedDeliveryId) ||
-    deliveryCharges?.[0] || {
-      id: 'inside-dhaka',
-      location: 'Inside Dhaka',
-      charge: 60,
-      estimatedDays: '1-2 Business Days',
-    };
+    (candidateDelivery && isZoneApplicableForDistrict(candidateDelivery, district, deliveryCharges))
+      ? candidateDelivery
+      : getBestMatchingDeliveryZone(deliveryCharges, district) ||
+        deliveryCharges?.[0] || {
+          id: 'inside-brahmanbaria',
+          location: 'Inside Brahmanbaria City',
+          charge: 60,
+          estimatedDays: '1-2 Business Days',
+        };
 
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -149,6 +166,13 @@ const Cart = () => {
       if (el) el.focus();
       return;
     }
+    const selectedDistrictObj = availableDistricts.find((d) => d.name.toLowerCase() === district.trim().toLowerCase());
+    if (selectedDistrictObj && selectedDistrictObj.isActive === false) {
+      setDistrictError(`দুঃখিত, "${district}" জেলায় আমাদের হোম ডেলিভারি সেবা সাময়িকভাবে বন্ধ রয়েছে (Delivery currently unavailable in this district)।`);
+      const el = document.getElementById('customer-district-field');
+      if (el) el.focus();
+      return;
+    }
     setDistrictError('');
 
     if (!thana.trim()) {
@@ -184,6 +208,16 @@ const Cart = () => {
       return;
     }
     setAddressError('');
+
+    // Strict Geographic Delivery Zone Verification
+    const deliveryEligibility = validateDeliveryEligibility(activeDelivery, district, deliveryCharges);
+    if (!deliveryEligibility.valid) {
+      setAddressError(deliveryEligibility.message);
+      if (deliveryEligibility.recommendedZone) {
+        setSelectedDeliveryId(deliveryEligibility.recommendedZone.id);
+      }
+      return;
+    }
 
     if (paymentMethod === 'bKash') {
       if (bKashPaymentMode === 'delivery' && deliveryFee <= 0) {
@@ -739,7 +773,16 @@ const Cart = () => {
                     <select
                       id="customer-division-field"
                       value={division}
-                      onChange={(e) => setDivision(e.target.value)}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setDivision(val);
+                        const matchedCurrent = availableDistricts.find((d) => d.name === district);
+                        if (matchedCurrent && val && matchedCurrent.division !== val) {
+                          setDistrict('');
+                          const best = getBestMatchingDeliveryZone(deliveryCharges, '');
+                          if (best) setSelectedDeliveryId(best.id);
+                        }
+                      }}
                       className="w-full bg-gray-50 border border-gray-200 text-xs px-3 py-2.5 rounded-lg outline-none focus:border-primary focus:bg-white transition-colors cursor-pointer"
                     >
                       <option value="">নির্বাচন করুন (Select)</option>
@@ -765,9 +808,14 @@ const Cart = () => {
                         const val = e.target.value;
                         setDistrict(val);
                         if (districtError) setDistrictError('');
-                        const matched = BANGLADESH_DISTRICTS.find((d) => d.name === val);
+                        const matched = availableDistricts.find((d) => d.name === val);
                         if (matched && matched.division && !division) {
                           setDivision(matched.division);
+                        }
+                        // Automatically select the geographically valid delivery zone
+                        if (val) {
+                          const best = getBestMatchingDeliveryZone(deliveryCharges, val);
+                          if (best) setSelectedDeliveryId(best.id);
                         }
                       }}
                       className={`w-full bg-gray-50 border text-xs px-3 py-2.5 rounded-lg outline-none transition-colors cursor-pointer ${
@@ -777,17 +825,32 @@ const Cart = () => {
                       }`}
                     >
                       <option value="">জেলা নির্বাচন করুন (Select)</option>
-                      {BANGLADESH_DISTRICTS.filter((d) => !division || d.division === division).map((d) => (
-                        <option key={d.name} value={d.name}>
-                          {d.name} ({d.bn})
-                        </option>
-                      ))}
+                      {availableDistricts
+                        .filter((d) => !division || d.division === division)
+                        .map((d) => {
+                          const isAvailable = d.isActive !== false;
+                          return (
+                            <option
+                              key={d.name}
+                              value={d.name}
+                              disabled={!isAvailable}
+                              className={!isAvailable ? 'text-slate-400 bg-slate-100 font-normal' : 'text-slate-900'}
+                            >
+                              {d.name} ({d.bn}){isAvailable ? '' : ' - ডেলিভারি অনুপলব্ধ (Not Available)'}
+                            </option>
+                          );
+                        })}
                     </select>
                     {districtError && (
                       <p className="text-[11px] font-bold text-rose-600 mt-1 flex items-center gap-1 animate-shake">
                         <span>⚠️</span>
                         <span>{districtError}</span>
                       </p>
+                    )}
+                    {availableDistricts.find((d) => d.name === district)?.isActive === false && (
+                      <div className="mt-2 p-2 rounded-lg bg-rose-50 border border-rose-200 text-rose-800 text-[11px] font-medium leading-relaxed">
+                        ⚠️ দুঃখিত, আপনার নির্বাচিত জেলাটিতে (<strong>{district}</strong>) বর্তমানে ডেলিভারি সেবা সাময়িকভাবে বন্ধ রয়েছে (Delivery currently unavailable in this district)।
+                      </div>
                     )}
                   </div>
                   <div>
@@ -861,45 +924,86 @@ const Cart = () => {
                 <div>
                   <label className="block text-xs font-bold text-charcoal mb-1.5 flex items-center justify-between">
                     <span>Delivery Destination *</span>
-                    <span className="text-[11px] text-primary font-medium">Choose delivery zone</span>
+                    <span className="text-[11px] text-primary font-medium">
+                      {district ? `জেলা: ${district}` : 'Choose delivery zone'}
+                    </span>
                   </label>
                   <div className="grid grid-cols-2 gap-2">
                     {(deliveryCharges || []).map((option) => {
                       const isSelected = selectedDeliveryId === option.id;
+                      const isApplicable = isZoneApplicableForDistrict(option, district, deliveryCharges);
+                      const targetDistrict = getTargetDistrictForZone(option);
+
                       return (
                         <button
                           key={option.id}
                           type="button"
-                          onClick={() => setSelectedDeliveryId(option.id)}
-                          className={`p-2.5 rounded-lg border text-left transition-all ${
-                            isSelected
-                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-2xs'
-                              : 'border-gray-200 bg-white hover:border-gray-300'
+                          disabled={!isApplicable}
+                          onClick={() => {
+                            if (!isApplicable) return;
+                            setSelectedDeliveryId(option.id);
+                          }}
+                          className={`p-2.5 rounded-lg border text-left transition-all relative ${
+                            !isApplicable
+                              ? 'opacity-40 bg-slate-50 border-slate-200 cursor-not-allowed select-none'
+                              : isSelected
+                              ? 'border-primary bg-primary/5 ring-2 ring-primary/20 shadow-2xs cursor-pointer'
+                              : 'border-gray-200 bg-white hover:border-gray-300 cursor-pointer'
                           }`}
+                          title={
+                            !isApplicable
+                              ? targetDistrict
+                                ? `শুধুমাত্র ${targetDistrict} জেলার জন্য প্রযোজ্য`
+                                : `${district || 'আপনার'} জেলার জন্য প্রযোজ্য নয়`
+                              : option.location
+                          }
                         >
                           <div className="flex items-center justify-between">
                             <span
                               className={`text-xs font-bold ${
-                                isSelected ? 'text-primary' : 'text-charcoal'
+                                !isApplicable
+                                  ? 'text-slate-400 line-through'
+                                  : isSelected
+                                  ? 'text-primary'
+                                  : 'text-charcoal'
                               }`}
                             >
                               {option.location}
                             </span>
                             <span
                               className={`text-xs font-black ${
-                                isSelected ? 'text-actionRed' : 'text-slate-700'
+                                !isApplicable
+                                  ? 'text-slate-400'
+                                  : isSelected
+                                  ? 'text-actionRed'
+                                  : 'text-slate-700'
                               }`}
                             >
                               ৳{option.charge}
                             </span>
                           </div>
-                          <span className="text-[10px] text-gray-500 block mt-0.5">
-                            {option.estimatedDays}
-                          </span>
+                          <div className="flex items-center justify-between mt-0.5">
+                            <span className="text-[10px] text-gray-500 block">
+                              {option.estimatedDays}
+                            </span>
+                            {!isApplicable && (
+                              <span className="text-[9px] font-bold text-rose-600 bg-rose-50 px-1 py-0.2 rounded">
+                                {targetDistrict ? `শুধু ${targetDistrict}` : 'অনুপযুক্ত'}
+                              </span>
+                            )}
+                          </div>
                         </button>
                       );
                     })}
                   </div>
+                  {district && (
+                    <p className="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1">
+                      <span className="text-emerald-600 font-bold">✓</span>
+                      <span>
+                        আপনার নির্বাচিত জেলা (<strong>{district}</strong>) অনুযায়ী ডেলিভারি চার্জ স্বয়ংক্রিয়ভাবে নির্ধারিত হয়েছে।
+                      </span>
+                    </p>
+                  )}
                 </div>
 
                 <div>

@@ -19,7 +19,7 @@ const ProductCard = ({ product, priority = false }) => {
   const rawDisplayImage =
     product.thumbnail ||
     product.variants?.[0]?.images?.[0] ||
-    '/Without-BG-logo.png';
+    '/product-placeholder.svg';
 
   const displayImage = optimizeImageUrl(rawDisplayImage, {
     width: 220,

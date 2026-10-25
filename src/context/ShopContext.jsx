@@ -280,7 +280,11 @@ export const ShopProvider = ({ children }) => {
         note: (customerDetails.note || '').trim(),
         deliveryLocation:
           customerDetails.deliveryLocation ||
-          (deliveryFee === 120 ? 'Outside Dhaka' : 'Inside Dhaka'),
+          (rawDistrict?.toLowerCase() === 'brahmanbaria'
+            ? 'Inside Brahmanbaria City'
+            : rawDistrict?.toLowerCase() === 'dhaka'
+            ? 'Inside Dhaka City'
+            : 'Outside Dhaka and Brahmanbaria (Rest of Bangladesh)'),
       },
       items: formattedItems,
       deliveryFee,

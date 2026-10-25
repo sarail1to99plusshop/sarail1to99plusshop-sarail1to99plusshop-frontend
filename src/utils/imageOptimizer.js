@@ -72,7 +72,7 @@ export const handleOptimizedImageLoad = (e) => {
 export const handleOptimizedImageError = (
   e,
   originalUrl,
-  fallbackUrl = '/Without-BG-logo.png'
+  fallbackUrl = '/product-placeholder.svg'
 ) => {
   const img = e.currentTarget;
   if (!img) return;
